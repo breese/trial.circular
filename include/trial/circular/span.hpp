@@ -100,7 +100,7 @@ public:
     //! @post size() == 0
 
     template <std::size_t N>
-    span(value_type (&array)[N]) noexcept;
+    explicit span(value_type (&array)[N]) noexcept;
 
     //! @brief Checks if span is empty.
 
