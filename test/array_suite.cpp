@@ -101,6 +101,12 @@ void test_size()
     TRIAL_TEST_EQ(data.size(), 0);
 }
 
+void test_max_size()
+{
+    circular::array<int, 4> data;
+    TRIAL_TEST_EQ(data.max_size(), 4);
+}
+
 void test_full()
 {
     circular::array<int, 4> data;
@@ -205,6 +211,7 @@ void run()
     test_empty();
     test_capacity();
     test_size();
+    test_max_size();
     test_full();
     test_front();
     test_back();

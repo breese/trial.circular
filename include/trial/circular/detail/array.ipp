@@ -43,5 +43,11 @@ array<T, N>::array(InputIterator first,
                  std::forward<decltype(last)>(last));
 }
 
+template <typename T, std::size_t N>
+auto array<T, N>::max_size() const noexcept -> size_type
+{
+    return capacity();
+}
+
 } // namespace circular
 } // namespace trial

@@ -96,6 +96,9 @@ public:
     //! @brief Returns the number of elements in circular array.
     using span::size;
 
+    //! @brief Returns the maximum number of possible elements in circular array.
+    size_type max_size() const noexcept;
+
     //! @brief Returns reference to first element in circular array.
     using span::front;
 
