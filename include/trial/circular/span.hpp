@@ -130,6 +130,12 @@ public:
 
     const_reference back() const noexcept;
 
+    //! @brief Returns reference to element at position.
+    //!
+    //! @pre size() > position
+
+    const_reference operator[](size_type position) const noexcept;
+
     //! @brief Clears the span.
     //!
     //! The content of the underlying storage is not modified.

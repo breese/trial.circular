@@ -100,6 +100,12 @@ auto span<T>::back() const noexcept -> const_reference
 }
 
 template <typename T>
+auto span<T>::operator[](size_type position) const noexcept -> const_reference
+{
+    return at(front_index() + position);
+}
+
+template <typename T>
 void span<T>::clear() noexcept
 {
     member.size = 0;
