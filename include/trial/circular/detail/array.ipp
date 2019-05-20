@@ -27,6 +27,13 @@ array<T, N>::array(std::initializer_list<value_type> input) noexcept(std::is_not
 }
 
 template <typename T, std::size_t N>
+auto array<T, N>::operator=(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value) -> array&
+{
+    span::operator=(std::move(input));
+    return *this;
+}
+
+template <typename T, std::size_t N>
 template <typename InputIterator>
 array<T, N>::array(InputIterator first,
                    InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value)
