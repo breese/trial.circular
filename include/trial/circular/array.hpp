@@ -102,6 +102,9 @@ public:
     //! @brief Returns reference to last element in span.
     using span::back;
 
+    //! @brief Returns reference to element at position.
+    using span::operator[];
+
     //! @brief Clears the circular array.
     using span::clear;
 

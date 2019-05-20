@@ -107,6 +107,39 @@ void test_full()
     TRIAL_TEST(!data.full());
 }
 
+void test_front()
+{
+    circular::array<int, 4> data;
+    data.push_front(11);
+    TRIAL_TEST_EQ(data.size(), 1);
+    TRIAL_TEST_EQ(data.front(), 11);
+}
+
+void test_back()
+{
+    circular::array<int, 4> data;
+    data.push_back(11);
+    TRIAL_TEST_EQ(data.size(), 1);
+    TRIAL_TEST_EQ(data.back(), 11);
+}
+
+void test_operator_index()
+{
+    circular::array<int, 4> data = {11, 22, 33};
+    TRIAL_TEST_EQ(data[0], 11);
+    TRIAL_TEST_EQ(data[1], 22);
+    TRIAL_TEST_EQ(data[2], 33);
+}
+
+void test_clear()
+{
+    circular::array<int, 4> data;
+    data.push_back(11);
+    TRIAL_TEST_EQ(data.size(), 1);
+    data.clear();
+    TRIAL_TEST_EQ(data.size(), 0);
+}
+
 void test_push_front()
 {
     circular::array<int, 4> data;
@@ -157,31 +190,6 @@ void test_move_back()
     TRIAL_TEST_EQ(data.size(), 0);
 }
 
-void test_front()
-{
-    circular::array<int, 4> data;
-    data.push_front(11);
-    TRIAL_TEST_EQ(data.size(), 1);
-    TRIAL_TEST_EQ(data.front(), 11);
-}
-
-void test_back()
-{
-    circular::array<int, 4> data;
-    data.push_back(11);
-    TRIAL_TEST_EQ(data.size(), 1);
-    TRIAL_TEST_EQ(data.back(), 11);
-}
-
-void test_clear()
-{
-    circular::array<int, 4> data;
-    data.push_back(11);
-    TRIAL_TEST_EQ(data.size(), 1);
-    data.clear();
-    TRIAL_TEST_EQ(data.size(), 0);
-}
-
 void run()
 {
     test_ctor_default();
@@ -198,15 +206,16 @@ void run()
     test_capacity();
     test_size();
     test_full();
+    test_front();
+    test_back();
+    test_operator_index();
+    test_clear();
     test_push_front();
     test_push_back();
     test_pop_front();
     test_pop_back();
     test_move_front();
     test_move_back();
-    test_front();
-    test_back();
-    test_clear();
 }
 
 } // namespace api_suite
