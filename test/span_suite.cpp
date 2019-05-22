@@ -927,6 +927,77 @@ void run()
 
 //-----------------------------------------------------------------------------
 
+namespace initialization_suite
+{
+
+void init_zero()
+{
+    std::array<int, 4> array = {11, 22, 33, 44};
+    circular::span<int> span(array.begin(), array.end(), array.begin(), 0);
+    {
+        std::vector<int> expect = {};
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void init_one()
+{
+    std::array<int, 4> array = {11, 22, 33, 44};
+    circular::span<int> span(array.begin(), array.end(), array.begin(), 1);
+    {
+        std::vector<int> expect = {11};
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void init_two()
+{
+    std::array<int, 4> array = {11, 22, 33, 44};
+    circular::span<int> span(array.begin(), array.end(), array.begin(), 2);
+    {
+        std::vector<int> expect = {11, 22};
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void init_three()
+{
+    std::array<int, 4> array = {11, 22, 33, 44};
+    circular::span<int> span(array.begin(), array.end(), array.begin(), 3);
+    {
+        std::vector<int> expect = {11, 22, 33};
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void init_four()
+{
+    std::array<int, 4> array = {11, 22, 33, 44};
+    circular::span<int> span(array.begin(), array.end(), array.begin(), array.size());
+    {
+        std::vector<int> expect = {11, 22, 33, 44};
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void run()
+{
+    init_zero();
+    init_one();
+    init_two();
+    init_three();
+    init_four();
+}
+
+} // namespace initialization_suite
+
+//-----------------------------------------------------------------------------
+
 namespace clear_suite
 {
 
@@ -1270,6 +1341,7 @@ int main()
     const_array_suite::run();
     std_array_suite::run();
     std_vector_suite::run();
+    initialization_suite::run();
     clear_suite::run();
     window_size_suite::run();
 

@@ -39,7 +39,7 @@ span<T>::span(ContiguousIterator begin,
               ContiguousIterator end,
               ContiguousIterator first,
               size_type length) noexcept
-    : member{std::addressof(*begin), size_type(std::distance(begin, end)), length, size_type(std::distance(begin, first))}
+    : member{std::addressof(*begin), size_type(std::distance(begin, end)), length, length - size_type(std::distance(begin, first))}
 {
     assert(member.size <= member.capacity);
     member.next += member.capacity;
