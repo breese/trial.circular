@@ -59,7 +59,7 @@ void test_inner_product()
 
 void test_iota()
 {
-    circular::array<int, 4> data = {11, 22, 33, 44, 55};
+    circular::array<int, 4> data = {11, 22, 33, 44};
     // Overwrite array
     std::iota(data.begin(), data.end(), 0);
     std::vector<int> expect = {0, 1, 2, 3};

@@ -53,14 +53,6 @@ void test_ctor_initializer_list()
     TRIAL_TEST_EQ(data.capacity(), 4);
 }
 
-void test_ctor_iterator()
-{
-    std::vector<int> input = {11, 22};
-    circular::array<int, 4> data(input.begin(), input.end());
-    TRIAL_TEST_EQ(data.size(), 2);
-    TRIAL_TEST_EQ(data.capacity(), 4);
-}
-
 void test_operator_assign_initializer_list()
 {
     circular::array<int, 4> data;
@@ -202,7 +194,6 @@ void run()
     test_ctor_move();
     test_ctor_move_assign();
     test_ctor_initializer_list();
-    test_ctor_iterator();
 
     test_operator_assign_initializer_list();
     test_assign_initializer_list();

@@ -66,7 +66,8 @@ public:
     //! @post capacity() == N
     //! @post size() == input.size()
 
-    array(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
+    template <typename... Args>
+    constexpr array(value_type, Args&&...) noexcept(std::is_nothrow_move_assignable<value_type>::value);
 
     //! @brief Rereates circular array with element from initializer list.
     //!
@@ -74,15 +75,6 @@ public:
     //! @post size() == input.size()
 
     array& operator=(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
-
-    //! @brief Creates circular array with elements from range.
-    //!
-    //! @post capacity() == N
-    //! @post size() == std::min(std::distance(first, last), N)
-
-    template <typename InputIterator>
-    array(InputIterator first,
-          InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value);
 
     //! @brief Checks if circular array is empty.
     using span::empty;

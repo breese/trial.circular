@@ -20,10 +20,11 @@ array<T, N>::array() noexcept
 }
 
 template <typename T, std::size_t N>
-array<T, N>::array(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value)
-    : span(storage::begin(), storage::end())
+template <typename... Args>
+constexpr array<T, N>::array(value_type arg1, Args&&... args) noexcept(std::is_nothrow_move_assignable<value_type>::value)
+    : storage{std::move(arg1), std::forward<decltype(args)>(args)...},
+      span(storage::begin(), storage::end(), storage::begin(), 1 + sizeof...(args))
 {
-    span::operator=(std::move(input));
 }
 
 template <typename T, std::size_t N>
@@ -31,16 +32,6 @@ auto array<T, N>::operator=(std::initializer_list<value_type> input) noexcept(st
 {
     span::operator=(std::move(input));
     return *this;
-}
-
-template <typename T, std::size_t N>
-template <typename InputIterator>
-array<T, N>::array(InputIterator first,
-                   InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value)
-    : span(storage::begin(), storage::end())
-{
-    span::assign(std::forward<decltype(first)>(first),
-                 std::forward<decltype(last)>(last));
 }
 
 template <typename T, std::size_t N>
