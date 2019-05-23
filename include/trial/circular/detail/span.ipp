@@ -20,92 +20,95 @@ namespace circular
 //-----------------------------------------------------------------------------
 
 template <typename T>
-span<T>::span() noexcept
+constexpr span<T>::span() noexcept
     : member{nullptr, 0, 0, 0}
 {
 }
 
+// std::addressof(x) and std::distance(a, b) are not constexpr before C++17, so
+// we use &x and b - a instead, which ought to work for ContiguousIterator.
+
 template <typename T>
 template <typename ContiguousIterator>
-span<T>::span(ContiguousIterator begin,
-              ContiguousIterator end) noexcept
-    : member{std::addressof(*begin), size_type(std::distance(begin, end)), 0, 0}
+constexpr span<T>::span(ContiguousIterator begin,
+                        ContiguousIterator end) noexcept
+    : member{&*begin, size_type(end - begin), 0, 0}
 {
 }
 
 template <typename T>
 template <typename ContiguousIterator>
-span<T>::span(ContiguousIterator begin,
-              ContiguousIterator end,
-              ContiguousIterator first,
-              size_type length) noexcept
-    : member{std::addressof(*begin), size_type(std::distance(begin, end)), length, length - size_type(std::distance(begin, first))}
+constexpr span<T>::span(ContiguousIterator begin,
+                        ContiguousIterator end,
+                        ContiguousIterator first,
+                        size_type length) noexcept
+    : member{&*begin, size_type(end - begin), length, length - size_type(first - begin)}
 {
-    assert(member.size <= member.capacity);
-    member.next += member.capacity;
 }
 
 template <typename T>
 template <std::size_t N>
-span<T>::span(value_type (&array)[N]) noexcept
+constexpr span<T>::span(value_type (&array)[N]) noexcept
     : span(array, array + N)
 {
 }
 
 template <typename T>
-auto span<T>::operator= (std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<T>::value) -> span&
+TRIAL_CXX14_CONSTEXPR
+auto span<T>::operator=(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<T>::value) -> span&
 {
     assign(std::move(input));
     return *this;
 }
 
 template <typename T>
-bool span<T>::empty() const noexcept
+constexpr bool span<T>::empty() const noexcept
 {
     return size() == 0;
 }
 
 template <typename T>
-bool span<T>::full() const noexcept
+constexpr bool span<T>::full() const noexcept
 {
     return size() == capacity();
 }
 
 template <typename T>
-auto span<T>::capacity() const noexcept -> size_type
+constexpr auto span<T>::capacity() const noexcept -> size_type
 {
     return member.capacity;
 }
 
 template <typename T>
-auto span<T>::size() const noexcept -> size_type
+constexpr auto span<T>::size() const noexcept -> size_type
 {
     return member.size;
 }
 
 template <typename T>
-auto span<T>::front() const noexcept -> const_reference
+constexpr auto span<T>::front() const noexcept -> const_reference
 {
-    assert(!empty());
+    TRIAL_CIRCULAR_CXX14(assert(!empty()));
 
     return at(front_index());
 }
 
 template <typename T>
-auto span<T>::back() const noexcept -> const_reference
+constexpr auto span<T>::back() const noexcept -> const_reference
 {
-    assert(!empty());
+    TRIAL_CIRCULAR_CXX14(assert(!empty()));
 
     return at(back_index());
 }
 
 template <typename T>
-auto span<T>::operator[](size_type position) const noexcept -> const_reference
+constexpr auto span<T>::operator[](size_type position) const noexcept -> const_reference
 {
     return at(front_index() + position);
 }
 
 template <typename T>
+TRIAL_CXX14_CONSTEXPR
 void span<T>::clear() noexcept
 {
     member.size = 0;
@@ -114,6 +117,7 @@ void span<T>::clear() noexcept
 
 template <typename T>
 template <typename InputIterator>
+TRIAL_CXX14_CONSTEXPR
 void span<T>::assign(InputIterator first, InputIterator last) noexcept(std::is_nothrow_copy_assignable<T>::value)
 {
     clear();
@@ -125,6 +129,7 @@ void span<T>::assign(InputIterator first, InputIterator last) noexcept(std::is_n
 }
 
 template <typename T>
+TRIAL_CXX14_CONSTEXPR
 void span<T>::assign(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<T>::value)
 {
     clear();
@@ -135,6 +140,7 @@ void span<T>::assign(std::initializer_list<value_type> input) noexcept(std::is_n
 }
 
 template <typename T>
+TRIAL_CXX14_CONSTEXPR
 void span<T>::push_front(value_type input) noexcept(std::is_nothrow_move_assignable<T>::value)
 {
     if (full())
@@ -149,6 +155,7 @@ void span<T>::push_front(value_type input) noexcept(std::is_nothrow_move_assigna
 }
 
 template <typename T>
+TRIAL_CXX14_CONSTEXPR
 void span<T>::push_back(value_type input) noexcept(std::is_nothrow_move_assignable<T>::value)
 {
     at(member.next) = std::move(input);
@@ -160,6 +167,7 @@ void span<T>::push_back(value_type input) noexcept(std::is_nothrow_move_assignab
 }
 
 template <typename T>
+TRIAL_CXX14_CONSTEXPR
 void span<T>::pop_front() noexcept
 {
     assert(!empty());
@@ -168,6 +176,7 @@ void span<T>::pop_front() noexcept
 }
 
 template <typename T>
+TRIAL_CXX14_CONSTEXPR
 void span<T>::pop_back() noexcept
 {
     assert(!empty());
@@ -177,6 +186,7 @@ void span<T>::pop_back() noexcept
 }
 
 template <typename T>
+TRIAL_CXX14_CONSTEXPR
 auto span<T>::move_front() noexcept(std::is_nothrow_move_constructible<T>::value) -> value_type
 {
     auto old_index = front_index();
@@ -185,6 +195,7 @@ auto span<T>::move_front() noexcept(std::is_nothrow_move_constructible<T>::value
 }
 
 template <typename T>
+TRIAL_CXX14_CONSTEXPR
 auto span<T>::move_back() noexcept(std::is_nothrow_move_constructible<T>::value) -> value_type
 {
     auto old_index = back_index();
@@ -193,37 +204,39 @@ auto span<T>::move_back() noexcept(std::is_nothrow_move_constructible<T>::value)
 }
 
 template <typename T>
+TRIAL_CXX14_CONSTEXPR
 auto span<T>::begin() noexcept -> iterator
 {
     return iterator(this, vindex(front_index()));
 }
 
 template <typename T>
-auto span<T>::begin() const noexcept -> const_iterator
+constexpr auto span<T>::begin() const noexcept -> const_iterator
 {
     return const_iterator(this, vindex(front_index()));
 }
 
 template <typename T>
-auto span<T>::cbegin() const noexcept -> const_iterator
+constexpr auto span<T>::cbegin() const noexcept -> const_iterator
 {
     return const_iterator(this, vindex(front_index()));
 }
 
 template <typename T>
+TRIAL_CXX14_CONSTEXPR
 auto span<T>::end() noexcept -> iterator
 {
     return iterator(this, vindex(member.next));
 }
 
 template <typename T>
-auto span<T>::end() const noexcept -> const_iterator
+constexpr auto span<T>::end() const noexcept -> const_iterator
 {
     return const_iterator(this, vindex(member.next));
 }
 
 template <typename T>
-auto span<T>::cend() const noexcept -> const_iterator
+constexpr auto span<T>::cend() const noexcept -> const_iterator
 {
     return const_iterator(this, vindex(member.next));
 }
@@ -231,37 +244,38 @@ auto span<T>::cend() const noexcept -> const_iterator
 //-----------------------------------------------------------------------------
 
 template <typename T>
-auto span<T>::index(size_type position) const noexcept -> size_type
+constexpr auto span<T>::index(size_type position) const noexcept -> size_type
 {
     return position % member.capacity;
 }
 
 template <typename T>
-auto span<T>::vindex(size_type position) const noexcept -> size_type
+constexpr auto span<T>::vindex(size_type position) const noexcept -> size_type
 {
     return position % (2 * member.capacity);
 }
 
 template <typename T>
-auto span<T>::front_index() const noexcept -> size_type
+constexpr auto span<T>::front_index() const noexcept -> size_type
 {
     return member.next - member.size;
 }
 
 template <typename T>
-auto span<T>::back_index() const noexcept -> size_type
+constexpr auto span<T>::back_index() const noexcept -> size_type
 {
     return member.next - 1;
 }
 
 template <typename T>
+TRIAL_CXX14_CONSTEXPR
 auto span<T>::at(size_type position) noexcept -> reference
 {
     return member.data[index(position)];
 }
 
 template <typename T>
-auto span<T>::at(size_type position) const noexcept -> const_reference
+constexpr auto span<T>::at(size_type position) const noexcept -> const_reference
 {
     return member.data[index(position)];
 }
@@ -272,8 +286,8 @@ auto span<T>::at(size_type position) const noexcept -> const_reference
 
 template <typename T>
 template <typename U>
-span<T>::basic_iterator<U>::basic_iterator(const span<T> *parent,
-                                           size_type position) noexcept
+constexpr span<T>::basic_iterator<U>::basic_iterator(const span<T>* parent,
+                                                     size_type position) noexcept
     : parent(parent),
       current(position)
 {
@@ -281,7 +295,8 @@ span<T>::basic_iterator<U>::basic_iterator(const span<T> *parent,
 
 template <typename T>
 template <typename U>
-auto span<T>::basic_iterator<U>::operator++ () noexcept -> iterator_type&
+TRIAL_CXX14_CONSTEXPR
+auto span<T>::basic_iterator<U>::operator++() noexcept -> iterator_type&
 {
     assert(parent);
 
@@ -291,7 +306,8 @@ auto span<T>::basic_iterator<U>::operator++ () noexcept -> iterator_type&
 
 template <typename T>
 template <typename U>
-auto span<T>::basic_iterator<U>::operator++ (int) noexcept -> iterator_type
+TRIAL_CXX14_CONSTEXPR
+auto span<T>::basic_iterator<U>::operator++(int) noexcept -> iterator_type
 {
     assert(parent);
 
@@ -302,7 +318,8 @@ auto span<T>::basic_iterator<U>::operator++ (int) noexcept -> iterator_type
 
 template <typename T>
 template <typename U>
-auto span<T>::basic_iterator<U>::operator-- () noexcept -> iterator_type&
+TRIAL_CXX14_CONSTEXPR
+auto span<T>::basic_iterator<U>::operator--() noexcept -> iterator_type&
 {
     assert(parent);
 
@@ -312,7 +329,8 @@ auto span<T>::basic_iterator<U>::operator-- () noexcept -> iterator_type&
 
 template <typename T>
 template <typename U>
-auto span<T>::basic_iterator<U>::operator-- (int) noexcept -> iterator_type
+TRIAL_CXX14_CONSTEXPR
+auto span<T>::basic_iterator<U>::operator--(int) noexcept -> iterator_type
 {
     assert(parent);
 
@@ -323,6 +341,7 @@ auto span<T>::basic_iterator<U>::operator-- (int) noexcept -> iterator_type
 
 template <typename T>
 template <typename U>
+TRIAL_CXX14_CONSTEXPR
 auto span<T>::basic_iterator<U>::operator-> () noexcept -> pointer
 {
     assert(parent);
@@ -332,26 +351,26 @@ auto span<T>::basic_iterator<U>::operator-> () noexcept -> pointer
 
 template <typename T>
 template <typename U>
-auto span<T>::basic_iterator<U>::operator* () const noexcept -> const_reference
+constexpr auto span<T>::basic_iterator<U>::operator*() const noexcept -> const_reference
 {
-    assert(parent);
+    TRIAL_CIRCULAR_CXX14(assert(parent));
 
     return parent->at(current);
 }
 
 template <typename T>
 template <typename U>
-bool span<T>::basic_iterator<U>::operator== (const iterator_type& other) const noexcept
+constexpr bool span<T>::basic_iterator<U>::operator==(const iterator_type& other) const noexcept
 {
-    assert(parent);
-    assert(parent == other.parent);
+    TRIAL_CIRCULAR_CXX14(assert(parent));
+    TRIAL_CIRCULAR_CXX14(assert(parent == other.parent));
 
     return current == other.current;
 }
 
 template <typename T>
 template <typename U>
-bool span<T>::basic_iterator<U>::operator!= (const iterator_type& other) const noexcept
+constexpr bool span<T>::basic_iterator<U>::operator!=(const iterator_type& other) const noexcept
 {
     return !operator==(other);
 }

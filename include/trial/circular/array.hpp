@@ -40,25 +40,26 @@ public:
     //! @post capacity() == N
     //! @post size() == 0
 
-    array() noexcept;
+    constexpr array() noexcept;
 
     // Non-copyable like std::array<T, N>
 
-    array(const array&) = delete;
-    array& operator=(const array&) = delete;
+    constexpr array(const array&) = delete;
+    constexpr array& operator=(const array&) = delete;
 
     //! @brief Creates circular array by moving.
     //!
     //! @post capacity() == N
     //! @post size() == other.size()
 
-    array(array&& other) noexcept(std::is_nothrow_move_constructible<value_type>::value) = default;
+    constexpr array(array&& other) noexcept(std::is_nothrow_move_constructible<value_type>::value) = default;
 
     //! @brief Recreates circular array by moving.
     //!
     //! @post capacity() == N
     //! @post size() == other.size()
 
+    TRIAL_CXX14_CONSTEXPR
     array& operator=(array&& other) noexcept(std::is_nothrow_move_assignable<value_type>::value) = default;
 
     //! @brief Creates circular array with element from initializer list.
@@ -74,6 +75,7 @@ public:
     //! @post capacity() == N
     //! @post size() == input.size()
 
+    TRIAL_CXX14_CONSTEXPR
     array& operator=(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
 
     //! @brief Checks if circular array is empty.
@@ -89,7 +91,7 @@ public:
     using span::size;
 
     //! @brief Returns the maximum number of possible elements in circular array.
-    size_type max_size() const noexcept;
+    constexpr size_type max_size() const noexcept;
 
     //! @brief Returns reference to first element in circular array.
     using span::front;

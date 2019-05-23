@@ -15,6 +15,7 @@
 #include <type_traits>
 #include <initializer_list>
 #include <iterator>
+#include <trial/circular/detail/config.hpp>
 
 namespace trial
 {
@@ -38,34 +39,37 @@ public:
     //! @post capacity() == 0
     //! @post size() == 0
 
-    span() noexcept;
+    constexpr span() noexcept;
 
     //! @brief Creates circular span by copying.
 
-    span(const span&) noexcept = default;
+    constexpr span(const span&) noexcept = default;
 
     //! @brief Creates circular span by moving.
     //!
     //! State of moved-from span is valid but undefined.
 
-    span(span&&) noexcept = default;
+    constexpr span(span&&) noexcept = default;
 
     //! @brief Recreates circular span by copying.
 
-    span& operator= (const span&) noexcept = default;
+    TRIAL_CXX14_CONSTEXPR
+    span& operator=(const span&) noexcept = default;
 
     //! @brief Recreates circular span by moving.
     //!
     //! State of moved-from span is valid but undefined.
 
-    span& operator= (span&&) noexcept = default;
+    TRIAL_CXX14_CONSTEXPR
+    span& operator=(span&&) noexcept = default;
 
     //! @brief Recreates circular span from initializer list.
     //!
     //! @post capacity() == input.size()
     //! @post size() == input.size()
 
-    span& operator= (std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
+    TRIAL_CXX14_CONSTEXPR
+    span& operator=(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
 
     //! @brief Creates circular span from iterators.
     //!
@@ -75,8 +79,8 @@ public:
     //! @post size() == 0
 
     template <typename ContiguousIterator>
-    span(ContiguousIterator begin,
-         ContiguousIterator end) noexcept;
+    constexpr span(ContiguousIterator begin,
+                   ContiguousIterator end) noexcept;
 
     //! @brief Creates circular span from iterators.
     //!
@@ -89,10 +93,10 @@ public:
     //! @post size() == length
 
     template <typename ContiguousIterator>
-    span(ContiguousIterator begin,
-         ContiguousIterator end,
-         ContiguousIterator first,
-         size_type length) noexcept;
+    constexpr span(ContiguousIterator begin,
+                   ContiguousIterator end,
+                   ContiguousIterator first,
+                   size_type length) noexcept;
 
     //! @brief Creates circular span from array.
     //!
@@ -100,41 +104,41 @@ public:
     //! @post size() == 0
 
     template <std::size_t N>
-    explicit span(value_type (&array)[N]) noexcept;
+    explicit constexpr span(value_type (&array)[N]) noexcept;
 
     //! @brief Checks if span is empty.
 
-    bool empty() const noexcept;
+    constexpr bool empty() const noexcept;
 
     //! @brief Checks if span is full.
 
-    bool full() const noexcept;
+    constexpr bool full() const noexcept;
 
     //! @brief Returns the maximum possible number of elements in span.
 
-    size_type capacity() const noexcept;
+    constexpr size_type capacity() const noexcept;
 
     //! @brief Returns the number of elements in span.
 
-    size_type size() const noexcept;
+    constexpr size_type size() const noexcept;
 
     //! @brief Returns reference to first element in span.
     //!
     //! @pre !empty()
 
-    const_reference front() const noexcept;
+    constexpr const_reference front() const noexcept;
 
     //! @brief Returns reference to last element in span.
     //!
     //! @pre !empty()
 
-    const_reference back() const noexcept;
+    constexpr const_reference back() const noexcept;
 
     //! @brief Returns reference to element at position.
     //!
     //! @pre size() > position
 
-    const_reference operator[](size_type position) const noexcept;
+    constexpr const_reference operator[](size_type position) const noexcept;
 
     //! @brief Clears the span.
     //!
@@ -142,6 +146,7 @@ public:
     //!
     //! @post size() == 0
 
+    TRIAL_CXX14_CONSTEXPR
     void clear() noexcept;
 
     //! @brief Clears span and inserts elements at end of span.
@@ -149,44 +154,52 @@ public:
     //! @post size() == std::min(std::distance(first, last), capacity())
 
     template <typename InputIterator>
+    TRIAL_CXX14_CONSTEXPR
     void assign(InputIterator first, InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value);
 
     //! @brief Clears span and inserts elements at end of span.
     //!
     //! @post size() == std::min(input.size(), capacity())
 
+    TRIAL_CXX14_CONSTEXPR
     void assign(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
 
     //! @brief Inserts element at beginning of span.
 
+    TRIAL_CXX14_CONSTEXPR
     void push_front(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
 
     //! @brief Inserts element at end of span.
 
+    TRIAL_CXX14_CONSTEXPR
     void push_back(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
 
     //! @brief Erases element from beginning of span
     //!
     //! @pre !empty()
 
+    TRIAL_CXX14_CONSTEXPR
     void pop_front() noexcept;
 
     //! @brief Erases element from end of span
     //!
     //! @pre !empty()
 
+    TRIAL_CXX14_CONSTEXPR
     void pop_back() noexcept;
 
     //! @brief Moves element from beginning of span
     //!
     //! @pre !empty()
 
+    TRIAL_CXX14_CONSTEXPR
     value_type move_front() noexcept(std::is_nothrow_move_constructible<value_type>::value);
 
     //! @brief Moves element from end of span
     //!
     //! @pre !empty()
 
+    TRIAL_CXX14_CONSTEXPR
     value_type move_back() noexcept(std::is_nothrow_move_constructible<value_type>::value);
 
 private:
@@ -201,30 +214,37 @@ private:
         using const_reference = typename std::add_const<reference>::type;
         using iterator_type = basic_iterator<value_type>;
 
-        basic_iterator() noexcept = default;
-        basic_iterator(const basic_iterator&) noexcept = default;
-        basic_iterator(basic_iterator&&) noexcept = default;
-        basic_iterator& operator= (const basic_iterator&) noexcept = default;
-        basic_iterator& operator= (basic_iterator&&) noexcept = default;
+        constexpr basic_iterator() noexcept = default;
+        constexpr basic_iterator(const basic_iterator&) noexcept = default;
+        constexpr basic_iterator(basic_iterator&&) noexcept = default;
+        TRIAL_CXX14_CONSTEXPR
+        basic_iterator& operator=(const basic_iterator&) noexcept = default;
+        TRIAL_CXX14_CONSTEXPR
+        basic_iterator& operator=(basic_iterator&&) noexcept = default;
 
-        iterator_type& operator++ () noexcept;
-        iterator_type operator++ (int) noexcept;
-        iterator_type& operator-- () noexcept;
-        iterator_type operator-- (int) noexcept;
+        TRIAL_CXX14_CONSTEXPR
+        iterator_type& operator++() noexcept;
+        TRIAL_CXX14_CONSTEXPR
+        iterator_type operator++(int) noexcept;
+        TRIAL_CXX14_CONSTEXPR
+        iterator_type& operator--() noexcept;
+        TRIAL_CXX14_CONSTEXPR
+        iterator_type operator--(int) noexcept;
 
-        pointer operator-> () noexcept;
-        const_reference operator* () const noexcept;
+        TRIAL_CXX14_CONSTEXPR
+        pointer operator->() noexcept;
+        constexpr const_reference operator*() const noexcept;
 
-        bool operator== (const iterator_type&) const noexcept;
-        bool operator!= (const iterator_type&) const noexcept;
+        constexpr bool operator==(const iterator_type&) const noexcept;
+        constexpr bool operator!=(const iterator_type&) const noexcept;
 
     private:
         friend class span<T>;
 
-        basic_iterator(const span<T> *parent, const size_type index) noexcept;
+        constexpr basic_iterator(const span<T>* parent, const size_type index) noexcept;
 
     private:
-        const span<T> *parent;
+        const span<T>* parent;
         size_type current;
     };
 
@@ -234,23 +254,26 @@ public:
 
     //! @brief Returns iterator to the beginning of the span.
 
+    TRIAL_CXX14_CONSTEXPR
     iterator begin() noexcept;
-    const_iterator begin() const noexcept;
-    const_iterator cbegin() const noexcept;
+    constexpr const_iterator begin() const noexcept;
+    constexpr const_iterator cbegin() const noexcept;
 
     //! @brief Returns iterator to the ending of the span.
 
+    TRIAL_CXX14_CONSTEXPR
     iterator end() noexcept;
-    const_iterator end() const noexcept;
-    const_iterator cend() const noexcept;
+    constexpr const_iterator end() const noexcept;
+    constexpr const_iterator cend() const noexcept;
 
 protected:
-    size_type index(size_type) const noexcept;
-    size_type vindex(size_type) const noexcept;
-    size_type front_index() const noexcept;
-    size_type back_index() const noexcept;
+    constexpr size_type index(size_type) const noexcept;
+    constexpr size_type vindex(size_type) const noexcept;
+    constexpr size_type front_index() const noexcept;
+    constexpr size_type back_index() const noexcept;
+    TRIAL_CXX14_CONSTEXPR
     reference at(size_type) noexcept;
-    const_reference at(size_type) const noexcept;
+    constexpr const_reference at(size_type) const noexcept;
 
 protected:
     struct

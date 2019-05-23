@@ -14,7 +14,7 @@ namespace circular
 {
 
 template <typename T, std::size_t N>
-array<T, N>::array() noexcept
+constexpr array<T, N>::array() noexcept
     : span(storage::begin(), storage::end())
 {
 }
@@ -28,6 +28,7 @@ constexpr array<T, N>::array(value_type arg1, Args&&... args) noexcept(std::is_n
 }
 
 template <typename T, std::size_t N>
+TRIAL_CXX14_CONSTEXPR
 auto array<T, N>::operator=(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value) -> array&
 {
     span::operator=(std::move(input));
@@ -35,7 +36,7 @@ auto array<T, N>::operator=(std::initializer_list<value_type> input) noexcept(st
 }
 
 template <typename T, std::size_t N>
-auto array<T, N>::max_size() const noexcept -> size_type
+constexpr auto array<T, N>::max_size() const noexcept -> size_type
 {
     return capacity();
 }
