@@ -120,6 +120,13 @@ constexpr auto span<T>::back() const noexcept -> const_reference
 }
 
 template <typename T>
+TRIAL_CXX14_CONSTEXPR
+auto span<T>::operator[](size_type position) noexcept -> reference
+{
+    return at(front_index() + position);
+}
+
+template <typename T>
 constexpr auto span<T>::operator[](size_type position) const noexcept -> const_reference
 {
     return at(front_index() + position);

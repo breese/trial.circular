@@ -152,6 +152,13 @@ public:
     //!
     //! @pre size() > position
 
+    TRIAL_CXX14_CONSTEXPR
+    reference operator[](size_type position) noexcept;
+
+    //! @brief Returns reference to element at position.
+    //!
+    //! @pre size() > position
+
     constexpr const_reference operator[](size_type position) const noexcept;
 
     //! @brief Clears the span.
