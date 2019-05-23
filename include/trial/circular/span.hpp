@@ -126,7 +126,21 @@ public:
     //!
     //! @pre !empty()
 
+    TRIAL_CXX14_CONSTEXPR
+    reference front() noexcept;
+
+    //! @brief Returns reference to first element in span.
+    //!
+    //! @pre !empty()
+
     constexpr const_reference front() const noexcept;
+
+    //! @brief Returns reference to last element in span.
+    //!
+    //! @pre !empty()
+
+    TRIAL_CXX14_CONSTEXPR
+    reference back() noexcept;
 
     //! @brief Returns reference to last element in span.
     //!

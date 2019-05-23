@@ -86,11 +86,29 @@ constexpr auto span<T>::size() const noexcept -> size_type
 }
 
 template <typename T>
+TRIAL_CXX14_CONSTEXPR
+auto span<T>::front() noexcept -> reference
+{
+    assert(!empty());
+
+    return at(front_index());
+}
+
+template <typename T>
 constexpr auto span<T>::front() const noexcept -> const_reference
 {
     TRIAL_CIRCULAR_CXX14(assert(!empty()));
 
     return at(front_index());
+}
+
+template <typename T>
+TRIAL_CXX14_CONSTEXPR
+auto span<T>::back() noexcept -> reference
+{
+    assert(!empty());
+
+    return at(back_index());
 }
 
 template <typename T>

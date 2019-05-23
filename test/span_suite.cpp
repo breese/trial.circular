@@ -177,6 +177,13 @@ void test_front()
     TRIAL_TEST_EQ(span.front(), 22);
 }
 
+void test_front_const()
+{
+    std::array<int, 4> array = {11, 22, 33};
+    const circular::span<int> span(array.begin(), array.end(), array.begin(), 3);
+    TRIAL_TEST_EQ(span.front(), 11);
+}
+
 void test_back()
 {
     int array[4];
@@ -187,6 +194,13 @@ void test_back()
     TRIAL_TEST_EQ(span.back(), 33);
     span.push_front(55);
     TRIAL_TEST_EQ(span.back(), 22);
+}
+
+void test_back_const()
+{
+    std::array<int, 4> array = {11, 22, 33};
+    const circular::span<int> span(array.begin(), array.end(), array.begin(), 3);
+    TRIAL_TEST_EQ(span.back(), 33);
 }
 
 void test_operator_index()
@@ -333,7 +347,9 @@ void run()
     test_capacity();
     test_size();
     test_front();
+    test_front_const();
     test_back();
+    test_back_const();
     test_operator_index();
     test_clear();
     test_assign_iterator();
