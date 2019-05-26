@@ -11,6 +11,7 @@
 #include <array>
 #include <vector>
 #include <algorithm>
+#include <utility>
 #include <trial/detail/lightweight_test.hpp>
 #include <trial/circular/span.hpp>
 
@@ -23,11 +24,10 @@ using namespace trial;
 namespace copy_suite
 {
 
-void copy_back_inserter()
+void copy()
 {
     int array[4];
     circular::span<int> span(array);
-    span = { 11, 22, 33 };
     std::vector<int> input = { 111, 222, 333, 444, 555 };
     std::copy(input.begin(), input.end(), std::back_inserter(span));
     {
@@ -37,9 +37,125 @@ void copy_back_inserter()
     }
 }
 
+void copy_if()
+{
+    int array[4];
+    circular::span<int> span(array);
+    std::vector<int> input = { 111, 222, 333, 444, 555 };
+    std::copy_if(input.begin(), input.end(), std::back_inserter(span), [](int value) { return value > 222; });
+    {
+        std::vector<int> expect = { 333, 444, 555 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void copy_n()
+{
+    int array[4];
+    circular::span<int> span(array);
+    std::vector<int> input = { 111, 222, 333, 444, 555 };
+    std::copy_n(input.begin(), input.size(), std::back_inserter(span));
+    {
+        std::vector<int> expect = { 222, 333, 444, 555 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void partition_copy()
+{
+    int array[4];
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44, 55 };
+    int yes_copy_array[4];
+    circular::span<int> yes_copy(yes_copy_array);
+    int no_copy_array[4];
+    circular::span<int> no_copy(no_copy_array);
+    std::partition_copy(span.begin(), span.end(), std::back_inserter(yes_copy), std::back_inserter(no_copy), [](int value) { return value % 2 == 0; });
+    {
+        std::vector<int> expect = { 22, 44 };
+        TRIAL_TEST_ALL_EQ(yes_copy.begin(), yes_copy.end(),
+                          expect.begin(), expect.end());
+    }
+    {
+        std::vector<int> expect = { 33, 55 };
+        TRIAL_TEST_ALL_EQ(no_copy.begin(), no_copy.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void remove_copy()
+{
+    int array[4];
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44, 55 };
+    int copy_array[4];
+    circular::span<int> copy(copy_array);
+    std::remove_copy(span.begin(), span.end(), std::back_inserter(copy), 33);
+    {
+        std::vector<int> expect = { 22, 44, 55 };
+        TRIAL_TEST_ALL_EQ(copy.begin(), copy.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void reverse_copy()
+{
+    int array[4];
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44, 55 };
+    int copy_array[4];
+    circular::span<int> copy(copy_array);
+    std::reverse_copy(span.begin(), span.end(), std::back_inserter(copy));
+    {
+        std::vector<int> expect = { 55, 44, 33, 22 };
+        TRIAL_TEST_ALL_EQ(copy.begin(), copy.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void rotate_copy()
+{
+    int array[4];
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44, 55 };
+    int copy_array[4];
+    circular::span<int> copy(copy_array);
+    std::rotate_copy(span.begin(), ++span.begin(), span.end(), std::back_inserter(copy));
+    {
+        std::vector<int> expect = { 33, 44, 55, 22 };
+        TRIAL_TEST_ALL_EQ(copy.begin(), copy.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void unique_copy()
+{
+    int array[4];
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44, 55, 55 };
+    int copy_array[4];
+    circular::span<int> copy(copy_array);
+    std::unique_copy(span.begin(), span.end(), std::back_inserter(copy));
+    {
+        std::vector<int> expect = { 33, 44, 55 };
+        TRIAL_TEST_ALL_EQ(copy.begin(), copy.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
 void run()
 {
-    copy_back_inserter();
+    // Only works with back_inserter
+    copy();
+    copy_if();
+    copy_n();
+    partition_copy();
+    remove_copy();
+    reverse_copy();
+    rotate_copy();
+    unique_copy();
 }
 
 } // namespace copy_suite
@@ -53,7 +169,8 @@ void count_full()
 {
     int array[4];
     circular::span<int> span(array);
-    span = { 11, 22, 33, 44 };
+    span = { 11, 22, 33, 44, 55 };
+    TRIAL_TEST_EQ(std::count(span.begin(), span.end(), 11), 0);
     TRIAL_TEST_EQ(std::count(span.begin(), span.end(), 22), 1);
 }
 
@@ -61,8 +178,8 @@ void count_if_full()
 {
     int array[4];
     circular::span<int> span(array);
-    span = { 11, 22, 33, 44 };
-    TRIAL_TEST_EQ(std::count_if(span.begin(), span.end(), [] (int value) { return value % 2 == 0; }), 2);
+    span = { 11, 22, 33, 44, 55 };
+    TRIAL_TEST_EQ(std::count_if(span.begin(), span.end(), [](int value) { return value % 2 == 0; }), 2);
 }
 
 void run()
@@ -103,33 +220,113 @@ void run()
 namespace find_suite
 {
 
-void find_lower_bound_3()
+void find()
 {
     int array[4];
     circular::span<int> span(array);
-    span = { 1, 2, 3, 4 };
-    auto lower = std::lower_bound(span.begin(), span.end(), 3);
+    span = { 11, 22, 33, 44 };
+    auto where = std::find(span.begin(), span.end(), 33);
     {
-        std::vector<int> expect = { 3, 4 };
+        std::vector<int> expect = { 33, 44 };
+        TRIAL_TEST_ALL_EQ(where, span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void find_if()
+{
+    int array[4];
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44 };
+    auto where = std::find_if(span.begin(), span.end(), [](int value){ return value > 22; });
+    {
+        std::vector<int> expect = { 33, 44 };
+        TRIAL_TEST_ALL_EQ(where, span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void adjacent_find()
+{
+    int array[4];
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 33, 44 };
+    auto where = std::adjacent_find(span.begin(), span.end());
+    {
+        std::vector<int> expect = { 22 };
+        TRIAL_TEST_ALL_EQ(span.begin(), where,
+                          expect.begin(), expect.end());
+    }
+    {
+        std::vector<int> expect = { 33, 33, 44 };
+        TRIAL_TEST_ALL_EQ(where, span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void adjacent_find_if()
+{
+    int array[4];
+    circular::span<int> span(array);
+    span = { 44, 33, 33, 22, 11 };
+    auto where = std::adjacent_find(span.begin(), span.end(), std::greater<int>());
+    {
+        std::vector<int> expect = { 33 };
+        TRIAL_TEST_ALL_EQ(span.begin(), where,
+                          expect.begin(), expect.end());
+    }
+    {
+        std::vector<int> expect = { 33, 22, 11 };
+        TRIAL_TEST_ALL_EQ(where, span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void lower_bound()
+{
+    int array[4];
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44 };
+    auto lower = std::lower_bound(span.begin(), span.end(), 33);
+    {
+        std::vector<int> expect = { 33, 44 };
         TRIAL_TEST_ALL_EQ(lower, span.end(),
                           expect.begin(), expect.end());
     }
 }
 
-void find_minmax()
+void upper_bound()
 {
     int array[4];
     circular::span<int> span(array);
-    span = { 1, 2, 3, 4 };
+    span = { 11, 22, 33, 44 };
+    auto upper = std::upper_bound(span.begin(), span.end(), 33);
+    {
+        std::vector<int> expect = { 44 };
+        TRIAL_TEST_ALL_EQ(upper, span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void minmax_element()
+{
+    int array[4];
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44 };
     auto where = std::minmax_element(span.begin(), span.end());
-    TRIAL_TEST_EQ(*where.first, 1);
-    TRIAL_TEST_EQ(*where.second, 4);
+    TRIAL_TEST_EQ(*where.first, 11);
+    TRIAL_TEST_EQ(*where.second, 44);
 }
 
 void run()
 {
-    find_lower_bound_3();
-    find_minmax();
+    find();
+    find_if();
+    adjacent_find();
+    adjacent_find_if();
+    lower_bound();
+    upper_bound();
+    minmax_element();
 }
 
 } // namespace find_suite
@@ -185,33 +382,6 @@ void run()
 } // namespace predicate_suite
 
 //-----------------------------------------------------------------------------
-
-namespace rotate_suite
-{
-
-void rotate_copy()
-{
-    int array[4];
-    circular::span<int> span(array);
-    span = { 11, 22, 33, 44, 55 };
-    int resarray[4];
-    circular::span<int> result(resarray);
-    std::rotate_copy(span.begin(), ++span.begin(), span.end(), std::back_inserter(result));
-    {
-        std::vector<int> expect = { 33, 44, 55, 22 };
-        TRIAL_TEST_ALL_EQ(result.begin(), result.end(),
-                          expect.begin(), expect.end());
-    }
-}
-
-void run()
-{
-    rotate_copy();
-}
-
-} // namespace rotate_suite
-
-//-----------------------------------------------------------------------------
 // main
 //-----------------------------------------------------------------------------
 
@@ -222,7 +392,6 @@ int main()
     fill_suite::run();
     find_suite::run();
     predicate_suite::run();
-    rotate_suite::run();
 
     return boost::report_errors();
 }
