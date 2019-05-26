@@ -55,7 +55,7 @@ constexpr span<T>::span(value_type (&array)[N]) noexcept
 
 template <typename T>
 TRIAL_CXX14_CONSTEXPR
-auto span<T>::operator=(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<T>::value) -> span&
+auto span<T>::operator=(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value) -> span&
 {
     assign(std::move(input));
     return *this;
@@ -143,7 +143,7 @@ void span<T>::clear() noexcept
 template <typename T>
 template <typename InputIterator>
 TRIAL_CXX14_CONSTEXPR
-void span<T>::assign(InputIterator first, InputIterator last) noexcept(std::is_nothrow_copy_assignable<T>::value)
+void span<T>::assign(InputIterator first, InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value)
 {
     clear();
     while (first != last)
@@ -155,7 +155,7 @@ void span<T>::assign(InputIterator first, InputIterator last) noexcept(std::is_n
 
 template <typename T>
 TRIAL_CXX14_CONSTEXPR
-void span<T>::assign(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<T>::value)
+void span<T>::assign(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value)
 {
     clear();
     for (const auto& value : input)
@@ -166,7 +166,7 @@ void span<T>::assign(std::initializer_list<value_type> input) noexcept(std::is_n
 
 template <typename T>
 TRIAL_CXX14_CONSTEXPR
-void span<T>::push_front(value_type input) noexcept(std::is_nothrow_move_assignable<T>::value)
+void span<T>::push_front(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value)
 {
     if (full())
     {
@@ -181,7 +181,7 @@ void span<T>::push_front(value_type input) noexcept(std::is_nothrow_move_assigna
 
 template <typename T>
 TRIAL_CXX14_CONSTEXPR
-void span<T>::push_back(value_type input) noexcept(std::is_nothrow_move_assignable<T>::value)
+void span<T>::push_back(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value)
 {
     at(member.next) = std::move(input);
     member.next = member.capacity + index(member.next) + 1;
@@ -212,7 +212,7 @@ void span<T>::pop_back() noexcept
 
 template <typename T>
 TRIAL_CXX14_CONSTEXPR
-auto span<T>::move_front() noexcept(std::is_nothrow_move_constructible<T>::value) -> value_type
+auto span<T>::move_front() noexcept(std::is_nothrow_move_constructible<value_type>::value) -> value_type
 {
     auto old_index = front_index();
     pop_front(); // Item still lingers in storage
@@ -221,7 +221,7 @@ auto span<T>::move_front() noexcept(std::is_nothrow_move_constructible<T>::value
 
 template <typename T>
 TRIAL_CXX14_CONSTEXPR
-auto span<T>::move_back() noexcept(std::is_nothrow_move_constructible<T>::value) -> value_type
+auto span<T>::move_back() noexcept(std::is_nothrow_move_constructible<value_type>::value) -> value_type
 {
     auto old_index = back_index();
     pop_back(); // Item still lingers in storage
