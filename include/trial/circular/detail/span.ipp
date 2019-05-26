@@ -229,13 +229,6 @@ auto span<T>::move_back() noexcept(std::is_nothrow_move_constructible<value_type
 }
 
 template <typename T>
-TRIAL_CXX14_CONSTEXPR
-auto span<T>::begin() noexcept -> iterator
-{
-    return iterator(this, vindex(front_index()));
-}
-
-template <typename T>
 constexpr auto span<T>::begin() const noexcept -> const_iterator
 {
     return const_iterator(this, vindex(front_index()));
@@ -245,13 +238,6 @@ template <typename T>
 constexpr auto span<T>::cbegin() const noexcept -> const_iterator
 {
     return const_iterator(this, vindex(front_index()));
-}
-
-template <typename T>
-TRIAL_CXX14_CONSTEXPR
-auto span<T>::end() noexcept -> iterator
-{
-    return iterator(this, vindex(member.next));
 }
 
 template <typename T>

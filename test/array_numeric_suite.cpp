@@ -15,6 +15,8 @@
 
 using namespace trial;
 
+// Algorithms that modify the input container via iterators are not supported.
+
 //-----------------------------------------------------------------------------
 
 namespace numeric_suite
@@ -57,15 +59,6 @@ void test_inner_product()
                   22 * 22 + 33 * 33 + 44 * 44 + 55 * 55);
 }
 
-void test_iota()
-{
-    circular::array<int, 4> data = {11, 22, 33, 44};
-    // Overwrite array
-    std::iota(data.begin(), data.end(), 0);
-    std::vector<int> expect = {0, 1, 2, 3};
-    TRIAL_TEST_ALL_EQ(data.begin(), data.end(), expect.begin(), expect.end());
-}
-
 void test_partial_sum()
 {
     circular::array<int, 4> data;
@@ -100,7 +93,6 @@ void run()
     test_accumulate();
     test_adjacent_difference();
     test_inner_product();
-    test_iota();
     test_partial_sum();
 }
 

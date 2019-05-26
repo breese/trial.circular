@@ -32,7 +32,6 @@ public:
     using typename span::size_type;
     using typename span::reference;
     using typename span::const_reference;
-    using typename span::iterator;
     using typename span::const_iterator;
 
     //! @brief Creates empty circular array.

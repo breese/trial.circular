@@ -16,25 +16,12 @@
 
 using namespace trial;
 
+// Algorithms that modify the input container via iterators are not supported.
+
 //-----------------------------------------------------------------------------
 
 namespace copy_suite
 {
-
-void copy_iterator()
-{
-    int array[4];
-    circular::span<int> span(array);
-    span = { 11, 22, 33 };
-    std::vector<int> input = { 111, 222, 333, 444, 555 };
-    // Copy does not insert via push methods so circular indices are not updated
-    std::copy(input.begin(), input.end(), span.begin());
-    {
-        std::vector<int> expect = { 555, 222, 333 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-}
 
 void copy_back_inserter()
 {
@@ -52,7 +39,6 @@ void copy_back_inserter()
 
 void run()
 {
-    copy_iterator();
     copy_back_inserter();
 }
 
@@ -92,25 +78,6 @@ void run()
 namespace fill_suite
 {
 
-void fill_partial()
-{
-    int array[4];
-    circular::span<int> span(array);
-    span = { 11, 22, 33 };
-    TRIAL_TEST_EQ(span.size(), 3);
-    {
-        std::vector<int> expect = { 11, 22, 33 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    std::fill(span.begin(), span.end(), 55);
-    {
-        std::vector<int> expect = { 55, 55, 55 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-}
-
 void fill_n_full()
 {
     int array[4];
@@ -126,7 +93,6 @@ void fill_n_full()
 
 void run()
 {
-    fill_partial();
     fill_n_full();
 }
 
@@ -223,58 +189,27 @@ void run()
 namespace rotate_suite
 {
 
-void rotate_one()
+void rotate_copy()
 {
     int array[4];
     circular::span<int> span(array);
     span = { 11, 22, 33, 44, 55 };
-    std::rotate(span.begin(), ++span.begin(), span.end());
+    int resarray[4];
+    circular::span<int> result(resarray);
+    std::rotate_copy(span.begin(), ++span.begin(), span.end(), std::back_inserter(result));
     {
         std::vector<int> expect = { 33, 44, 55, 22 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+        TRIAL_TEST_ALL_EQ(result.begin(), result.end(),
                           expect.begin(), expect.end());
     }
 }
 
 void run()
 {
-    rotate_one();
+    rotate_copy();
 }
 
 } // namespace rotate_suite
-
-//-----------------------------------------------------------------------------
-
-namespace unique_suite
-{
-
-void unique_full()
-{
-    int array[4];
-    circular::span<int> span(array);
-    span = { 11, 11, 11, 44 };
-    TRIAL_TEST_EQ(span.size(), 4);
-    auto where = std::unique(span.begin(), span.end());
-    {
-        std::vector<int> expect = { 11, 44 };
-        TRIAL_TEST_ALL_EQ(span.begin(), where,
-                          expect.begin(), expect.end());
-    }
-    // span.end() still points to the last undeterminate entry
-    TRIAL_TEST_EQ(span.size(), 4);
-    while (where != span.end())
-    {
-        span.pop_back();
-    }
-    TRIAL_TEST_EQ(span.size(), 2);
-}
-
-void run()
-{
-    unique_full();
-}
-
-} // namespace unique_suite
 
 //-----------------------------------------------------------------------------
 // main
@@ -288,7 +223,6 @@ int main()
     find_suite::run();
     predicate_suite::run();
     rotate_suite::run();
-    unique_suite::run();
 
     return boost::report_errors();
 }

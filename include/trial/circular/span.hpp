@@ -26,10 +26,11 @@ template <typename T>
 class span
 {
 public:
-    using value_type = T;
+    using element_type = T;
+    using value_type = typename std::remove_cv<element_type>::type;
     using size_type = std::size_t;
-    using pointer = typename std::add_pointer<value_type>::type;
-    using reference = typename std::add_lvalue_reference<value_type>::type;
+    using pointer = typename std::add_pointer<element_type>::type;
+    using reference = typename std::add_lvalue_reference<element_type>::type;
     using const_reference = typename std::add_const<reference>::type;
 
     //! @brief Creates empty circular span.
@@ -228,12 +229,12 @@ private:
     struct basic_iterator
     {
         using iterator_category = std::bidirectional_iterator_tag;
-        using value_type = U;
+        using value_type = typename std::remove_cv<U>::type;
         using difference_type = std::ptrdiff_t;
         using pointer = typename std::add_pointer<value_type>::type;
         using reference = typename std::add_lvalue_reference<value_type>::type;
         using const_reference = typename std::add_const<reference>::type;
-        using iterator_type = basic_iterator<value_type>;
+        using iterator_type = basic_iterator<U>;
 
         constexpr basic_iterator() noexcept = default;
         constexpr basic_iterator(const basic_iterator&) noexcept = default;
@@ -270,20 +271,21 @@ private:
     };
 
 public:
-    using iterator = basic_iterator<value_type>;
-    using const_iterator = basic_iterator<const value_type>;
+    using const_iterator = basic_iterator<typename std::add_const<value_type>::type>;
 
     //! @brief Returns iterator to the beginning of the span.
+    //!
+    //! Mutable iterators are not supported to avoid incorrect use of mutating
+    //! algorithms.
 
-    TRIAL_CXX14_CONSTEXPR
-    iterator begin() noexcept;
     constexpr const_iterator begin() const noexcept;
     constexpr const_iterator cbegin() const noexcept;
 
     //! @brief Returns iterator to the ending of the span.
+    //!
+    //! Mutable iterators are not supported to avoid incorrect use of mutating
+    //! algorithms.
 
-    TRIAL_CXX14_CONSTEXPR
-    iterator end() noexcept;
     constexpr const_iterator end() const noexcept;
     constexpr const_iterator cend() const noexcept;
 
