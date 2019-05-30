@@ -32,7 +32,7 @@ template <typename T>
 template <typename ContiguousIterator>
 constexpr span<T>::span(ContiguousIterator begin,
                         ContiguousIterator end) noexcept
-    : span(&*begin, size_type(end - begin), 0, 0)
+    : member{&*begin, size_type(end - begin), 0, 0}
 {
 }
 
@@ -42,7 +42,7 @@ constexpr span<T>::span(ContiguousIterator begin,
                         ContiguousIterator end,
                         ContiguousIterator first,
                         size_type length) noexcept
-    : span(&*begin, size_type(end - begin), length, length - size_type(first - begin))
+    : member{&*begin, size_type(end - begin), length, length - size_type(first - begin)}
 {
 }
 
@@ -54,8 +54,8 @@ constexpr span<T>::span(value_type (&array)[N]) noexcept
 }
 
 template <typename T>
-constexpr span<T>::span(pointer data, size_type capacity, size_type size, size_type next) noexcept
-    : member{data, capacity, size, next}
+constexpr span<T>::span(const span& other, with_pointer_type, pointer data) noexcept
+    : member{data, other.member.capacity, other.member.size, other.member.next}
 {
 }
 

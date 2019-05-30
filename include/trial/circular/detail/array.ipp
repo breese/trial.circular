@@ -23,7 +23,7 @@ constexpr array<T, N>::array() noexcept
 template <typename T, std::size_t N>
 constexpr array<T, N>::array(const array& other) noexcept(std::is_nothrow_copy_constructible<value_type>::value)
     : storage(static_cast<const storage&>(other)),
-      span(&*storage::begin(), other.member.capacity, other.member.size, other.member.next)
+      span(static_cast<const span&>(other), span::with_pointer, &*storage::begin())
 {
     static_assert(std::is_copy_constructible<T>::value, "Copy constructor only usable when T is copy constructible");
 }

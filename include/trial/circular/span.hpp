@@ -290,7 +290,8 @@ public:
     constexpr const_iterator cend() const noexcept;
 
 protected:
-    constexpr span(pointer, size_type, size_type, size_type) noexcept;
+    enum with_pointer_type { with_pointer };
+    constexpr span(const span&, with_pointer_type, pointer) noexcept;
     constexpr size_type index(size_type) const noexcept;
     constexpr size_type vindex(size_type) const noexcept;
     constexpr size_type front_index() const noexcept;
