@@ -19,6 +19,29 @@ constexpr array<T, N>::array() noexcept
 {
 }
 
+// Custom copy constructor is needed to set span pointer correctly.
+template <typename T, std::size_t N>
+constexpr array<T, N>::array(const array& other) noexcept(std::is_nothrow_copy_constructible<value_type>::value)
+    : storage(static_cast<const storage&>(other)),
+      span(&*storage::begin(), other.member.capacity, other.member.size, other.member.next)
+{
+    static_assert(std::is_copy_constructible<T>::value, "Copy constructor only usable when T is copy constructible");
+}
+
+// Custom copy assignment is needed to set span pointer correctly.
+template <typename T, std::size_t N>
+TRIAL_CXX14_CONSTEXPR
+auto array<T, N>::operator=(const array& other) noexcept(std::is_nothrow_copy_assignable<value_type>::value) -> array&
+{
+    static_assert(std::is_copy_assignable<T>::value, "Copy assignment only usable when T is copy assignable");
+
+    storage::operator=(static_cast<const storage&>(other));
+    span::operator=(static_cast<const span&>(other));
+    span::member.data = &*storage::begin(); // Overwrite span pointer
+    return *this;
+}
+
+// Emulates aggregate construction
 template <typename T, std::size_t N>
 template <typename... Args>
 constexpr array<T, N>::array(value_type arg1, Args&&... args) noexcept(std::is_nothrow_move_assignable<value_type>::value)

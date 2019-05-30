@@ -41,10 +41,18 @@ public:
 
     constexpr array() noexcept;
 
-    // Non-copyable like std::array<T, N>
+    //! @brief Creates circular array by copying.
+    //!
+    //! @pre T must be copy constructible.
 
-    constexpr array(const array&) = delete;
-    constexpr array& operator=(const array&) = delete;
+    constexpr array(const array&) noexcept(std::is_nothrow_copy_constructible<value_type>::value);
+
+    //! @brief Rereates circular array by copying.
+    //!
+    //! @pre T must be copy assignable.
+
+    TRIAL_CXX14_CONSTEXPR
+    array& operator=(const array&) noexcept(std::is_nothrow_copy_assignable<value_type>::value);
 
     //! @brief Creates circular array by moving.
     //!

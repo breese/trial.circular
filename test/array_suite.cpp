@@ -27,6 +27,25 @@ void test_ctor_default()
     TRIAL_TEST_EQ(data.capacity(), 4);
 }
 
+void test_ctor_copy()
+{
+    circular::array<int, 4> data;
+    data.push_back(11);
+    circular::array<int, 4> copy(data);
+    TRIAL_TEST_EQ(copy.size(), 1);
+    TRIAL_TEST_EQ(copy.capacity(), 4);
+}
+
+void test_ctor_copy_assign()
+{
+    circular::array<int, 4> data;
+    data.push_back(11);
+    circular::array<int, 4> copy;
+    copy = data;
+    TRIAL_TEST_EQ(copy.size(), 1);
+    TRIAL_TEST_EQ(copy.capacity(), 4);
+}
+
 void test_ctor_move()
 {
     circular::array<int, 4> data;
@@ -191,6 +210,8 @@ void test_move_back()
 void run()
 {
     test_ctor_default();
+    test_ctor_copy();
+    test_ctor_copy_assign();
     test_ctor_move();
     test_ctor_move_assign();
     test_ctor_initializer_list();
