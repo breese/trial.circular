@@ -54,7 +54,7 @@ constexpr span<T>::span(value_type (&array)[N]) noexcept
 }
 
 template <typename T>
-constexpr span<T>::span(const span& other, with_pointer_type, pointer data) noexcept
+constexpr span<T>::span(const span& other, pointer data) noexcept
     : member{data, other.member.capacity, other.member.size, other.member.next}
 {
 }

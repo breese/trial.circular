@@ -46,6 +46,12 @@ public:
 
     constexpr span(const span&) noexcept = default;
 
+    //! @brief Creates circular span by copying.
+    //!
+    //! The pointer parameter overrides the pointer of the input span.
+
+    constexpr span(const span&, pointer) noexcept;
+
     //! @brief Creates circular span by moving.
     //!
     //! State of moved-from span is valid but undefined.
@@ -290,8 +296,6 @@ public:
     constexpr const_iterator cend() const noexcept;
 
 protected:
-    enum with_pointer_type { with_pointer };
-    constexpr span(const span&, with_pointer_type, pointer) noexcept;
     constexpr size_type index(size_type) const noexcept;
     constexpr size_type vindex(size_type) const noexcept;
     constexpr size_type front_index() const noexcept;
