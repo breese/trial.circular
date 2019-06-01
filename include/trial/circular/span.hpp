@@ -202,33 +202,43 @@ public:
     TRIAL_CXX14_CONSTEXPR
     void push_back(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
 
-    //! @brief Erases element from beginning of span
+    //! @brief Erases element from beginning of span.
     //!
     //! @pre !empty()
 
     TRIAL_CXX14_CONSTEXPR
     void pop_front() noexcept;
 
-    //! @brief Erases element from end of span
+    //! @brief Erases element from end of span.
     //!
     //! @pre !empty()
 
     TRIAL_CXX14_CONSTEXPR
     void pop_back() noexcept;
 
-    //! @brief Moves element from beginning of span
+    //! @brief Moves element from beginning of span.
     //!
     //! @pre !empty()
 
     TRIAL_CXX14_CONSTEXPR
     value_type move_front() noexcept(std::is_nothrow_move_constructible<value_type>::value);
 
-    //! @brief Moves element from end of span
+    //! @brief Moves element from end of span.
     //!
     //! @pre !empty()
 
     TRIAL_CXX14_CONSTEXPR
     value_type move_back() noexcept(std::is_nothrow_move_constructible<value_type>::value);
+
+    //! @brief Rotate elements left by amount.
+
+    TRIAL_CXX14_CONSTEXPR
+    void rotate_left(size_type amount) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value);
+
+    //! @brief Rotate elements right by amount.
+
+    TRIAL_CXX14_CONSTEXPR
+    void rotate_right(size_type amount) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value);
 
 private:
     template <typename U>

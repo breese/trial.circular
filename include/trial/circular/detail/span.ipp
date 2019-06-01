@@ -235,6 +235,52 @@ auto span<T>::move_back() noexcept(std::is_nothrow_move_constructible<value_type
 }
 
 template <typename T>
+TRIAL_CXX14_CONSTEXPR
+void span<T>::rotate_left(size_type amount) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
+{
+    if (empty())
+        return;
+    amount %= size();
+    if (amount == 0)
+        return;
+
+    if (full())
+    {
+        member.next = vindex(member.next + amount);
+    }
+    else
+    {
+        while (amount-- > 0)
+        {
+            push_back(std::move(move_front()));
+        }
+    }
+}
+
+template <typename T>
+TRIAL_CXX14_CONSTEXPR
+void span<T>::rotate_right(size_type amount) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
+{
+    if (empty())
+        return;
+    amount %= size();
+    if (amount == 0)
+        return;
+
+    if (full())
+    {
+        member.next = vindex(member.next - amount);
+    }
+    else
+    {
+        while (amount-- > 0)
+        {
+            push_front(std::move(move_back()));
+        }
+    }
+}
+
+template <typename T>
 constexpr auto span<T>::begin() const noexcept -> const_iterator
 {
     return const_iterator(this, vindex(front_index()));
