@@ -32,7 +32,7 @@ template <typename T>
 template <typename ContiguousIterator>
 constexpr span<T>::span(ContiguousIterator begin,
                         ContiguousIterator end) noexcept
-    : member{&*begin, size_type(end - begin), 0, 0}
+    : member{ &*begin, size_type(end - begin), 0, size_type(end - begin) }
 {
 }
 
@@ -42,7 +42,7 @@ constexpr span<T>::span(ContiguousIterator begin,
                         ContiguousIterator end,
                         ContiguousIterator first,
                         size_type length) noexcept
-    : member{&*begin, size_type(end - begin), length, length - size_type(first - begin)}
+    : member{ &*begin, size_type(end - begin), length, size_type(end - begin) + length - size_type(first - begin) }
 {
 }
 
@@ -143,7 +143,7 @@ TRIAL_CXX14_CONSTEXPR
 void span<T>::clear() noexcept
 {
     member.size = 0;
-    member.next = 0;
+    member.next = member.capacity;
 }
 
 template <typename T>
@@ -176,13 +176,13 @@ void span<T>::push_front(value_type input) noexcept(std::is_nothrow_move_assigna
 {
     if (full())
     {
-        member.next = member.capacity + index(member.next) - 1;
+        member.next = member.capacity + index(member.next - 1);
     }
     else
     {
         ++member.size;
     }
-    at(index(member.next) - member.size) = std::move(input);
+    at(member.next - member.size) = std::move(input);
 }
 
 template <typename T>
@@ -190,7 +190,7 @@ TRIAL_CXX14_CONSTEXPR
 void span<T>::push_back(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value)
 {
     at(member.next) = std::move(input);
-    member.next = member.capacity + index(member.next) + 1;
+    member.next = member.capacity + index(member.next + 1);
     if (!full())
     {
         ++member.size;
@@ -236,21 +236,21 @@ auto span<T>::move_back() noexcept(std::is_nothrow_move_constructible<value_type
 
 template <typename T>
 TRIAL_CXX14_CONSTEXPR
-void span<T>::rotate_left(size_type amount) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
+void span<T>::rotate_left(size_type count) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
 {
-    if (empty())
+    if (size() < 2)
         return;
-    amount %= size();
-    if (amount == 0)
+    count %= size();
+    if (count == 0)
         return;
 
     if (full())
     {
-        member.next = vindex(member.next + amount);
+        member.next = member.capacity + index(member.next + count);
     }
     else
     {
-        while (amount-- > 0)
+        while (count-- > 0)
         {
             push_back(std::move(move_front()));
         }
@@ -259,21 +259,21 @@ void span<T>::rotate_left(size_type amount) noexcept(std::is_nothrow_move_constr
 
 template <typename T>
 TRIAL_CXX14_CONSTEXPR
-void span<T>::rotate_right(size_type amount) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
+void span<T>::rotate_right(size_type count) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
 {
-    if (empty())
+    if (size() < 2)
         return;
-    amount %= size();
-    if (amount == 0)
+    count %= size();
+    if (count == 0)
         return;
 
     if (full())
     {
-        member.next = vindex(member.next - amount);
+        member.next = member.capacity + index(member.next - count);
     }
     else
     {
-        while (amount-- > 0)
+        while (count-- > 0)
         {
             push_front(std::move(move_back()));
         }
