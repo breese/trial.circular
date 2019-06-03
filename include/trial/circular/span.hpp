@@ -230,15 +230,15 @@ public:
     TRIAL_CXX14_CONSTEXPR
     value_type move_back() noexcept(std::is_nothrow_move_constructible<value_type>::value);
 
-    //! @brief Rotate elements left by amount.
+    //! @brief Rotate span left by amount.
 
     TRIAL_CXX14_CONSTEXPR
-    void rotate_left(size_type amount) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value);
+    void advance_left(size_type amount) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value);
 
-    //! @brief Rotate elements right by amount.
+    //! @brief Rotate span right by amount.
 
     TRIAL_CXX14_CONSTEXPR
-    void rotate_right(size_type amount) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value);
+    void advance_right(size_type amount) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value);
 
 private:
     template <typename U>

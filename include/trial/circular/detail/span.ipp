@@ -236,7 +236,7 @@ auto span<T>::move_back() noexcept(std::is_nothrow_move_constructible<value_type
 
 template <typename T>
 TRIAL_CXX14_CONSTEXPR
-void span<T>::rotate_left(size_type count) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
+void span<T>::advance_left(size_type count) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
 {
     if (size() < 2)
         return;
@@ -259,7 +259,7 @@ void span<T>::rotate_left(size_type count) noexcept(std::is_nothrow_move_constru
 
 template <typename T>
 TRIAL_CXX14_CONSTEXPR
-void span<T>::rotate_right(size_type count) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
+void span<T>::advance_right(size_type count) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
 {
     if (size() < 2)
         return;
