@@ -12,10 +12,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <cstddef>
-#include <type_traits>
 #include <initializer_list>
 #include <iterator>
 #include <trial/circular/detail/config.hpp>
+#include <trial/circular/detail/type_traits.hpp>
 
 namespace trial
 {
@@ -230,15 +230,20 @@ public:
     TRIAL_CXX14_CONSTEXPR
     value_type move_back() noexcept(std::is_nothrow_move_constructible<value_type>::value);
 
-    //! @brief Rotate span left by amount.
+    //! @brief Rotates span left by amount.
 
     TRIAL_CXX14_CONSTEXPR
     void advance_left(size_type amount) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value);
 
-    //! @brief Rotate span right by amount.
+    //! @brief Rotates span right by amount.
 
     TRIAL_CXX14_CONSTEXPR
     void advance_right(size_type amount) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value);
+
+    //! @brief Rotates elements so span starts at array beginning.
+
+    TRIAL_CXX14_CONSTEXPR
+    void normalize() noexcept(detail::is_nothrow_swappable<value_type>::value);
 
 private:
     template <typename U>
@@ -308,11 +313,19 @@ public:
 protected:
     constexpr size_type index(size_type) const noexcept;
     constexpr size_type vindex(size_type) const noexcept;
+
     constexpr size_type front_index() const noexcept;
     constexpr size_type back_index() const noexcept;
+
     TRIAL_CXX14_CONSTEXPR
     reference at(size_type) noexcept;
     constexpr const_reference at(size_type) const noexcept;
+
+    TRIAL_CXX14_CONSTEXPR
+    void rotate(size_type lower_length, size_type upper_length) noexcept(detail::is_nothrow_swappable<value_type>::value);
+
+    TRIAL_CXX14_CONSTEXPR
+    void swap_range(size_type lhs, size_type rhs, size_type length) noexcept(detail::is_nothrow_swappable<value_type>::value);
 
 protected:
     struct

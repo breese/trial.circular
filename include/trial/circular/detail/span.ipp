@@ -281,6 +281,22 @@ void span<T>::advance_right(size_type count) noexcept(std::is_nothrow_move_const
 }
 
 template <typename T>
+TRIAL_CXX14_CONSTEXPR
+void span<T>::normalize() noexcept(detail::is_nothrow_swappable<value_type>::value)
+{
+    if (empty())
+        return;
+
+    const auto first = index(front_index());
+    if (first == 0)
+        return;
+
+    const auto last = capacity() - first;
+    rotate(first, last);
+    member.next = member.capacity + size();
+}
+
+template <typename T>
 constexpr auto span<T>::begin() const noexcept -> const_iterator
 {
     return const_iterator(this, vindex(front_index()));
@@ -342,6 +358,44 @@ constexpr auto span<T>::at(size_type position) const noexcept -> const_reference
 {
     return member.data[index(position)];
 }
+
+template <typename T>
+TRIAL_CXX14_CONSTEXPR
+void span<T>::rotate(size_type lower_length,
+                     size_type upper_length) noexcept(detail::is_nothrow_swappable<value_type>::value)
+{
+    // Based on Gries-Mills block swapping rotate
+    if (lower_length == 0 || upper_length == 0)
+        return;
+    const auto position = lower_length;
+    while (lower_length != upper_length)
+    {
+        if (lower_length > upper_length)
+        {
+            swap_range(position - lower_length, position, upper_length);
+            lower_length -= upper_length;
+        }
+        else
+        {
+            swap_range(position - lower_length, position + upper_length - lower_length, lower_length);
+            upper_length -= lower_length;
+        }
+    }
+    swap_range(position - lower_length, position, lower_length);
+}
+
+template <typename T>
+TRIAL_CXX14_CONSTEXPR
+void span<T>::swap_range(size_type lhs,
+                         size_type rhs,
+                         size_type length) noexcept(detail::is_nothrow_swappable<value_type>::value)
+{
+    for (size_type k = 0; k < length; ++k)
+    {
+        using std::swap;
+        swap(span::at(lhs + k), span::at(rhs + k));
+    }
+ }
 
 //-----------------------------------------------------------------------------
 // span<T>::basic_iterator

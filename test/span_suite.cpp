@@ -368,6 +368,21 @@ void api_advance_right()
     }
 }
 
+void api_normalize()
+{
+    std::array<int, 4> array = {};
+    circular::span<int> span(array.begin(), array.end());
+    span = { 11, 22, 33, 44, 55 };
+    span.normalize();
+    {
+        std::vector<int> expect = { 22, 33, 44, 55 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.end());
+    }
+}
+
 void run()
 {
     api_ctor_default();
@@ -399,6 +414,7 @@ void run()
     api_move_back();
     api_advance_left();
     api_advance_right();
+    api_normalize();
 }
 
 } // namespace api_suite
@@ -1955,6 +1971,410 @@ void run()
 } // namespace advance_suite
 
 //-----------------------------------------------------------------------------
+
+namespace normalize_suite
+{
+
+void normalize_even()
+{
+    std::array<int, 4> array = {};
+    circular::span<int> span(array.begin(), array.end());
+    {
+        // 55 22 33 44 => 22 33 44 55
+        span = { 11, 22, 33, 44, 55 };
+        span.normalize();
+
+        std::vector<int> expect = { 22, 33, 44, 55 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+}
+
+void normalize_odd()
+{
+    std::array<int, 5> array = {};
+    circular::span<int> span(array.begin(), array.end());
+    {
+        // 66 22 33 44 55 => 22 33 44 55 66
+        span = { 11, 22, 33, 44, 55, 66 };
+        span.normalize();
+
+        std::vector<int> expect = { 22, 33, 44, 55, 66 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+}
+
+void normalize_increasing()
+{
+    std::array<int, 4> array = {};
+    circular::span<int> span(array.begin(), array.end());
+    {
+        // 11 X X X => 11 X X X
+        span = { 11 };
+        span.normalize();
+
+        std::vector<int> expect = { 11 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+    {
+        // 11 22 X X => 11 22 X X
+        span = { 11, 22 };
+        span.normalize();
+
+        std::vector<int> expect = { 11, 22 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+    {
+        // 11 22 33 X => 11 22 33 X
+        span = { 11, 22, 33 };
+        span.normalize();
+
+        std::vector<int> expect = { 11, 22, 33 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+    {
+        // 11 22 33 44 => 11 22 33 44
+        span = { 11, 22, 33, 44 };
+        span.normalize();
+
+        std::vector<int> expect = { 11, 22, 33, 44 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.end());
+    }
+    {
+        // 55 22 33 44 => 22 33 44 55
+        span = { 11, 22, 33, 44, 55 };
+        span.normalize();
+
+        std::vector<int> expect = { 22, 33, 44, 55 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.end());
+    }
+    {
+        // 55 66 33 44 => 33 44 55 66
+        span = { 11, 22, 33, 44, 55, 66 };
+        span.normalize();
+
+        std::vector<int> expect = { 33, 44, 55, 66 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.end());
+    }
+    {
+        // 55 66 77 44 => 44 55 66 77
+        span = { 11, 22, 33, 44, 55, 66, 77 };
+        span.normalize();
+
+        std::vector<int> expect = { 44, 55, 66, 77 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.end());
+    }
+    {
+        // 55 66 77 88 => 55 66 77 88
+        span = { 11, 22, 33, 44, 55, 66, 77, 88 };
+        span.normalize();
+
+        std::vector<int> expect = { 55, 66, 77, 88 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.end());
+    }
+}
+
+void normalize_decreasing()
+{
+    std::array<int, 4> array = {};
+    circular::span<int> span(array.begin(), array.end());
+    {
+        // X 22 33 44 => 22 33 44 X
+        span = { 11, 22, 33, 44 };
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 22, 33, 44 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+    {
+        // X X 33 44 => 33 44 X X
+        span = { 11, 22, 33, 44 };
+        span.pop_front();
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 33, 44 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+    {
+        // X X X 44 => 44 X X X
+        span = { 11, 22, 33, 44 };
+        span.pop_front();
+        span.pop_front();
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 44 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+}
+
+void normalize_one()
+{
+    std::array<int, 4> array = {};
+    circular::span<int> span(array.begin(), array.end());
+    {
+        // X 22 33 44 => 22 33 44 X
+        span = { 11, 22, 33, 44 };
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 22, 33, 44 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+    {
+        // 55 X 33 44 => 33 44 55 X
+        span = { 11, 22, 33, 44, 55 };
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 33, 44, 55 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+    {
+        // 55 66 X 44 => 44 55 66 X
+        span = { 11, 22, 33, 44, 55, 66 };
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 44, 55, 66 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+    {
+        // 55 66 77 X => 55 66 77 X
+        span = { 11, 22, 33, 44, 55, 66, 77 };
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 55, 66, 77 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+    {
+        // 66 77 88 X => 66 77 88 X
+        span = { 11, 22, 33, 44, 55, 66, 77, 88 };
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 66, 77, 88 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+}
+
+void normalize_two()
+{
+    std::array<int, 4> array = {};
+    circular::span<int> span(array.begin(), array.end());
+    {
+        // X X 33 44 => 33 44 X X
+        span = { 11, 22, 33, 44 };
+        span.pop_front();
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 33, 44 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+    {
+        // 55 X X 44 => 44 55 X X
+        span = { 11, 22, 33, 44, 55 };
+        span.pop_front();
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 44, 55 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+    {
+        // 55 66 X X => 55 66 X X
+        span = { 11, 22, 33, 44, 55, 66 };
+        span.pop_front();
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 55, 66 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+    {
+        // X 66 77 X => 66 77 X X
+        span = { 11, 22, 33, 44, 55, 66, 77 };
+        span.pop_front();
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 66, 77 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+    {
+        // X X 77 88 => 77 88 X X
+        span = { 11, 22, 33, 44, 55, 66, 77, 88 };
+        span.pop_front();
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 77, 88 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+}
+
+void normalize_three()
+{
+    std::array<int, 4> array = {};
+    circular::span<int> span(array.begin(), array.end());
+    {
+        // X X X 44 => 44 X X X
+        span = { 11, 22, 33, 44 };
+        span.pop_front();
+        span.pop_front();
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 44 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+    {
+        // 55 X X X => 55 X X X
+        span = { 11, 22, 33, 44, 55 };
+        span.pop_front();
+        span.pop_front();
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 55 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+    {
+        // X 66 X X => 66 X X X
+        span = { 11, 22, 33, 44, 55, 66 };
+        span.pop_front();
+        span.pop_front();
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 66 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+    {
+        // X X 77 X => 77 X X X
+        span = { 11, 22, 33, 44, 55, 66, 77 };
+        span.pop_front();
+        span.pop_front();
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 77 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+    {
+        // X X X 88 => 88 X X X
+        span = { 11, 22, 33, 44, 55, 66, 77, 88 };
+        span.pop_front();
+        span.pop_front();
+        span.pop_front();
+        span.normalize();
+
+        std::vector<int> expect = { 88 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          array.begin(), array.begin() + span.size());
+    }
+}
+
+void run()
+{
+    normalize_even();
+    normalize_odd();
+    normalize_increasing();
+    normalize_decreasing();
+    normalize_one();
+    normalize_two();
+    normalize_three();
+}
+
+} // namespace normalize_suite
+
+//-----------------------------------------------------------------------------
 // main
 //-----------------------------------------------------------------------------
 
@@ -1969,6 +2389,7 @@ int main()
     clear_suite::run();
     window_size_suite::run();
     advance_suite::run();
+    normalize_suite::run();
 
     return boost::report_errors();
 }
