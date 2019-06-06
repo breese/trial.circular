@@ -29,7 +29,7 @@ struct allocator
     pointer allocate(size_type size)
     {
         count.allocate += size;
-        return static_cast<pointer>(::operator new(size));
+        return static_cast<pointer>(::operator new(size * sizeof(value_type)));
     }
 
     void deallocate(pointer p, size_type size)
