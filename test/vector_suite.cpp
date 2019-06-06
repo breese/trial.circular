@@ -62,14 +62,14 @@ struct allocator
 namespace api_suite
 {
 
-void ctor_default()
+void api_ctor_default()
 {
     circular::vector<int> data;
     TRIAL_TEST_EQ(data.size(), 0);
     TRIAL_TEST_EQ(data.capacity(), 0);
 }
 
-void ctor_default_alloc()
+void api_ctor_default_alloc()
 {
     std::allocator<int> allocator;
     circular::vector<int> data(allocator);
@@ -77,7 +77,7 @@ void ctor_default_alloc()
     TRIAL_TEST_EQ(data.capacity(), 0);
 }
 
-void ctor_copy()
+void api_ctor_copy()
 {
     circular::vector<int> data(4);
     TRIAL_TEST_EQ(data.size(), 0);
@@ -87,7 +87,7 @@ void ctor_copy()
     TRIAL_TEST_EQ(copy.capacity(), 4);
 }
 
-void ctor_copy_alloc()
+void api_ctor_copy_alloc()
 {
     std::allocator<int> allocator;
     circular::vector<int> data(4, allocator);
@@ -98,7 +98,7 @@ void ctor_copy_alloc()
     TRIAL_TEST_EQ(copy.capacity(), 4);
 }
 
-void ctor_move()
+void api_ctor_move()
 {
     circular::vector<int> data(4);
     TRIAL_TEST_EQ(data.size(), 0);
@@ -108,7 +108,7 @@ void ctor_move()
     TRIAL_TEST_EQ(copy.capacity(), 4);
 }
 
-void ctor_move_alloc()
+void api_ctor_move_alloc()
 {
     std::allocator<int> allocator;
     circular::vector<int> data(4, allocator);
@@ -119,7 +119,7 @@ void ctor_move_alloc()
     TRIAL_TEST_EQ(copy.capacity(), 4);
 }
 
-void ctor_copy_assign()
+void api_ctor_copy_assign()
 {
     circular::vector<int> data(4);
     TRIAL_TEST_EQ(data.size(), 0);
@@ -132,7 +132,7 @@ void ctor_copy_assign()
     TRIAL_TEST_EQ(copy.capacity(), 4);
 }
 
-void ctor_move_assign()
+void api_ctor_move_assign()
 {
     circular::vector<int> data(4);
     TRIAL_TEST_EQ(data.size(), 0);
@@ -145,14 +145,14 @@ void ctor_move_assign()
     TRIAL_TEST_EQ(copy.capacity(), 4);
 }
 
-void ctor_capacity()
+void api_ctor_capacity()
 {
     circular::vector<int> data(4);
     TRIAL_TEST_EQ(data.size(), 0);
     TRIAL_TEST_EQ(data.capacity(), 4);
 }
 
-void ctor_capacity_alloc()
+void api_ctor_capacity_alloc()
 {
     std::allocator<int> allocator;
     circular::vector<int> data(4, allocator);
@@ -160,7 +160,7 @@ void ctor_capacity_alloc()
     TRIAL_TEST_EQ(data.capacity(), 4);
 }
 
-void ctor_initializer_list()
+void api_ctor_initializer_list()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
@@ -172,7 +172,7 @@ void ctor_initializer_list()
     }
 }
 
-void ctor_initializer_list_alloc()
+void api_ctor_initializer_list_alloc()
 {
     std::allocator<int> allocator;
     circular::vector<int> data({ 11, 22 }, allocator);
@@ -185,7 +185,7 @@ void ctor_initializer_list_alloc()
     }
 }
 
-void ctor_iterator()
+void api_ctor_iterator()
 {
     std::vector<int> input = { 11, 22 };
     circular::vector<int> data(input.begin(), input.end());
@@ -198,7 +198,7 @@ void ctor_iterator()
     }
 }
 
-void ctor_iterator_alloc()
+void api_ctor_iterator_alloc()
 {
     std::allocator<int> allocator;
     std::vector<int> input({ 11, 22 }, allocator);
@@ -212,14 +212,14 @@ void ctor_iterator_alloc()
     }
 }
 
-void assign_initializer_list()
+void api_assign_initializer_list()
 {
     circular::vector<int> data(4);
     data.assign({ 11, 22 });
     TRIAL_TEST_EQ(data.size(), 2);
 }
 
-void assign_iterator()
+void api_assign_iterator()
 {
     circular::vector<int> data(4);
     std::vector<int> input = { 11, 22 };
@@ -227,37 +227,62 @@ void assign_iterator()
     TRIAL_TEST_EQ(data.size(), 2);
 }
 
-void empty()
+void api_empty()
 {
     circular::vector<int> data(4);
     TRIAL_TEST(data.empty());
 }
 
-void capacity()
+void api_capacity()
 {
     circular::vector<int> data(4);
     TRIAL_TEST_EQ(data.capacity(), 4);
 }
 
-void size()
+void api_reserve()
+{
+    circular::vector<int> data(4);
+    data.reserve(2);
+    TRIAL_TEST_EQ(data.capacity(), 4);
+    data.reserve(8);
+    TRIAL_TEST_EQ(data.capacity(), 8);
+}
+
+void api_shrink_to_fit()
+{
+    circular::vector<int> data(4);
+    data.shrink_to_fit(); // std::vector decides
+}
+
+void api_size()
 {
     circular::vector<int> data(4);
     TRIAL_TEST_EQ(data.size(), 0);
 }
 
-void max_size()
+void api_max_size()
 {
     circular::vector<int> data(4);
-    TRIAL_TEST_EQ(data.max_size(), 4);
+    TRIAL_TEST(data.max_size() >= 4U);
 }
 
-void full()
+void api_resize()
+{
+    circular::vector<int> data(4);
+    TRIAL_TEST_EQ(data.size(), 0);
+    data.resize(2);
+    TRIAL_TEST_EQ(data.size(), 2);
+    data.resize(4, 42);
+    TRIAL_TEST_EQ(data.size(), 4);
+}
+
+void api_full()
 {
     circular::vector<int> data(4);
     TRIAL_TEST(!data.full());
 }
 
-void front()
+void api_front()
 {
     circular::vector<int> data(4);
     data = {11, 22, 33, 44};
@@ -266,13 +291,13 @@ void front()
     TRIAL_TEST_EQ(data.front(), 22);
 }
 
-void front_const()
+void api_front_const()
 {
     const circular::vector<int> data = {11, 22, 33, 44};
     TRIAL_TEST_EQ(data.front(), 11);
 }
 
-void back()
+void api_back()
 {
     circular::vector<int> data(4);
     data = {11, 22, 33, 44};
@@ -281,13 +306,13 @@ void back()
     TRIAL_TEST_EQ(data.back(), 55);
 }
 
-void back_const()
+void api_back_const()
 {
     const circular::vector<int> data = {11, 22, 33, 44};
     TRIAL_TEST_EQ(data.back(), 44);
 }
 
-void operator_index()
+void api_operator_index()
 {
     circular::vector<int> data(4);
     data = {11, 22, 33, 44};
@@ -307,7 +332,7 @@ void operator_index()
     TRIAL_TEST_EQ(data[3], 55);
 }
 
-void operator_index_const()
+void api_operator_index_const()
 {
     const circular::vector<int> data = {11, 22, 33, 44};
     TRIAL_TEST_EQ(data[0], 11);
@@ -316,7 +341,7 @@ void operator_index_const()
     TRIAL_TEST_EQ(data[3], 44);
 }
 
-void clear()
+void api_clear()
 {
     circular::vector<int> data(4);
     data.push_back(11);
@@ -325,21 +350,21 @@ void clear()
     TRIAL_TEST_EQ(data.size(), 0);
 }
 
-void push_front()
+void api_push_front()
 {
     circular::vector<int> data(4);
     data.push_front(11);
     TRIAL_TEST_EQ(data.size(), 1);
 }
 
-void push_back()
+void api_push_back()
 {
     circular::vector<int> data(4);
     data.push_back(11);
     TRIAL_TEST_EQ(data.size(), 1);
 }
 
-void pop_front()
+void api_pop_front()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
@@ -347,7 +372,7 @@ void pop_front()
     TRIAL_TEST_EQ(data.size(), 1);
 }
 
-void pop_back()
+void api_pop_back()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
@@ -355,7 +380,7 @@ void pop_back()
     TRIAL_TEST_EQ(data.size(), 1);
 }
 
-void move_front()
+void api_move_front()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
@@ -363,7 +388,7 @@ void move_front()
     TRIAL_TEST_EQ(data.size(), 1);
 }
 
-void move_back()
+void api_move_back()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
@@ -373,40 +398,43 @@ void move_back()
 
 void run()
 {
-    ctor_default();
-    ctor_default_alloc();
-    ctor_copy();
-    ctor_copy_alloc();
-    ctor_move();
-    ctor_move_alloc();
-    ctor_copy_assign();
-    ctor_move_assign();
-    ctor_capacity();
-    ctor_capacity_alloc();
-    ctor_initializer_list();
-    ctor_initializer_list_alloc();
-    ctor_iterator();
-    ctor_iterator_alloc();
-    assign_initializer_list();
-    assign_iterator();
-    empty();
-    capacity();
-    size();
-    max_size();
-    full();
-    front();
-    front_const();
-    back();
-    back_const();
-    operator_index();
-    operator_index_const();
-    clear();
-    push_front();
-    push_back();
-    pop_front();
-    pop_back();
-    move_front();
-    move_back();
+    api_ctor_default();
+    api_ctor_default_alloc();
+    api_ctor_copy();
+    api_ctor_copy_alloc();
+    api_ctor_move();
+    api_ctor_move_alloc();
+    api_ctor_copy_assign();
+    api_ctor_move_assign();
+    api_ctor_capacity();
+    api_ctor_capacity_alloc();
+    api_ctor_initializer_list();
+    api_ctor_initializer_list_alloc();
+    api_ctor_iterator();
+    api_ctor_iterator_alloc();
+    api_assign_initializer_list();
+    api_assign_iterator();
+    api_empty();
+    api_capacity();
+    api_reserve();
+    api_shrink_to_fit();
+    api_size();
+    api_max_size();
+    api_resize();
+    api_full();
+    api_front();
+    api_front_const();
+    api_back();
+    api_back_const();
+    api_operator_index();
+    api_operator_index_const();
+    api_clear();
+    api_push_front();
+    api_push_back();
+    api_pop_front();
+    api_pop_back();
+    api_move_front();
+    api_move_back();
 }
 
 } // namespace api_suite
@@ -455,11 +483,34 @@ void assign_above_capacity()
     }
 }
 
+void assign_after_resize()
+{
+    circular::vector<int> data(4);
+    TRIAL_TEST_EQ(data.capacity(), 4);
+    data = {11, 22, 33, 44 };
+    data.resize(2);
+    TRIAL_TEST_EQ(data.capacity(), 4);
+    {
+        std::vector<int> expect = { 11, 22 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    // Triggers internal resize
+    data = { 11, 22, 33, 44 };
+    TRIAL_TEST_EQ(data.capacity(), 4);
+    {
+        std::vector<int> expect = { 11, 22, 33, 44 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
 void run()
 {
     assign_below_capacity();
     assign_at_capacity();
     assign_above_capacity();
+    assign_after_resize();
 }
 
 } // namespace assign_suite
@@ -582,6 +633,703 @@ void run()
 }
 
 } // namespace move_suite
+
+//-----------------------------------------------------------------------------
+
+namespace capacity_suite
+{
+
+void reserve_default_constructed()
+{
+    circular::vector<int> data;
+    TRIAL_TEST_EQ(data.capacity(), 0);
+    TRIAL_TEST_EQ(data.size(), 0);
+    data.reserve(4);
+    TRIAL_TEST_EQ(data.capacity(), 4);
+    TRIAL_TEST_EQ(data.size(), 0);
+    data.reserve(2); // Does not shrink
+    TRIAL_TEST_EQ(data.capacity(), 4);
+    TRIAL_TEST_EQ(data.size(), 0);
+    data.reserve(8); // Grows
+    TRIAL_TEST_EQ(data.capacity(), 8);
+    TRIAL_TEST_EQ(data.size(), 0);
+}
+
+void reserve_push_back()
+{
+    circular::vector<int> data(4);
+    data = { 11, 22, 33 };
+    {
+        std::vector<int> expect = { 11, 22, 33 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    data.push_back(44);
+    {
+        std::vector<int> expect = { 11, 22, 33, 44 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    // 11 22 33 44 => 11 22 33 44 X X
+    data.reserve(6);
+    {
+        std::vector<int> expect = { 11, 22, 33, 44 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    data.push_back(55);
+    {
+        std::vector<int> expect = { 11, 22, 33, 44, 55 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    data.push_back(66);
+    {
+        std::vector<int> expect = { 11, 22, 33, 44, 55, 66 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    data.push_back(77);
+    {
+        std::vector<int> expect = { 22, 33, 44, 55, 66, 77 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void reserve_overfull_push_back()
+{
+    circular::vector<int> data(4);
+    data = { 11, 22, 33, 44, 55 };
+    {
+        std::vector<int> expect = { 22, 33, 44, 55 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    // 22 33 44 55 => 22 33 44 55 X X
+    data.reserve(6);
+    {
+        std::vector<int> expect = { 22, 33, 44, 55 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    data.push_back(66);
+    {
+        std::vector<int> expect = { 22, 33, 44, 55, 66 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    data.push_back(77);
+    {
+        std::vector<int> expect = { 22, 33, 44, 55, 66, 77 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    data.push_back(88);
+    {
+        std::vector<int> expect = { 33, 44, 55, 66, 77, 88 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void reserve_push_front()
+{
+    circular::vector<int> data(4);
+    data = { 33, 22, 11 };
+    {
+        std::vector<int> expect = { 33, 22, 11 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    data.push_front(44);
+    {
+        std::vector<int> expect = { 44, 33, 22, 11 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    // 44 33 22 11 => 44 33 22 11 X X
+    data.reserve(6);
+    {
+        std::vector<int> expect = { 44, 33, 22, 11 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    data.push_front(55);
+    {
+        std::vector<int> expect = { 55, 44, 33, 22, 11 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    data.push_front(66);
+    {
+        std::vector<int> expect = { 66, 55, 44, 33, 22, 11 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    data.push_front(77);
+    {
+        std::vector<int> expect = { 77, 66, 55, 44, 33, 22 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void reserve_overfull_push_front()
+{
+    circular::vector<int> data(4);
+    data = { 11, 22, 33, 44, 55 };
+    {
+        std::vector<int> expect = { 22, 33, 44, 55 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    // 55 22 33 44 => 22 33 44 55 X X
+    data.reserve(6);
+    {
+        std::vector<int> expect = { 22, 33, 44, 55 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    // 22 33 44 55 X X => 22 33 44 55 X 66
+    data.push_front(66);
+    {
+        std::vector<int> expect = { 66, 22, 33, 44, 55 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    // 22 33 44 55 X 66 => 22 33 44 55 77 66
+    data.push_front(77);
+    {
+        std::vector<int> expect = { 77, 66, 22, 33, 44, 55 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    data.push_front(88);
+    {
+        std::vector<int> expect = { 88, 77, 66, 22, 33, 44 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void reserve_one()
+{
+    // First
+    {
+        circular::vector<int> data(4);
+        data = { 01, 11, 22, 33 };
+        data.pop_front();
+        // X 11 22 33 => 11 22 33 X X X
+        data.reserve(6);
+        {
+            std::vector<int> expect = { 11, 22, 33 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(44);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(55);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44, 55 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+    }
+    // Second
+    {
+        circular::vector<int> data(4);
+        data = { 01, 02, 11, 22, 33 };
+        data.pop_front();
+        // 33 X 11 22 => 11 22 33 X X X
+        data.reserve(6);
+        {
+            std::vector<int> expect = { 11, 22, 33 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(44);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(55);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44, 55 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+    }
+    // Third
+    {
+        circular::vector<int> data(4);
+        data = { 01, 02, 03, 11, 22, 33 };
+        data.pop_front();
+        // 22 33 X 11 => 11 22 33 X X X
+        data.reserve(6);
+        {
+            std::vector<int> expect = { 11, 22, 33 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(44);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(55);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44, 55 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+    }
+    // Fourth
+    {
+        circular::vector<int> data(4);
+        data = { 01, 02, 02, 04, 11, 22, 33 };
+        data.pop_front();
+        // 11 22 33 X => 11 22 33 X X X
+        data.reserve(6);
+        {
+            std::vector<int> expect = { 11, 22, 33 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(44);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(55);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44, 55 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+    }
+}
+
+void reserve_two()
+{
+    // First
+    {
+        circular::vector<int> data(4);
+        data = { 01, 02, 11, 22 };
+        data.pop_front();
+        data.pop_front();
+        // X X 11 22 => 11 22 X X X X
+        data.reserve(6);
+        {
+            std::vector<int> expect = { 11, 22 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(33);
+        {
+            std::vector<int> expect = { 11, 22, 33 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(44);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(55);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44, 55 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+    }
+    // Second
+    {
+        circular::vector<int> data(4);
+        data = { 01, 02, 03, 11, 22 };
+        data.pop_front();
+        data.pop_front();
+        // 22 X X 11 => 11 22 X X X X
+        data.reserve(6);
+        {
+            std::vector<int> expect = { 11, 22 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(33);
+        {
+            std::vector<int> expect = { 11, 22, 33 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(44);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(55);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44, 55 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+    }
+    // Third
+    {
+        circular::vector<int> data(4);
+        data = { 01, 02, 03, 04, 11, 22 };
+        data.pop_front();
+        data.pop_front();
+        // 11 22 X X => 11 22 X X X X
+        data.reserve(6);
+        {
+            std::vector<int> expect = { 11, 22 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(33);
+        {
+            std::vector<int> expect = { 11, 22, 33 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(44);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(55);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44, 55 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+    }
+    // Fourth
+    {
+        circular::vector<int> data(4);
+        data = { 01, 02, 03, 04, 05, 11, 22 };
+        data.pop_front();
+        data.pop_front();
+        // X 11 22 X => 11 22 X X X X
+        data.reserve(6);
+        {
+            std::vector<int> expect = { 11, 22 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(33);
+        {
+            std::vector<int> expect = { 11, 22, 33 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(44);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(55);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44, 55 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+    }
+}
+
+void reserve_three()
+{
+    // First
+    {
+        circular::vector<int> data(4);
+        data = { 01, 02, 03, 11 };
+        data.pop_front();
+        data.pop_front();
+        data.pop_front();
+        // X X X 11 => 11 X X X X X
+        data.reserve(6);
+        {
+            std::vector<int> expect = { 11 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(22);
+        {
+            std::vector<int> expect = { 11, 22 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(33);
+        {
+            std::vector<int> expect = { 11, 22, 33 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(44);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(55);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44, 55 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+    }
+    // Second
+    {
+        circular::vector<int> data(4);
+        data = { 01, 02, 03, 04, 11 };
+        data.pop_front();
+        data.pop_front();
+        data.pop_front();
+        // 11 X X X => 11 X X X X X
+        data.reserve(6);
+        {
+            std::vector<int> expect = { 11 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(22);
+        {
+            std::vector<int> expect = { 11, 22 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(33);
+        {
+            std::vector<int> expect = { 11, 22, 33 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(44);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(55);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44, 55 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+    }
+    // Third
+    {
+        circular::vector<int> data(4);
+        data = { 01, 02, 03, 04, 05, 11 };
+        data.pop_front();
+        data.pop_front();
+        data.pop_front();
+        // X 11 X X => 11 X X X X X
+        data.reserve(6);
+        {
+            std::vector<int> expect = { 11 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(22);
+        {
+            std::vector<int> expect = { 11, 22 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(33);
+        {
+            std::vector<int> expect = { 11, 22, 33 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(44);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(55);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44, 55 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+    }
+    // Fourth
+    {
+        circular::vector<int> data(4);
+        data = { 01, 02, 03, 04, 05, 06, 11 };
+        data.pop_front();
+        data.pop_front();
+        data.pop_front();
+        // X X 11 X => 11 X X X X X
+        data.reserve(6);
+        {
+            std::vector<int> expect = { 11 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(22);
+        {
+            std::vector<int> expect = { 11, 22 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(33);
+        {
+            std::vector<int> expect = { 11, 22, 33 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(44);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+        data.push_back(55);
+        {
+            std::vector<int> expect = { 11, 22, 33, 44, 55 };
+            TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                              expect.begin(), expect.end());
+        }
+    }
+}
+
+void resize_empty()
+{
+    circular::vector<int> data(4);
+    data.resize(4);
+    TRIAL_TEST_EQ(data.capacity(), 4);
+    {
+        std::vector<int> expect = { 0, 0, 0, 0 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    // Increase capacity
+    data.resize(8, 11);
+    TRIAL_TEST_EQ(data.capacity(), 8);
+    {
+        std::vector<int> expect = { 0, 0, 0, 0, 11, 11, 11, 11 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void resize_default_constructed()
+{
+    circular::vector<int> data;
+    TRIAL_TEST_EQ(data.capacity(), 0);
+    data.resize(4, 11);
+    TRIAL_TEST_EQ(data.capacity(), 4);
+    {
+        std::vector<int> expect = { 11, 11, 11, 11 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void resize_smaller()
+{
+    circular::vector<int> data(4);
+    TRIAL_TEST_EQ(data.size(), 0);
+    TRIAL_TEST_EQ(data.capacity(), 4);
+    data.resize(3, 11);
+    TRIAL_TEST_EQ(data.capacity(), 4);
+    {
+        std::vector<int> expect = { 11, 11, 11 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    data.resize(2);
+    TRIAL_TEST_EQ(data.capacity(), 4);
+    {
+        std::vector<int> expect = { 11, 11 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    data = { 11, 22, 33 };
+    {
+        std::vector<int> expect = { 11, 22, 33 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    data.resize(2);
+    {
+        std::vector<int> expect = { 11, 22 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void resize_push_back()
+{
+    circular::vector<int> data(4);
+    data = { 11, 22, 33, 44 };
+    data.resize(8, 55);
+    {
+        std::vector<int> expect = { 11, 22, 33, 44, 55, 55, 55, 55 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    data.push_back(66);
+    {
+        std::vector<int> expect = { 22, 33, 44, 55, 55, 55, 55, 66 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void resize_push_front()
+{
+    circular::vector<int> data(4);
+    data = { 11, 22, 33, 44 };
+    data.resize(8, 55);
+    {
+        std::vector<int> expect = { 11, 22, 33, 44, 55, 55, 55, 55 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+    data.push_front(66);
+    {
+        std::vector<int> expect = { 66, 11, 22, 33, 44, 55, 55, 55 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void run()
+{
+    reserve_default_constructed();
+    reserve_push_back();
+    reserve_overfull_push_back();
+    reserve_push_front();
+    reserve_overfull_push_front();
+    reserve_one();
+    reserve_two();
+    reserve_three();
+
+    resize_empty();
+    resize_default_constructed();
+    resize_smaller();
+    resize_push_back();
+    resize_push_front();
+}
+
+} // namespace capacity_suite
 
 //-----------------------------------------------------------------------------
 
@@ -805,6 +1553,7 @@ int main()
     api_suite::run();
     assign_suite::run();
     move_suite::run();
+    capacity_suite::run();
     allocator_suite::run();
 
     return boost::report_errors();

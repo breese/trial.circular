@@ -13,6 +13,7 @@
 
 #include <vector>
 #include <trial/circular/span.hpp>
+#include <trial/circular/detail/type_traits.hpp>
 
 namespace trial
 {
@@ -149,7 +150,15 @@ public:
 
     //! @brief Returns the maximum possible number of elements in circular vector.
 
-    using span::capacity;
+    using storage::capacity;
+
+    //! @brief Increases capacity of circular vector.
+    //!
+    //! @pre capacity <= max_size()
+    //!
+    //! @post capacity() == std::max(capacity, capacity())
+
+    void reserve(size_type);
 
     //! @brief Returns the number of elements in circular vector.
 
@@ -157,7 +166,19 @@ public:
 
     //! @brief Returns the maximum number of possible elements in circular vector.
 
-    size_type max_size() const noexcept;
+    using storage::max_size;
+
+    //! @brief Increases the number of elements by default construction.
+
+    void resize(size_type count);
+
+    //! @brief Increases the number of elements by copy construction.
+
+    void resize(size_type count, const value_type&);
+
+    //! @brief Removes excess capacity.
+
+    using storage::shrink_to_fit;
 
     //! @brief Returns reference to first element in circular vector.
 
@@ -180,12 +201,15 @@ public:
     using span::assign;
 
     //! @brief Inserts element at beginning of circular vector.
+    //!
+    //! Time complexity is amortized constant when there is spare capacity,
+    //! otherwise it is linear.
 
-    using span::push_front;
+    void push_front(value_type);
 
     //! @brief Inserts element at end of circular vector.
 
-    using span::push_back;
+    void push_back(value_type);
 
     //! @brief Erases element from beginning of circular vector.
 

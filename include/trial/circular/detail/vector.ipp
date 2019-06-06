@@ -8,6 +8,8 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#include <utility> // std::swap
+
 namespace trial
 {
 namespace circular
@@ -93,6 +95,11 @@ template <typename T, typename A>
 auto vector<T, A>::operator=(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value) -> vector&
 {
     span::clear();
+    if (input.size() > storage::size())
+    {
+        storage::resize(std::min(input.size(), storage::capacity()));
+    }
+    span::operator=(span(storage::begin(), storage::end(), storage::begin(), storage::size()));
     span::operator=(std::move(input));
     return *this;
 }
@@ -123,9 +130,107 @@ auto vector<T, A>::get_allocator() const -> allocator_type
 }
 
 template <typename T, typename A>
-auto vector<T, A>::max_size() const noexcept -> size_type
+void vector<T, A>::reserve(size_type capacity)
 {
-    return span::capacity();
+    if (capacity <= storage::capacity())
+        return;
+
+    // Update span in case storage is reallocated
+    if (span::capacity() > 0)
+    {
+        span::normalize();
+    }
+    storage::reserve(capacity);
+    span::operator=(span(storage::begin(),
+                         storage::end(),
+                         storage::begin(),
+                         span::size()));
+}
+
+template <typename T, typename A>
+void vector<T, A>::resize(size_type count)
+{
+    resize(count, value_type{});
+}
+
+template <typename T, typename A>
+void vector<T, A>::resize(size_type count, const value_type& value)
+{
+    span::normalize();
+    storage::resize(count, value);
+
+    // Fill new span elements with input value
+    for (auto k = span::size(); k < storage::size(); ++k)
+    {
+        storage::operator[](k) = value;
+    }
+    span::operator=(span(storage::begin(), storage::end(), storage::begin(), storage::size()));
+}
+
+template <typename T, typename A>
+void vector<T, A>::push_front(value_type input)
+{
+    if (span::full())
+    {
+        if (span::capacity() < storage::capacity())
+        {
+            // Insert element at end where the is spare capacity.
+            //
+            // Then move element backwards until beginning, whereby the elements
+            // before are shifted right by one.
+            //
+            // For example:
+            //
+            //   +---+---+---+---+---+
+            //   | A | B | C |   |   |
+            //   +---+---+---+---+---+
+            //
+            // Push Z to back:
+            //
+            //   +---+---+---+---+---+
+            //   | A | B | C | Z |   |
+            //   +---+---+---+---+---+
+            //
+            // Rotate Z to beginning:
+            //
+            //   +---+---+---+---+---+
+            //   | Z | A | B | C |   |
+            //   +---+---+---+---+---+
+
+            storage::push_back(std::move(input));
+            span::operator=(span(storage::begin(), storage::end(), storage::begin(), storage::size()));
+
+            // Move to beginning is a linear operation.
+
+            const auto first = span::front_index();
+            auto last = span::back_index();
+            while (last > first)
+            {
+                const auto previous = last--;
+                using std::swap;
+                swap(span::at(previous), span::at(last));
+            }
+            return;
+        }
+    }
+    span::push_front(std::move(input));
+}
+
+template <typename T, typename A>
+void vector<T, A>::push_back(value_type input)
+{
+    if (span::full())
+    {
+        if (span::capacity() < storage::capacity())
+        {
+            // Insert element at end where there is spare capacity.
+
+            storage::push_back(std::move(input));
+            span::operator=(span(storage::begin(), storage::end(), storage::begin(), storage::size()));
+            return;
+        }
+    }
+    span::push_back(std::move(input));
 }
 
 } // namespace circular
