@@ -291,10 +291,11 @@ private:
     struct basic_iterator
     {
         using iterator_category = std::bidirectional_iterator_tag;
-        using value_type = typename std::remove_cv<U>::type;
+        using element_type = U;
+        using value_type = typename std::remove_cv<element_type>::type;
         using difference_type = std::ptrdiff_t;
-        using pointer = typename std::add_pointer<value_type>::type;
-        using reference = typename std::add_lvalue_reference<value_type>::type;
+        using pointer = typename std::add_pointer<element_type>::type;
+        using reference = typename std::add_lvalue_reference<element_type>::type;
         using const_reference = typename std::add_const<reference>::type;
         using iterator_type = basic_iterator<U>;
 
