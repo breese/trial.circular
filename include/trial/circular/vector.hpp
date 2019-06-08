@@ -51,30 +51,48 @@ public:
     explicit vector(const allocator_type&) noexcept(std::is_nothrow_constructible<storage, const allocator_type&>::value);
 
     //! @brief Creates circular vector by copy construction.
+    //!
+    //! @post capacity() == other.capacity()
+    //! @post size() == other.size()
 
-    vector(const vector&);
+    vector(const vector& other);
 
     //! @brief Creates circular vector by copy construction with allocator.
+    //!
+    //! @post capacity() == other.capacity()
+    //! @post size() == other.size()
 
     vector(const vector&,
            const allocator_type&);
 
     //! @brief Creates circular vector by move construction.
+    //!
+    //! @post capacity() == other.capacity()
+    //! @post size() == other.size()
 
-    vector(vector&&) noexcept(std::is_nothrow_move_constructible<storage>::value) = default;
+    vector(vector&& other) noexcept(std::is_nothrow_move_constructible<storage>::value) = default;
 
     //! @brief Creates circular vector by move construction with allocator.
+    //!
+    //! @post capacity() == other.capacity()
+    //! @post size() == other.size()
 
-    vector(vector&&,
+    vector(vector&& other,
            const allocator_type&) noexcept(std::is_nothrow_constructible<storage, storage&&, const allocator_type&>::value);
 
     //! @brief Recreates circular vector by copy assignment.
+    //!
+    //! @post capacity() == other.capacity()
+    //! @post size() == other.size()
 
-    vector& operator=(const vector&);
+    vector& operator=(const vector& other);
 
     //! @brief Recreates circular vector by move assignment.
+    //!
+    //! @post capacity() == other.capacity()
+    //! @post size() == other.size()
 
-    vector& operator=(vector&&) noexcept(std::is_nothrow_move_assignable<storage>::value) = default;
+    vector& operator=(vector&& other) noexcept(std::is_nothrow_move_assignable<storage>::value) = default;
 
     //! @brief Creates empty circular vector with capacity.
     //!
@@ -154,11 +172,16 @@ public:
 
     //! @brief Increases capacity of circular vector.
     //!
+    //! If the requested capacity is less than the current capacity then nothing
+    //! is modified. Otherwise, the current capacity is increased to the requested
+    //! capacity. The storage is normalized before the capacity is increased.
+    //!
     //! @pre capacity <= max_size()
     //!
     //! @post capacity() == std::max(capacity, capacity())
+    //! @post is_normalized()
 
-    void reserve(size_type);
+    void reserve(size_type capacity);
 
     //! @brief Returns the number of elements in circular vector.
 
@@ -173,8 +196,19 @@ public:
     void resize(size_type count);
 
     //! @brief Increases the number of elements by copy construction.
+    //!
+    //! If the requested resize count is less than the current size, the storage
+    //! is reduced to the requested count, and excess elements are erased as if
+    //! then have been removed with multiple @c pop_back calls. Otherwise the
+    //! storage is grown to the requested count, and new elements are copy
+    //! constructed from @c input.
+    //!
+    //! The storage is normalized before resize.
+    //!
+    //! @post size() == count
+    //! @post is_normalized()
 
-    void resize(size_type count, const value_type&);
+    void resize(size_type count, const value_type& input);
 
     //! @brief Removes excess capacity.
 

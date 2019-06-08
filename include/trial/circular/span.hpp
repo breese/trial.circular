@@ -22,6 +22,10 @@ namespace trial
 namespace circular
 {
 
+//! @brief Circular span.
+//!
+//! Violation of any precondition results in undefined behavior.
+
 template <typename T>
 class span
 {
@@ -96,6 +100,7 @@ public:
     //! The span is initialized as if the pre-existing @c length values from
     //! @c first had already been pushed onto the span.
     //!
+    //! @pre length <= std::distance(first, end)
     //! @post capacity() == std::distance(begin, end)
     //! @post size() == length
 
@@ -193,11 +198,17 @@ public:
     void assign(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
 
     //! @brief Inserts element at beginning of span.
+    //!
+    //! If span is full, then the element at the end of the span is silently erased
+    //! to make room for the @c input value.
 
     TRIAL_CXX14_CONSTEXPR
     void push_front(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
 
     //! @brief Inserts element at end of span.
+    //!
+    //! If span is full, then the element at the end of the span is silently erased
+    //! to make room for the @c input value.
 
     TRIAL_CXX14_CONSTEXPR
     void push_back(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
@@ -216,14 +227,14 @@ public:
     TRIAL_CXX14_CONSTEXPR
     void pop_back() noexcept;
 
-    //! @brief Moves element from beginning of span.
+    //! @brief Removes and returns element from beginning of span.
     //!
     //! @pre !empty()
 
     TRIAL_CXX14_CONSTEXPR
     value_type move_front() noexcept(std::is_nothrow_move_constructible<value_type>::value);
 
-    //! @brief Moves element from end of span.
+    //! @brief Removes and returns element from end of span.
     //!
     //! @pre !empty()
 
@@ -231,19 +242,49 @@ public:
     value_type move_back() noexcept(std::is_nothrow_move_constructible<value_type>::value);
 
     //! @brief Rotates span left by amount.
+    //!
+    //! If the span is full, then internal state is updated to emulate a rotation, but
+    //! leaving the elements in their original memory position. Constant time complexity.
+    //!
+    //! If the span is not full, then elements are moved. Linear time complexity.
 
     TRIAL_CXX14_CONSTEXPR
     void advance_left(size_type amount) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value);
 
     //! @brief Rotates span right by amount.
+    //!
+    //! If the span is full, then internal state is updated to emulate a rotation, but
+    //! leaving the elements in their original memory position. Constant time complexity.
+    //!
+    //! If the span is not full, then elements are moved. Linear time complexity.
 
     TRIAL_CXX14_CONSTEXPR
     void advance_right(size_type amount) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value);
 
-    //! @brief Rotates elements so span starts at array beginning.
+    //! @brief Rotates elements so span starts at beginning of storage.
+    //!
+    //! For instance, a span consisting of the sequence A, B, C, may be stored
+    //! in memory as:
+    //!
+    //!   +---+---+---+---+---+
+    //!   | C |   |   | A | B |
+    //!   +---+---+---+---+---+
+    //!
+    //! After normalization the elements are stored in memory as:
+    //!
+    //!   +---+---+---+---+---+
+    //!   | A | B | C |   |   |
+    //!   +---+---+---+---+---+
+    //!
+    //! Normalization invalidates pointers and references.
+    //! Normalization does not invalidate iterators.
+    //!
+    //! Linear time complexity.
 
     TRIAL_CXX14_CONSTEXPR
     void normalize() noexcept(detail::is_nothrow_swappable<value_type>::value);
+
+    constexpr bool is_normalized() const noexcept;
 
 private:
     template <typename U>
@@ -292,20 +333,19 @@ private:
     };
 
 public:
+    //! @brief Bi-directional iterator.
+    //!
+    //! Mutable iterators are not supported to avoid incorrect use in mutating
+    //! algorithms.
+
     using const_iterator = basic_iterator<typename std::add_const<value_type>::type>;
 
     //! @brief Returns iterator to the beginning of the span.
-    //!
-    //! Mutable iterators are not supported to avoid incorrect use of mutating
-    //! algorithms.
 
     constexpr const_iterator begin() const noexcept;
     constexpr const_iterator cbegin() const noexcept;
 
     //! @brief Returns iterator to the ending of the span.
-    //!
-    //! Mutable iterators are not supported to avoid incorrect use of mutating
-    //! algorithms.
 
     constexpr const_iterator end() const noexcept;
     constexpr const_iterator cend() const noexcept;

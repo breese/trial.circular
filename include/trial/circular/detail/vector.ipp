@@ -39,7 +39,7 @@ template <typename T, typename A>
 vector<T, A>::vector(const vector& other,
                      const allocator_type& allocator)
     : storage(static_cast<const storage&>(other), allocator),
-      span(storage::begin(), storage::end())
+      span(static_cast<const span&>(other), &*storage::begin())
 {
 }
 

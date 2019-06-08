@@ -19,6 +19,8 @@ namespace trial
 namespace circular
 {
 
+//! @brief Fixed-sized circular buffer.
+
 template <typename T, std::size_t N>
 class array
     : private std::array<T, N>,
@@ -28,11 +30,11 @@ class array
     using span = circular::template span<T>;
 
 public:
-    using typename span::value_type;
-    using typename span::size_type;
-    using typename span::reference;
-    using typename span::const_reference;
-    using typename span::const_iterator;
+    using value_type = typename span::value_type;
+    using size_type = typename span::size_type;
+    using reference = typename span::reference;
+    using const_reference = typename span::const_reference;
+    using const_iterator = typename span::const_iterator;
 
     //! @brief Creates empty circular array.
     //!
@@ -44,15 +46,21 @@ public:
     //! @brief Creates circular array by copying.
     //!
     //! @pre T must be copy constructible.
+    //!
+    //! @post capacity() == N
+    //! @post size() == other.size()
 
-    constexpr array(const array&) noexcept(std::is_nothrow_copy_constructible<value_type>::value);
+    constexpr array(const array& other) noexcept(std::is_nothrow_copy_constructible<value_type>::value);
 
     //! @brief Rereates circular array by copying.
     //!
     //! @pre T must be copy assignable.
+    //!
+    //! @post capacity() == N
+    //! @post size() == other.size()
 
     TRIAL_CXX14_CONSTEXPR
-    array& operator=(const array&) noexcept(std::is_nothrow_copy_assignable<value_type>::value);
+    array& operator=(const array& other) noexcept(std::is_nothrow_copy_assignable<value_type>::value);
 
     //! @brief Creates circular array by moving.
     //!
@@ -71,6 +79,9 @@ public:
 
     //! @brief Creates circular array with element from initializer list.
     //!
+    //! All elements are inserted, but if input.size() > N then only the last N
+    //! input elements will remain in the circular array.
+    //!
     //! @post capacity() == N
     //! @post size() == input.size()
 
@@ -78,6 +89,9 @@ public:
     constexpr array(value_type, Args&&...) noexcept(std::is_nothrow_move_assignable<value_type>::value);
 
     //! @brief Rereates circular array with element from initializer list.
+    //!
+    //! All elements are inserted, but if input.size() > N then only the last N
+    //! input elements will remain in the circular array.
     //!
     //! @post capacity() == N
     //! @post size() == input.size()

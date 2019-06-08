@@ -297,6 +297,12 @@ void span<T>::normalize() noexcept(detail::is_nothrow_swappable<value_type>::val
 }
 
 template <typename T>
+constexpr bool span<T>::is_normalized() const noexcept
+{
+    return index(front_index()) == 0;
+}
+
+template <typename T>
 constexpr auto span<T>::begin() const noexcept -> const_iterator
 {
     return const_iterator(this, vindex(front_index()));
