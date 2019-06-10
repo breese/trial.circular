@@ -50,12 +50,6 @@ public:
 
     constexpr span(const span&) noexcept = default;
 
-    //! @brief Creates circular span by copying.
-    //!
-    //! The pointer parameter overrides the pointer of the input span.
-
-    constexpr span(const span&, pointer) noexcept;
-
     //! @brief Creates circular span by moving.
     //!
     //! State of moved-from span is valid but undefined.
@@ -182,7 +176,7 @@ public:
     TRIAL_CXX14_CONSTEXPR
     void clear() noexcept;
 
-    //! @brief Clears span and inserts elements at end of span.
+    //! @brief Recreates span with elements from range.
     //!
     //! @post size() == std::min(std::distance(first, last), capacity())
 
@@ -190,7 +184,7 @@ public:
     TRIAL_CXX14_CONSTEXPR
     void assign(InputIterator first, InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value);
 
-    //! @brief Clears span and inserts elements at end of span.
+    //! @brief Recreates span with elements from intializer list.
     //!
     //! @post size() == std::min(input.size(), capacity())
 
@@ -352,6 +346,20 @@ public:
     constexpr const_iterator cend() const noexcept;
 
 protected:
+    //! @brief Creates circular span by copying.
+    //!
+    //! The pointer parameter overrides the pointer of the input span.
+
+    constexpr span(const span&, pointer) noexcept;
+
+    //! @brief Recreates circular span by copying.
+    //!
+    //! The pointer parameter overrides the pointer of the input span.
+
+    TRIAL_CXX14_CONSTEXPR
+    void assign(const span&, pointer) noexcept;
+
+private:
     constexpr size_type index(size_type) const noexcept;
     constexpr size_type vindex(size_type) const noexcept;
 
@@ -368,7 +376,7 @@ protected:
     TRIAL_CXX14_CONSTEXPR
     void swap_range(size_type lhs, size_type rhs, size_type length) noexcept(detail::is_nothrow_swappable<value_type>::value);
 
-protected:
+private:
     struct
     {
         pointer data;

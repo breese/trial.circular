@@ -61,6 +61,16 @@ constexpr span<T>::span(const span& other, pointer data) noexcept
 
 template <typename T>
 TRIAL_CXX14_CONSTEXPR
+void span<T>::assign(const span& other, pointer data) noexcept
+{
+    member.data = data;
+    member.capacity = other.member.capacity;
+    member.size = other.member.size;
+    member.next = other.member.next;
+}
+
+template <typename T>
+TRIAL_CXX14_CONSTEXPR
 auto span<T>::operator=(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value) -> span&
 {
     assign(std::move(input));
@@ -182,19 +192,19 @@ void span<T>::push_front(value_type input) noexcept(std::is_nothrow_move_assigna
     {
         ++member.size;
     }
-    at(member.next - member.size) = std::move(input);
+    front() = std::move(input);
 }
 
 template <typename T>
 TRIAL_CXX14_CONSTEXPR
 void span<T>::push_back(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value)
 {
-    at(member.next) = std::move(input);
     member.next = member.capacity + index(member.next + 1);
     if (!full())
     {
         ++member.size;
     }
+    back() = std::move(input);
 }
 
 template <typename T>
@@ -220,18 +230,18 @@ template <typename T>
 TRIAL_CXX14_CONSTEXPR
 auto span<T>::move_front() noexcept(std::is_nothrow_move_constructible<value_type>::value) -> value_type
 {
-    auto old_index = front_index();
+    auto& old_front = front();
     pop_front(); // Item still lingers in storage
-    return std::move(at(old_index));
+    return std::move(old_front);
 }
 
 template <typename T>
 TRIAL_CXX14_CONSTEXPR
 auto span<T>::move_back() noexcept(std::is_nothrow_move_constructible<value_type>::value) -> value_type
 {
-    auto old_index = back_index();
+    auto& old_back = back();
     pop_back(); // Item still lingers in storage
-    return std::move(at(old_index));
+    return std::move(old_back);
 }
 
 template <typename T>
@@ -399,7 +409,7 @@ void span<T>::swap_range(size_type lhs,
     for (size_type k = 0; k < length; ++k)
     {
         using std::swap;
-        swap(span::at(lhs + k), span::at(rhs + k));
+        swap(at(lhs + k), at(rhs + k));
     }
  }
 

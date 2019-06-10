@@ -87,7 +87,7 @@ template <typename T, typename A>
 auto vector<T, A>::operator=(const vector& other) -> vector&
 {
     storage::operator=(static_cast<const storage&>(other));
-    span::operator=(span(static_cast<const span&>(other), &*storage::begin()));
+    span::assign(static_cast<const span&>(other), &*storage::begin());
     return *this;
 }
 
@@ -202,13 +202,10 @@ void vector<T, A>::push_front(value_type input)
 
             // Move to beginning is a linear operation.
 
-            const auto first = span::front_index();
-            auto last = span::back_index();
-            while (last > first)
+            for (size_type k = size() - 1; k != 0; --k)
             {
-                const auto previous = last--;
                 using std::swap;
-                swap(span::at(previous), span::at(last));
+                swap(span::operator[](k - 1), span::operator[](k));
             }
             return;
         }

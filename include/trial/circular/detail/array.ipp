@@ -36,8 +36,7 @@ auto array<T, N>::operator=(const array& other) noexcept(std::is_nothrow_copy_as
     static_assert(std::is_copy_assignable<T>::value, "Copy assignment only usable when T is copy assignable");
 
     storage::operator=(static_cast<const storage&>(other));
-    span::operator=(static_cast<const span&>(other));
-    span::member.data = &*storage::begin(); // Overwrite span pointer
+    span::assign(static_cast<const span&>(other), &*storage::begin());
     return *this;
 }
 
