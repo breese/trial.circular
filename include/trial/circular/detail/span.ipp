@@ -336,6 +336,30 @@ constexpr auto span<T>::cend() const noexcept -> const_iterator
     return const_iterator(this, vindex(member.next));
 }
 
+template <typename T>
+constexpr auto span<T>::rbegin() const noexcept -> const_reverse_iterator
+{
+    return const_reverse_iterator(end());
+}
+
+template <typename T>
+constexpr auto span<T>::rend() const noexcept -> const_reverse_iterator
+{
+    return const_reverse_iterator(begin());
+}
+
+template <typename T>
+constexpr auto span<T>::crbegin() const noexcept -> const_reverse_iterator
+{
+    return const_reverse_iterator(end());
+}
+
+template <typename T>
+constexpr auto span<T>::crend() const noexcept -> const_reverse_iterator
+{
+    return const_reverse_iterator(begin());
+}
+
 //-----------------------------------------------------------------------------
 
 template <typename T>

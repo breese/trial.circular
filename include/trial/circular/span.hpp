@@ -37,6 +37,62 @@ public:
     using reference = typename std::add_lvalue_reference<element_type>::type;
     using const_reference = typename std::add_const<reference>::type;
 
+private:
+    template <typename U>
+    struct basic_iterator
+    {
+        using iterator_category = std::bidirectional_iterator_tag;
+        using element_type = U;
+        using value_type = typename std::remove_cv<element_type>::type;
+        using difference_type = std::ptrdiff_t;
+        using pointer = typename std::add_pointer<element_type>::type;
+        using reference = typename std::add_lvalue_reference<element_type>::type;
+        using const_reference = typename std::add_const<reference>::type;
+        using iterator_type = basic_iterator<U>;
+
+        constexpr basic_iterator() noexcept = default;
+        constexpr basic_iterator(const basic_iterator&) noexcept = default;
+        constexpr basic_iterator(basic_iterator&&) noexcept = default;
+        TRIAL_CXX14_CONSTEXPR
+        basic_iterator& operator=(const basic_iterator&) noexcept = default;
+        TRIAL_CXX14_CONSTEXPR
+        basic_iterator& operator=(basic_iterator&&) noexcept = default;
+
+        TRIAL_CXX14_CONSTEXPR
+        iterator_type& operator++() noexcept;
+        TRIAL_CXX14_CONSTEXPR
+        iterator_type operator++(int) noexcept;
+        TRIAL_CXX14_CONSTEXPR
+        iterator_type& operator--() noexcept;
+        TRIAL_CXX14_CONSTEXPR
+        iterator_type operator--(int) noexcept;
+
+        TRIAL_CXX14_CONSTEXPR
+        pointer operator->() noexcept;
+        constexpr const_reference operator*() const noexcept;
+
+        constexpr bool operator==(const iterator_type&) const noexcept;
+        constexpr bool operator!=(const iterator_type&) const noexcept;
+
+    private:
+        friend class span<T>;
+
+        constexpr basic_iterator(const span<T>* parent, const size_type index) noexcept;
+
+    private:
+        const span<T>* parent;
+        size_type current;
+    };
+
+public:
+    //! @brief Bi-directional iterator.
+    //!
+    //! Mutable iterators are not supported to avoid incorrect use in mutating
+    //! algorithms.
+
+    using const_iterator = basic_iterator<typename std::add_const<value_type>::type>;
+    using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
     //! @brief Creates empty circular span.
     //!
     //! Must be recreated before use.
@@ -280,70 +336,37 @@ public:
 
     constexpr bool is_normalized() const noexcept;
 
-private:
-    template <typename U>
-    struct basic_iterator
-    {
-        using iterator_category = std::bidirectional_iterator_tag;
-        using element_type = U;
-        using value_type = typename std::remove_cv<element_type>::type;
-        using difference_type = std::ptrdiff_t;
-        using pointer = typename std::add_pointer<element_type>::type;
-        using reference = typename std::add_lvalue_reference<element_type>::type;
-        using const_reference = typename std::add_const<reference>::type;
-        using iterator_type = basic_iterator<U>;
-
-        constexpr basic_iterator() noexcept = default;
-        constexpr basic_iterator(const basic_iterator&) noexcept = default;
-        constexpr basic_iterator(basic_iterator&&) noexcept = default;
-        TRIAL_CXX14_CONSTEXPR
-        basic_iterator& operator=(const basic_iterator&) noexcept = default;
-        TRIAL_CXX14_CONSTEXPR
-        basic_iterator& operator=(basic_iterator&&) noexcept = default;
-
-        TRIAL_CXX14_CONSTEXPR
-        iterator_type& operator++() noexcept;
-        TRIAL_CXX14_CONSTEXPR
-        iterator_type operator++(int) noexcept;
-        TRIAL_CXX14_CONSTEXPR
-        iterator_type& operator--() noexcept;
-        TRIAL_CXX14_CONSTEXPR
-        iterator_type operator--(int) noexcept;
-
-        TRIAL_CXX14_CONSTEXPR
-        pointer operator->() noexcept;
-        constexpr const_reference operator*() const noexcept;
-
-        constexpr bool operator==(const iterator_type&) const noexcept;
-        constexpr bool operator!=(const iterator_type&) const noexcept;
-
-    private:
-        friend class span<T>;
-
-        constexpr basic_iterator(const span<T>* parent, const size_type index) noexcept;
-
-    private:
-        const span<T>* parent;
-        size_type current;
-    };
-
-public:
-    //! @brief Bi-directional iterator.
-    //!
-    //! Mutable iterators are not supported to avoid incorrect use in mutating
-    //! algorithms.
-
-    using const_iterator = basic_iterator<typename std::add_const<value_type>::type>;
-
     //! @brief Returns iterator to the beginning of the span.
 
     constexpr const_iterator begin() const noexcept;
-    constexpr const_iterator cbegin() const noexcept;
 
     //! @brief Returns iterator to the ending of the span.
 
     constexpr const_iterator end() const noexcept;
+
+    //! @brief Returns iterator to the beginning of the span.
+
+    constexpr const_iterator cbegin() const noexcept;
+
+    //! @brief Returns iterator to the ending of the span.
+
     constexpr const_iterator cend() const noexcept;
+
+    //! @brief Returns reverse iterator to the beginning of the span.
+
+    constexpr const_reverse_iterator rbegin() const noexcept;
+
+    //! @brief Returns reverse iterator to the end of the span.
+
+    constexpr const_reverse_iterator rend() const noexcept;
+
+    //! @brief Returns reverse iterator to the beginning of the span.
+
+    constexpr const_reverse_iterator crbegin() const noexcept;
+
+    //! @brief Returns reverse iterator to the end of the span.
+
+    constexpr const_reverse_iterator crend() const noexcept;
 
 protected:
     //! @brief Creates circular span by copying.

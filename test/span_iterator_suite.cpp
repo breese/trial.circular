@@ -388,6 +388,105 @@ void run()
 
 //-----------------------------------------------------------------------------
 
+namespace reverse_suite
+{
+
+void test_empty()
+{
+    std::array<int, 4> array;
+    circular::span<int> span(array.begin(), array.end());
+    TRIAL_TEST(span.rbegin() == span.rend());
+}
+
+void test_reverse()
+{
+    std::array<int, 4> array;
+    circular::span<int> span(array.begin(), array.end());
+    span = { 11, 22, 33 };
+    {
+        std::vector<int> expect = { 11, 22, 33 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    {
+        std::vector<int> expect = { 33, 22, 11 };
+        TRIAL_TEST_ALL_EQ(span.rbegin(), span.rend(),
+                          expect.begin(), expect.end());
+    }
+    span.push_back(44);
+    {
+        std::vector<int> expect = { 11, 22, 33, 44 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    {
+        std::vector<int> expect = { 44, 33, 22, 11 };
+        TRIAL_TEST_ALL_EQ(span.rbegin(), span.rend(),
+                          expect.begin(), expect.end());
+    }
+    span.push_back(55);
+    {
+        std::vector<int> expect = { 22, 33, 44, 55 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    {
+        std::vector<int> expect = { 55, 44, 33, 22 };
+        TRIAL_TEST_ALL_EQ(span.rbegin(), span.rend(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void test_const_reverse()
+{
+    std::array<int, 4> array;
+    circular::span<int> span(array.begin(), array.end());
+    span = { 11, 22, 33 };
+    {
+        std::vector<int> expect = { 11, 22, 33 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    {
+        std::vector<int> expect = { 33, 22, 11 };
+        TRIAL_TEST_ALL_EQ(span.crbegin(), span.crend(),
+                          expect.begin(), expect.end());
+    }
+    span.push_back(44);
+    {
+        std::vector<int> expect = { 11, 22, 33, 44 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    {
+        std::vector<int> expect = { 44, 33, 22, 11 };
+        TRIAL_TEST_ALL_EQ(span.crbegin(), span.crend(),
+                          expect.begin(), expect.end());
+    }
+    span.push_back(55);
+    {
+        std::vector<int> expect = { 22, 33, 44, 55 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    {
+        std::vector<int> expect = { 55, 44, 33, 22 };
+        TRIAL_TEST_ALL_EQ(span.crbegin(), span.crend(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void run()
+{
+    test_empty();
+    test_reverse();
+    test_const_reverse();
+}
+
+} // namespace reverse_suite
+
+//-----------------------------------------------------------------------------
+
 namespace inserter_suite
 {
 
@@ -449,6 +548,7 @@ int main()
 {
     concept_suite::run();
     iterator_suite::run();
+    reverse_suite::run();
     inserter_suite::run();
 
     return boost::report_errors();
