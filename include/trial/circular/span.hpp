@@ -263,19 +263,33 @@ public:
     TRIAL_CXX14_CONSTEXPR
     void push_back(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
 
-    //! @brief Erases element from beginning of span.
+    //! @brief Erases one element from beginning of span.
     //!
     //! @pre !empty()
 
     TRIAL_CXX14_CONSTEXPR
     void pop_front() noexcept;
 
-    //! @brief Erases element from end of span.
+    //! @brief Erases many elements from beginning of span.
+    //!
+    //! @pre count < size()
+
+    TRIAL_CXX14_CONSTEXPR
+    void pop_front(size_type count) noexcept;
+
+    //! @brief Erases one element from end of span.
     //!
     //! @pre !empty()
 
     TRIAL_CXX14_CONSTEXPR
     void pop_back() noexcept;
+
+    //! @brief Erases many elements from end of span.
+    //!
+    //! @pre count < size()
+
+    TRIAL_CXX14_CONSTEXPR
+    void pop_back(size_type count) noexcept;
 
     //! @brief Removes and returns element from beginning of span.
     //!
