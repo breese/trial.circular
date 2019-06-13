@@ -372,12 +372,28 @@ void api_pop_front()
     TRIAL_TEST_EQ(data.size(), 1);
 }
 
+void api_pop_front_n()
+{
+    circular::vector<int> data = { 11, 22 };
+    TRIAL_TEST_EQ(data.size(), 2);
+    data.pop_front(2);
+    TRIAL_TEST_EQ(data.size(), 0);
+}
+
 void api_pop_back()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
     data.pop_back();
     TRIAL_TEST_EQ(data.size(), 1);
+}
+
+void api_pop_back_n()
+{
+    circular::vector<int> data = { 11, 22 };
+    TRIAL_TEST_EQ(data.size(), 2);
+    data.pop_back(2);
+    TRIAL_TEST_EQ(data.size(), 0);
 }
 
 void api_move_front()
@@ -432,7 +448,9 @@ void run()
     api_push_front();
     api_push_back();
     api_pop_front();
+    api_pop_front_n();
     api_pop_back();
+    api_pop_back_n();
     api_move_front();
     api_move_back();
 }

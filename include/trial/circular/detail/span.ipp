@@ -209,17 +209,9 @@ void span<T>::push_back(value_type input) noexcept(std::is_nothrow_move_assignab
 
 template <typename T>
 TRIAL_CXX14_CONSTEXPR
-void span<T>::pop_front() noexcept
-{
-    assert(!empty());
-
-    --member.size;
-}
-
-template <typename T>
-TRIAL_CXX14_CONSTEXPR
 void span<T>::pop_front(size_type count) noexcept
 {
+    assert(count > 0);
     assert(count <= size());
 
     member.size -= count;
@@ -227,18 +219,9 @@ void span<T>::pop_front(size_type count) noexcept
 
 template <typename T>
 TRIAL_CXX14_CONSTEXPR
-void span<T>::pop_back() noexcept
-{
-    assert(!empty());
-
-    member.next = member.capacity + index(member.next - 1);
-    --member.size;
-}
-
-template <typename T>
-TRIAL_CXX14_CONSTEXPR
 void span<T>::pop_back(size_type count) noexcept
 {
+    assert(count > 0);
     assert(count <= size());
 
     member.next = member.capacity + index(member.next - count);

@@ -20,14 +20,14 @@ using namespace trial;
 namespace api_suite
 {
 
-void test_ctor_default()
+void api_ctor_default()
 {
     circular::array<int, 4> data;
     TRIAL_TEST_EQ(data.size(), 0);
     TRIAL_TEST_EQ(data.capacity(), 4);
 }
 
-void test_ctor_copy()
+void api_ctor_copy()
 {
     circular::array<int, 4> data;
     data.push_back(11);
@@ -36,7 +36,7 @@ void test_ctor_copy()
     TRIAL_TEST_EQ(copy.capacity(), 4);
 }
 
-void test_ctor_copy_assign()
+void api_ctor_copy_assign()
 {
     circular::array<int, 4> data;
     data.push_back(11);
@@ -46,7 +46,7 @@ void test_ctor_copy_assign()
     TRIAL_TEST_EQ(copy.capacity(), 4);
 }
 
-void test_ctor_move()
+void api_ctor_move()
 {
     circular::array<int, 4> data;
     data.push_back(11);
@@ -55,7 +55,7 @@ void test_ctor_move()
     TRIAL_TEST_EQ(copy.capacity(), 4);
 }
 
-void test_ctor_move_assign()
+void api_ctor_move_assign()
 {
     circular::array<int, 4> data;
     data.push_back(11);
@@ -65,28 +65,28 @@ void test_ctor_move_assign()
     TRIAL_TEST_EQ(copy.capacity(), 4);
 }
 
-void test_ctor_initializer_list()
+void api_ctor_initializer_list()
 {
     circular::array<int, 4> data({11, 22});
     TRIAL_TEST_EQ(data.size(), 2);
     TRIAL_TEST_EQ(data.capacity(), 4);
 }
 
-void test_operator_assign_initializer_list()
+void api_operator_assign_initializer_list()
 {
     circular::array<int, 4> data;
     data = {11, 22};
     TRIAL_TEST_EQ(data.size(), 2);
 }
 
-void test_assign_initializer_list()
+void api_assign_initializer_list()
 {
     circular::array<int, 4> data;
     data.assign({11, 22});
     TRIAL_TEST_EQ(data.size(), 2);
 }
 
-void test_assign_iterator()
+void api_assign_iterator()
 {
     circular::array<int, 4> data;
     std::vector<int> input = {11, 22};
@@ -94,37 +94,37 @@ void test_assign_iterator()
     TRIAL_TEST_EQ(data.size(), 2);
 }
 
-void test_empty()
+void api_empty()
 {
     circular::array<int, 4> data;
     TRIAL_TEST(data.empty());
 }
 
-void test_capacity()
+void api_capacity()
 {
     circular::array<int, 4> data;
     TRIAL_TEST_EQ(data.capacity(), 4);
 }
 
-void test_size()
+void api_size()
 {
     circular::array<int, 4> data;
     TRIAL_TEST_EQ(data.size(), 0);
 }
 
-void test_max_size()
+void api_max_size()
 {
     circular::array<int, 4> data;
     TRIAL_TEST_EQ(data.max_size(), 4);
 }
 
-void test_full()
+void api_full()
 {
     circular::array<int, 4> data;
     TRIAL_TEST(!data.full());
 }
 
-void test_front()
+void api_front()
 {
     circular::array<int, 4> data;
     data.push_front(11);
@@ -132,7 +132,7 @@ void test_front()
     TRIAL_TEST_EQ(data.front(), 11);
 }
 
-void test_back()
+void api_back()
 {
     circular::array<int, 4> data;
     data.push_back(11);
@@ -140,7 +140,7 @@ void test_back()
     TRIAL_TEST_EQ(data.back(), 11);
 }
 
-void test_operator_index()
+void api_operator_index()
 {
     circular::array<int, 4> data = {11, 22, 33};
     TRIAL_TEST_EQ(data[0], 11);
@@ -148,7 +148,7 @@ void test_operator_index()
     TRIAL_TEST_EQ(data[2], 33);
 }
 
-void test_clear()
+void api_clear()
 {
     circular::array<int, 4> data;
     data.push_back(11);
@@ -157,21 +157,21 @@ void test_clear()
     TRIAL_TEST_EQ(data.size(), 0);
 }
 
-void test_push_front()
+void api_push_front()
 {
     circular::array<int, 4> data;
     data.push_front(11);
     TRIAL_TEST_EQ(data.size(), 1);
 }
 
-void test_push_back()
+void api_push_back()
 {
     circular::array<int, 4> data;
     data.push_back(11);
     TRIAL_TEST_EQ(data.size(), 1);
 }
 
-void test_pop_front()
+void api_pop_front()
 {
     circular::array<int, 4> data;
     data.push_front(11);
@@ -180,7 +180,17 @@ void test_pop_front()
     TRIAL_TEST_EQ(data.size(), 0);
 }
 
-void test_pop_back()
+void api_pop_front_n()
+{
+    circular::array<int, 4> data;
+    data.push_front(11);
+    data.push_front(11);
+    TRIAL_TEST_EQ(data.size(), 2);
+    data.pop_front(2);
+    TRIAL_TEST_EQ(data.size(), 0);
+}
+
+void api_pop_back()
 {
     circular::array<int, 4> data;
     data.push_back(11);
@@ -189,7 +199,17 @@ void test_pop_back()
     TRIAL_TEST_EQ(data.size(), 0);
 }
 
-void test_move_front()
+void api_pop_back_n()
+{
+    circular::array<int, 4> data;
+    data.push_back(11);
+    data.push_back(11);
+    TRIAL_TEST_EQ(data.size(), 2);
+    data.pop_back(2);
+    TRIAL_TEST_EQ(data.size(), 0);
+}
+
+void api_move_front()
 {
     circular::array<int, 4> data;
     data.push_front(11);
@@ -198,7 +218,7 @@ void test_move_front()
     TRIAL_TEST_EQ(data.size(), 0);
 }
 
-void test_move_back()
+void api_move_back()
 {
     circular::array<int, 4> data;
     data.push_back(11);
@@ -209,32 +229,34 @@ void test_move_back()
 
 void run()
 {
-    test_ctor_default();
-    test_ctor_copy();
-    test_ctor_copy_assign();
-    test_ctor_move();
-    test_ctor_move_assign();
-    test_ctor_initializer_list();
+    api_ctor_default();
+    api_ctor_copy();
+    api_ctor_copy_assign();
+    api_ctor_move();
+    api_ctor_move_assign();
+    api_ctor_initializer_list();
 
-    test_operator_assign_initializer_list();
-    test_assign_initializer_list();
-    test_assign_iterator();
+    api_operator_assign_initializer_list();
+    api_assign_initializer_list();
+    api_assign_iterator();
 
-    test_empty();
-    test_capacity();
-    test_size();
-    test_max_size();
-    test_full();
-    test_front();
-    test_back();
-    test_operator_index();
-    test_clear();
-    test_push_front();
-    test_push_back();
-    test_pop_front();
-    test_pop_back();
-    test_move_front();
-    test_move_back();
+    api_empty();
+    api_capacity();
+    api_size();
+    api_max_size();
+    api_full();
+    api_front();
+    api_back();
+    api_operator_index();
+    api_clear();
+    api_push_front();
+    api_push_back();
+    api_pop_front();
+    api_pop_front_n();
+    api_pop_back();
+    api_pop_back_n();
+    api_move_front();
+    api_move_back();
 }
 
 } // namespace api_suite
