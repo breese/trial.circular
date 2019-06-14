@@ -24,6 +24,17 @@ namespace circular
 
 //! @brief Circular span.
 //!
+//! A view that turns contiguous memory into a circular double-ended queue.
+//! Inserting new elements will overwrite old elements when the queue is full.
+//!
+//! The memory is not owned by the span. The owner must ensure that the span is
+//! destroyed before the memory is released.
+//!
+//! Size is the current number of elements in the span.
+//!
+//! Capacity is the maximum number of elements that can be inserted without
+//! overwriting hold elements. Capacity cannot be changed.
+//!
 //! Violation of any precondition results in undefined behavior.
 
 template <typename T>
@@ -95,7 +106,8 @@ public:
 
     //! @brief Creates empty circular span.
     //!
-    //! Must be recreated before use.
+    //! No elements can be inserted into a zero capacity span. The span must
+    //! therefore be recreated before use.
     //!
     //! @post capacity() == 0
     //! @post size() == 0
@@ -124,9 +136,8 @@ public:
     TRIAL_CXX14_CONSTEXPR
     span& operator=(span&&) noexcept = default;
 
-    //! @brief Recreates circular span from initializer list.
+    //! @brief Replaces circular span with elements from initializer list.
     //!
-    //! @post capacity() == input.size()
     //! @post size() == input.size()
 
     TRIAL_CXX14_CONSTEXPR
@@ -232,7 +243,7 @@ public:
     TRIAL_CXX14_CONSTEXPR
     void clear() noexcept;
 
-    //! @brief Recreates span with elements from range.
+    //! @brief Replaces circular span with elements from range.
     //!
     //! @post size() == std::min(std::distance(first, last), capacity())
 
@@ -240,7 +251,7 @@ public:
     TRIAL_CXX14_CONSTEXPR
     void assign(InputIterator first, InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value);
 
-    //! @brief Recreates span with elements from intializer list.
+    //! @brief Replaces circular span with elements from intializer list.
     //!
     //! @post size() == std::min(input.size(), capacity())
 

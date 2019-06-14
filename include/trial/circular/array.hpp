@@ -20,6 +20,13 @@ namespace circular
 {
 
 //! @brief Fixed-sized circular buffer.
+//!
+//! Size is the current number of elements in the buffer.
+//!
+//! Capacity is the maximum number of elements that can be inserted without
+//! overwriting old elements. Capacity cannot be changed.
+//!
+//! Violation of any precondition results in undefined behavior.
 
 template <typename T, std::size_t N>
 class array

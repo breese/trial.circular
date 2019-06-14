@@ -20,6 +20,16 @@ namespace trial
 namespace circular
 {
 
+//! @brief Dynamically resizable circular buffer.
+//!
+//! Size is the current number of elements in the buffer.
+//!
+//! Capacity is the maximum number of elements that can be inserted without
+//! overwriting old elements. Capacity can only be changed by explicit calls
+//! to @c reserve() or @c resize().
+//!
+//! Violation of any precondition results in undefined behavior.
+
 template <typename T, typename Allocator = typename std::vector<T>::allocator_type>
 class vector
     : private std::vector<T, Allocator>,

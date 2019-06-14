@@ -129,6 +129,18 @@ void api_ctor_iterator_init()
     TRIAL_TEST_EQ(span.capacity(), 4);
 }
 
+void api_ctor_assign_initializer_list()
+{
+    int array[4];
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44, 55 };
+    {
+        std::vector<int> expect = { 22, 33, 44, 55 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
 void api_empty()
 {
     int array[4];
@@ -256,9 +268,9 @@ void api_assign_initializer_list()
 {
     int array[4];
     circular::span<int> span(array);
-    span.assign({11, 22, 33, 44});
+    span.assign({ 11, 22, 33, 44, 55 });
     {
-        std::vector<int> expect = {11, 22, 33, 44};
+        std::vector<int> expect = { 22, 33, 44, 55 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
@@ -426,6 +438,7 @@ void run()
     api_ctor_array();
     api_ctor_iterator();
     api_ctor_iterator_init();
+    api_ctor_assign_initializer_list();
     api_empty();
     api_full();
     api_capacity();
