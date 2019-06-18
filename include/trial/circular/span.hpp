@@ -425,6 +425,8 @@ private:
 
         constexpr member_storage(pointer data, size_type size, size_type next) noexcept;
 
+        constexpr member_storage(const member_storage&, pointer data) noexcept;
+
         template <typename ContiguousIterator>
         constexpr member_storage(ContiguousIterator, ContiguousIterator) noexcept;
 
@@ -452,6 +454,8 @@ private:
         constexpr member_storage() noexcept;
 
         constexpr member_storage(pointer data, size_type capacity, size_type size, size_type next) noexcept;
+
+        constexpr member_storage(const member_storage&, pointer data) noexcept;
 
         template <typename ContiguousIterator>
         constexpr member_storage(ContiguousIterator, ContiguousIterator) noexcept;

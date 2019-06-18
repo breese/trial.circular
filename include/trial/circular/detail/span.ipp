@@ -51,7 +51,7 @@ constexpr span<T, E>::span(value_type (&array)[N]) noexcept
 
 template <typename T, std::size_t E>
 constexpr span<T, E>::span(const span& other, pointer data) noexcept
-    : member{data, other.member.capacity(), other.member.size, other.member.next}
+    : member(other.member, data)
 {
 }
 
@@ -459,6 +459,15 @@ constexpr span<T, E>::member_storage<T1, E1>::member_storage(pointer data, size_
 
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
+constexpr span<T, E>::member_storage<T1, E1>::member_storage(const member_storage& other, pointer data) noexcept
+    : data(data),
+      size(other.size),
+      next(other.next)
+{
+}
+
+template <typename T, std::size_t E>
+template <typename T1, std::size_t E1>
 template <typename ContiguousIterator>
 constexpr span<T, E>::member_storage<T1, E1>::member_storage(ContiguousIterator begin, ContiguousIterator end) noexcept
     : data(&*begin),
@@ -510,7 +519,7 @@ void span<T, E>::member_storage<T1, E1>::assign(const member_storage& other, poi
 {
     this->data = data;
     this->size = other.size;
-    this->next = other.nexxt;
+    this->next = other.next;
 }
 
 //-----------------------------------------------------------------------------
@@ -534,6 +543,16 @@ constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(pointer
       cap(capacity),
       size(size),
       next(next)
+{
+}
+
+template <typename T, std::size_t E>
+template <typename T1>
+constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(const member_storage& other, pointer data) noexcept
+    : data(data),
+      cap(other.cap),
+      size(other.size),
+      next(other.next)
 {
 }
 

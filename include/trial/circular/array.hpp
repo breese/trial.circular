@@ -31,10 +31,10 @@ namespace circular
 template <typename T, std::size_t N>
 class array
     : private std::array<T, N>,
-      private circular::span<T>
+      private circular::span<T, N>
 {
     using storage = std::array<T, N>;
-    using span = circular::template span<T>;
+    using span = circular::template span<T, N>;
 
 public:
     using value_type = typename span::value_type;
