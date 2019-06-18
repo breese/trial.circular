@@ -14,6 +14,7 @@
 #include <cstddef>
 #include <initializer_list>
 #include <iterator>
+#include <limits>
 #include <trial/circular/detail/config.hpp>
 #include <trial/circular/detail/type_traits.hpp>
 
@@ -37,7 +38,9 @@ namespace circular
 //!
 //! Violation of any precondition results in undefined behavior.
 
-template <typename T>
+enum : std::size_t { dynamic_extent = std::numeric_limits<std::size_t>::max() };
+
+template <typename T, std::size_t Extent = dynamic_extent>
 class span
 {
 public:
@@ -86,12 +89,12 @@ private:
         constexpr bool operator!=(const iterator_type&) const noexcept;
 
     private:
-        friend class span<T>;
+        friend class span<T, Extent>;
 
-        constexpr basic_iterator(const span<T>* parent, const size_type index) noexcept;
+        constexpr basic_iterator(const span<T, Extent>* parent, const size_type index) noexcept;
 
     private:
-        const span<T>* parent;
+        const span<T, Extent>* parent;
         size_type current;
     };
 
@@ -415,13 +418,64 @@ private:
     void swap_range(size_type lhs, size_type rhs, size_type length) noexcept(detail::is_nothrow_swappable<value_type>::value);
 
 private:
-    struct
+    template <typename T1, std::size_t E1>
+    struct member_storage
     {
+        constexpr member_storage() noexcept;
+
+        constexpr member_storage(pointer data, size_type size, size_type next) noexcept;
+
+        template <typename ContiguousIterator>
+        constexpr member_storage(ContiguousIterator, ContiguousIterator) noexcept;
+
+        template <typename ContiguousIterator>
+        constexpr member_storage(ContiguousIterator, ContiguousIterator, ContiguousIterator, size_type) noexcept;
+
+        template <std::size_t N>
+        constexpr member_storage(value_type (&array)[N]) noexcept;
+
+        constexpr size_type capacity() const noexcept;
+
+        TRIAL_CXX14_CONSTEXPR
+        void capacity(size_type) noexcept;
+
+        void assign(const member_storage&, pointer) noexcept;
+
         pointer data;
-        size_type capacity;
         size_type size;
         size_type next;
-    } member;
+    };
+
+    template <typename T1>
+    struct member_storage<T1, dynamic_extent>
+    {
+        constexpr member_storage() noexcept;
+
+        constexpr member_storage(pointer data, size_type capacity, size_type size, size_type next) noexcept;
+
+        template <typename ContiguousIterator>
+        constexpr member_storage(ContiguousIterator, ContiguousIterator) noexcept;
+
+        template <typename ContiguousIterator>
+        constexpr member_storage(ContiguousIterator, ContiguousIterator, ContiguousIterator, size_type) noexcept;
+
+        template <std::size_t N>
+        constexpr member_storage(value_type (&array)[N]) noexcept;
+
+        constexpr size_type capacity() const noexcept;
+
+        TRIAL_CXX14_CONSTEXPR
+        void capacity(size_type input) noexcept;
+
+        void assign(const member_storage&, pointer) noexcept;
+
+        pointer data;
+        size_type cap;
+        size_type size;
+        size_type next;
+    };
+
+    struct member_storage<T, Extent> member;
 };
 
 } // namespace circular
