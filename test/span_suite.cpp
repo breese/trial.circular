@@ -109,6 +109,16 @@ void dynamic_ctor_array()
     TRIAL_TEST_EQ(span.capacity(), 4);
 }
 
+void dynamic_ctor_const_array()
+{
+    int array[4];
+    circular::span<const int> span(array);
+    TRIAL_TEST(span.empty());
+    TRIAL_TEST(!span.full());
+    TRIAL_TEST_EQ(span.size(), 0);
+    TRIAL_TEST_EQ(span.capacity(), 4);
+}
+
 void dynamic_ctor_iterator()
 {
     std::array<int, 4> array;
@@ -436,6 +446,7 @@ void run()
     dynamic_ctor_move();
     dynamic_ctor_move_assign();
     dynamic_ctor_array();
+    dynamic_ctor_const_array();
     dynamic_ctor_iterator();
     dynamic_ctor_iterator_init();
     dynamic_ctor_assign_initializer_list();
@@ -556,6 +567,16 @@ void fixed_ctor_array()
 {
     int array[4];
     circular::span<int, 4> span(array);
+    TRIAL_TEST(span.empty());
+    TRIAL_TEST(!span.full());
+    TRIAL_TEST_EQ(span.size(), 0);
+    TRIAL_TEST_EQ(span.capacity(), 4);
+}
+
+void fixed_ctor_const_array()
+{
+    int array[4];
+    circular::span<const int, 4> span(array);
     TRIAL_TEST(span.empty());
     TRIAL_TEST(!span.full());
     TRIAL_TEST_EQ(span.size(), 0);
@@ -889,6 +910,7 @@ void run()
     fixed_ctor_move();
     fixed_ctor_move_assign();
     fixed_ctor_array();
+    fixed_ctor_const_array();
     fixed_ctor_iterator();
     fixed_ctor_iterator_init();
     fixed_ctor_assign_initializer_list();
