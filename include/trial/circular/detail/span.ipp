@@ -25,6 +25,15 @@ constexpr span<T, E>::span() noexcept
 }
 
 template <typename T, std::size_t E>
+template <typename OtherT,
+          std::size_t OtherExtent,
+          typename std::enable_if<(E == OtherExtent || E == dynamic_extent) && std::is_convertible<OtherT (*)[], T (*)[]>::value, int>::type>
+constexpr span<T, E>::span(const span<OtherT, OtherExtent>& other) noexcept
+    : member(other)
+{
+}
+
+template <typename T, std::size_t E>
 template <typename ContiguousIterator>
 constexpr span<T, E>::span(ContiguousIterator begin,
                            ContiguousIterator end) noexcept
@@ -43,7 +52,8 @@ constexpr span<T, E>::span(ContiguousIterator begin,
 }
 
 template <typename T, std::size_t E>
-template <std::size_t N>
+template <std::size_t N,
+          typename std::enable_if<(E == N || E == dynamic_extent), int>::type>
 constexpr span<T, E>::span(value_type (&array)[N]) noexcept
     : member(array)
 {
@@ -468,6 +478,16 @@ constexpr span<T, E>::member_storage<T1, E1>::member_storage(const member_storag
 
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
+template <typename OtherT, std::size_t OtherExtent>
+constexpr span<T, E>::member_storage<T1, E1>::member_storage(const span<OtherT, OtherExtent>& other) noexcept
+    : data(other.member.data),
+      size(other.member.size),
+      next(other.member.next)
+{
+}
+
+template <typename T, std::size_t E>
+template <typename T1, std::size_t E1>
 template <typename ContiguousIterator>
 constexpr span<T, E>::member_storage<T1, E1>::member_storage(ContiguousIterator begin, ContiguousIterator end) noexcept
     : data(&*begin),
@@ -553,6 +573,17 @@ constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(const m
       cap(other.cap),
       size(other.size),
       next(other.next)
+{
+}
+
+template <typename T, std::size_t E>
+template <typename T1>
+template <typename OtherT, std::size_t OtherExtent>
+constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(const span<OtherT, OtherExtent>& other) noexcept
+    : data(other.member.data),
+      cap(other.member.capacity()),
+      size(other.member.size),
+      next(other.member.next)
 {
 }
 

@@ -44,6 +44,21 @@ void dynamic_ctor_copy()
     TRIAL_TEST_EQ(clone.capacity(), 4);
 }
 
+void dynamic_ctor_copy_convertible()
+{
+    int array[4];
+    circular::span<int> span(array);
+    TRIAL_TEST(span.empty());
+    TRIAL_TEST(!span.full());
+    TRIAL_TEST_EQ(span.size(), 0);
+    TRIAL_TEST_EQ(span.capacity(), 4);
+    circular::span<const int> clone(span);
+    TRIAL_TEST(clone.empty());
+    TRIAL_TEST(!clone.full());
+    TRIAL_TEST_EQ(clone.size(), 0);
+    TRIAL_TEST_EQ(clone.capacity(), 4);
+}
+
 void dynamic_ctor_copy_assign()
 {
     int array[4];
@@ -442,6 +457,7 @@ void run()
 {
     dynamic_ctor_default();
     dynamic_ctor_copy();
+    dynamic_ctor_copy_convertible();
     dynamic_ctor_copy_assign();
     dynamic_ctor_move();
     dynamic_ctor_move_assign();
@@ -502,6 +518,36 @@ void fixed_ctor_copy()
     TRIAL_TEST_EQ(span.size(), 0);
     TRIAL_TEST_EQ(span.capacity(), 4);
     circular::span<int, 4> clone(span);
+    TRIAL_TEST(clone.empty());
+    TRIAL_TEST(!clone.full());
+    TRIAL_TEST_EQ(clone.size(), 0);
+    TRIAL_TEST_EQ(clone.capacity(), 4);
+}
+
+void fixed_ctor_copy_convertible()
+{
+    int array[4];
+    circular::span<int, 4> span(array);
+    TRIAL_TEST(span.empty());
+    TRIAL_TEST(!span.full());
+    TRIAL_TEST_EQ(span.size(), 0);
+    TRIAL_TEST_EQ(span.capacity(), 4);
+    circular::span<const int, 4> clone(span);
+    TRIAL_TEST(clone.empty());
+    TRIAL_TEST(!clone.full());
+    TRIAL_TEST_EQ(clone.size(), 0);
+    TRIAL_TEST_EQ(clone.capacity(), 4);
+}
+
+void fixed_ctor_copy_dynamic_extent()
+{
+    int array[4];
+    circular::span<int, 4> span(array);
+    TRIAL_TEST(span.empty());
+    TRIAL_TEST(!span.full());
+    TRIAL_TEST_EQ(span.size(), 0);
+    TRIAL_TEST_EQ(span.capacity(), 4);
+    circular::span<const int> clone(span);
     TRIAL_TEST(clone.empty());
     TRIAL_TEST(!clone.full());
     TRIAL_TEST_EQ(clone.size(), 0);
@@ -906,6 +952,8 @@ void run()
 {
     fixed_ctor_default();
     fixed_ctor_copy();
+    fixed_ctor_copy_convertible();
+    fixed_ctor_copy_dynamic_extent();
     fixed_ctor_copy_assign();
     fixed_ctor_move();
     fixed_ctor_move_assign();

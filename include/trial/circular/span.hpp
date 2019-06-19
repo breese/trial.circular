@@ -52,6 +52,9 @@ public:
     using const_reference = typename std::add_const<reference>::type;
 
 private:
+    template <typename, std::size_t>
+    friend class span;
+
     template <typename U>
     struct basic_iterator
     {
@@ -121,6 +124,15 @@ public:
 
     constexpr span(const span&) noexcept = default;
 
+    //! @brief Creates circular span by copying.
+    //!
+    //! Enables copying mutable span to immutable span.
+
+    template <typename OtherT,
+              std::size_t OtherExtent,
+              typename std::enable_if<(Extent == OtherExtent || Extent == dynamic_extent) && std::is_convertible<OtherT (*)[], T (*)[]>::value, int>::type = 0>
+    explicit constexpr span(const span<OtherT, OtherExtent>& other) noexcept;
+
     //! @brief Creates circular span by moving.
     //!
     //! State of moved-from span is valid but undefined.
@@ -179,7 +191,8 @@ public:
     //! @post capacity() == N
     //! @post size() == 0
 
-    template <std::size_t N>
+    template <std::size_t N,
+              typename std::enable_if<(Extent == N || Extent == dynamic_extent), int>::type = 0>
     explicit constexpr span(value_type (&array)[N]) noexcept;
 
     //! @brief Checks if span is empty.
@@ -422,10 +435,19 @@ private:
     struct member_storage
     {
         constexpr member_storage() noexcept;
+        constexpr member_storage(const member_storage&) noexcept = default;
+        constexpr member_storage(member_storage&&) noexcept = default;
+        TRIAL_CXX14_CONSTEXPR
+        member_storage& operator=(const member_storage&) noexcept = default;
+        TRIAL_CXX14_CONSTEXPR
+        member_storage& operator=(member_storage&&) noexcept = default;
 
         constexpr member_storage(pointer data, size_type size, size_type next) noexcept;
 
         constexpr member_storage(const member_storage&, pointer data) noexcept;
+
+        template <typename OtherT, std::size_t OtherExtent>
+        explicit constexpr member_storage(const span<OtherT, OtherExtent>&) noexcept;
 
         template <typename ContiguousIterator>
         constexpr member_storage(ContiguousIterator, ContiguousIterator) noexcept;
@@ -434,7 +456,7 @@ private:
         constexpr member_storage(ContiguousIterator, ContiguousIterator, ContiguousIterator, size_type) noexcept;
 
         template <std::size_t N>
-        constexpr member_storage(value_type (&array)[N]) noexcept;
+        explicit constexpr member_storage(value_type (&array)[N]) noexcept;
 
         constexpr size_type capacity() const noexcept;
 
@@ -452,10 +474,19 @@ private:
     struct member_storage<T1, dynamic_extent>
     {
         constexpr member_storage() noexcept;
+        constexpr member_storage(const member_storage&) noexcept = default;
+        constexpr member_storage(member_storage&&) noexcept = default;
+        TRIAL_CXX14_CONSTEXPR
+        member_storage& operator=(const member_storage&) noexcept = default;
+        TRIAL_CXX14_CONSTEXPR
+        member_storage& operator=(member_storage&&) noexcept = default;
 
         constexpr member_storage(pointer data, size_type capacity, size_type size, size_type next) noexcept;
 
         constexpr member_storage(const member_storage&, pointer data) noexcept;
+
+        template <typename OtherT, std::size_t OtherExtent>
+        explicit constexpr member_storage(const span<OtherT, OtherExtent>&) noexcept;
 
         template <typename ContiguousIterator>
         constexpr member_storage(ContiguousIterator, ContiguousIterator) noexcept;
@@ -464,7 +495,7 @@ private:
         constexpr member_storage(ContiguousIterator, ContiguousIterator, ContiguousIterator, size_type) noexcept;
 
         template <std::size_t N>
-        constexpr member_storage(value_type (&array)[N]) noexcept;
+        explicit constexpr member_storage(value_type (&array)[N]) noexcept;
 
         constexpr size_type capacity() const noexcept;
 
