@@ -76,6 +76,8 @@ template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
 auto span<T, E>::operator=(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value) -> span&
 {
+    static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
+
     assign(std::move(input));
     return *this;
 }
@@ -176,6 +178,8 @@ template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
 void span<T, E>::assign(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value)
 {
+    static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
+
     clear();
     for (const auto& value : input)
     {
@@ -187,6 +191,8 @@ template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
 void span<T, E>::push_front(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value)
 {
+    static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
+
     if (full())
     {
         member.next = member.capacity() + index(member.next - 1);
@@ -202,6 +208,8 @@ template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
 void span<T, E>::push_back(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value)
 {
+    static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
+
     member.next = member.capacity() + index(member.next + 1);
     if (!full())
     {
@@ -235,6 +243,8 @@ template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
 auto span<T, E>::move_front() noexcept(std::is_nothrow_move_constructible<value_type>::value) -> value_type
 {
+    static_assert(std::is_move_constructible<T>::value, "T must be MoveConstructible");
+
     auto& old_front = front();
     pop_front(); // Item still lingers in storage
     return std::move(old_front);
@@ -244,6 +254,8 @@ template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
 auto span<T, E>::move_back() noexcept(std::is_nothrow_move_constructible<value_type>::value) -> value_type
 {
+    static_assert(std::is_move_constructible<T>::value, "T must be MoveConstructible");
+
     auto& old_back = back();
     pop_back(); // Item still lingers in storage
     return std::move(old_back);
@@ -253,6 +265,9 @@ template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
 void span<T, E>::advance_left(size_type count) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
 {
+    static_assert(std::is_move_constructible<T>::value, "T must be MoveConstructible");
+    static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
+
     if (size() < 2)
         return;
     count %= size();
@@ -276,6 +291,9 @@ template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
 void span<T, E>::advance_right(size_type count) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
 {
+    static_assert(std::is_move_constructible<T>::value, "T must be MoveConstructible");
+    static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
+
     if (size() < 2)
         return;
     count %= size();

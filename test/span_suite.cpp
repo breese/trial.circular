@@ -1495,6 +1495,18 @@ void test_ctor()
     TRIAL_TEST_EQ(span.capacity(), 4);
 }
 
+void test_clear()
+{
+    int array[4] = { 1, 2, 3 };
+    circular::span<const int> span(&array[0], &array[3],
+                                   &array[0], 3);
+    TRIAL_TEST_EQ(span.size(), 3);
+    TRIAL_TEST_EQ(span.front(), 1);
+    TRIAL_TEST_EQ(span.back(), 3);
+    span.clear();
+    TRIAL_TEST_EQ(span.size(), 0);
+}
+
 void test_pop_front()
 {
     int array[4] = { 1, 2, 3 };
@@ -1524,6 +1536,7 @@ void run()
 {
     // Cannot push or assign via const span
     test_ctor();
+    test_clear();
     test_pop_front();
     test_move_front();
 }

@@ -36,6 +36,9 @@ class array
     using storage = std::array<T, N>;
     using span = circular::template span<T, N>;
 
+    static_assert(std::is_destructible<T>::value, "T must be Erasable");
+    static_assert(std::is_default_constructible<T>::value, "T must be DefaultConstructible");
+
 public:
     using value_type = typename span::value_type;
     using size_type = typename span::size_type;
