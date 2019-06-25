@@ -8,10 +8,16 @@
 #
 ###############################################################################
 
-cmake_minimum_required(VERSION 3.0)
-project(trial.circular)
+cmake_minimum_required(VERSION 3.7)
+project(trial.circular CXX)
+
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
 add_subdirectory(cmake)
+add_subdirectory(doc EXCLUDE_FROM_ALL)
+
 
 enable_testing()
 add_subdirectory(test)
