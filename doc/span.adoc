@@ -201,14 +201,15 @@ public:
 
     array_range array_one()
     {
-        const auto front_index = &span::front() - storage::data();
-        return std::make_pair(&storage::front(), front_index);
+        const auto back_index = &span::back() - storage::data();
+        return std::make_pair(&storage::front(), back_index + 1);
     }
 
     array_range array_two()
     {
         const auto front_index = &span::front() - storage::data();
-        return std::make_pair(&storage::operator[](front_index), span::size() - front_index);
+        return std::make_pair(&storage::operator[](front_index),
+                              (front_index != 0) * (span::capacity() - front_index));
     }
 };
 ----
