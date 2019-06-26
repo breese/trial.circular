@@ -172,6 +172,47 @@ Mutable `operator[]` also exists.
 
 There are no member functions in `circular::span<T>` to create a subspan.
 
+There are no subspans that returns a circular span. Circular span iterators
+are not contiguous because they may wrap around from the end of the storage
+to the beginning. Circular span iterators can therefore not be used to
+create a smaller circular span within an existing circular span.
+
+There are no subspans that returns another type of span in order to avoid
+introducing another span type, whether `std::span` or something like
+`std::pair<pointer, size_type>`. Although it may be useful to identify the
+two storage areas that constitute a wrapped-around circular span, these
+can be easily calculated by the storage owner. For instance, an implementation
+of `boost::circular_buffer` based on the circular span can use pointer
+arithmetic.
+[source,c++,numbered]
+----
+template <typename T, typename Allocator = std::allocator<T>>
+class circular_buffer
+    : private std::vector<T, Allocator>,
+      private circular::span<T>
+{
+    using storage = std::vector<T, Allocator>;
+    using span = circular::span<T>;
+
+public:
+    using size_type = typename span::size_type;
+    using pointer = typename span::pointer;
+    using array_range = std::pair<pointer, size_type>;
+
+    array_range array_one()
+    {
+        const auto front_index = &span::front() - storage::data();
+        return std::make_pair(&storage::front(), front_index);
+    }
+
+    array_range array_two()
+    {
+        const auto front_index = &span::front() - storage::data();
+        return std::make_pair(&storage::operator[](front_index), span::size() - front_index);
+    }
+};
+----
+
 == Reference
 
 Defined in header `<trial/circular/span.hpp>`.
