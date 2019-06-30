@@ -167,52 +167,15 @@ expected though.
 
 Mutable `operator[]` also exists.
 
-[#rationale-no-subspans]
-=== No subspans
+[#rationale-subspans]
+=== Subspans
 
-There are no member functions in `circular::span<T>` to create a subspan.
+`span<T>::const_segment_type` is used to return subspans. The type must fulfill
+the _BidirectionalRange_ requirements, which means that it has `begin()` and `end()`
+functions returning a _BidirectionalIterator_.
 
-There are no subspans that returns a circular span. Circular span iterators
-are not contiguous because they may wrap around from the end of the storage
-to the beginning. Circular span iterators can therefore not be used to
-create a smaller circular span within an existing circular span.
-
-There are no subspans that returns another type of span in order to avoid
-introducing another span type, whether `std::span` or something like
-`std::pair<pointer, size_type>`. Although it may be useful to identify the
-two storage areas that constitute a wrapped-around circular span, these
-can be easily calculated by the storage owner. For instance, an implementation
-of `boost::circular_buffer` based on the circular span can use pointer
-arithmetic.
-[source,c++,numbered]
-----
-template <typename T, typename Allocator = std::allocator<T>>
-class circular_buffer
-    : private std::vector<T, Allocator>,
-      private circular::span<T>
-{
-    using storage = std::vector<T, Allocator>;
-    using span = circular::span<T>;
-
-public:
-    using size_type = typename span::size_type;
-    using pointer = typename span::pointer;
-    using array_range = std::pair<pointer, size_type>;
-
-    array_range array_one()
-    {
-        const auto back_index = &span::back() - storage::data();
-        return std::make_pair(&storage::front(), back_index + 1);
-    }
-
-    array_range array_two()
-    {
-        const auto front_index = &span::front() - storage::data();
-        return std::make_pair(&storage::operator[](front_index),
-                              (front_index != 0) * (span::capacity() - front_index));
-    }
-};
-----
+Apart from the _BidirectionalRange_ requirement, the type is unspecified. This allows
+us to change the type later on to, say, `std::span`.
 
 == Reference
 
@@ -258,6 +221,7 @@ specified `Extent` template argument. Dynamic extent is used by default.
 | `const_reference` | `const element_type&`
 | `const_iterator` | _BidirectionalIterator_ with `const value_type`
 | `const_reverse_iterator` | `std::reverse_iterator<const_iterator>`
+| `const_segment` | _BidirectionalRange_ with `const value_type`
 |===
 Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
 
@@ -377,6 +341,14 @@ noexcept if `value_type` is nothrow _MoveAssignable_.
  +
  +
  _Expects:_ `!empty()`
+| `constexpr const_segment front_segment() const noexcept` | Returns a range of the first contiguous segment of the span.
+ +
+ +
+ _Expects:_ `capacity() > 0`
+| `constexpr const_segment back_segment() const noexcept` | Returns a range of the last contiguous segment of the span.
+ +
+ +
+ _Expects:_ `capacity() > 0`
 | `constexpr`{wj}footnote:constexpr11[] `reference operator[](size_type pos) noexcept` | Returns a reference to the element at the specified position in the span.
  +
  +

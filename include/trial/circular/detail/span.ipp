@@ -141,6 +141,25 @@ constexpr auto span<T, E>::back() const noexcept -> const_reference
 }
 
 template <typename T, std::size_t E>
+constexpr auto span<T, E>::front_segment() const noexcept -> const_segment
+{
+    return (index(front_index()) <= index(back_index()))
+        ? detail::make_iterator_range(const_iterator(this, front_index()),
+                                      cend())
+        : detail::make_iterator_range(const_iterator(this, front_index()),
+                                      const_iterator(this, capacity()));
+}
+
+template <typename T, std::size_t E>
+constexpr auto span<T, E>::back_segment() const noexcept -> const_segment
+{
+    return (index(front_index()) > index(back_index())) && (index(member.next) < size())
+        ? detail::make_iterator_range(const_iterator(this, 0),
+                                      const_iterator(this, index(member.next)))
+        : detail::make_iterator_range(cend(), cend());
+}
+
+template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
 auto span<T, E>::operator[](size_type position) noexcept -> reference
 {
@@ -381,25 +400,6 @@ template <typename T, std::size_t E>
 constexpr auto span<T, E>::crend() const noexcept -> const_reverse_iterator
 {
     return const_reverse_iterator(std::move(begin()));
-}
-
-template <typename T, std::size_t E>
-constexpr auto span<T, E>::front_segment() const noexcept -> const_segment_type
-{
-    return (index(front_index()) <= index(back_index()))
-        ? detail::make_iterator_range(const_iterator(this, front_index()),
-                                      cend())
-        : detail::make_iterator_range(const_iterator(this, front_index()),
-                                      const_iterator(this, capacity()));
-}
-
-template <typename T, std::size_t E>
-constexpr auto span<T, E>::back_segment() const noexcept -> const_segment_type
-{
-    return (index(front_index()) > index(back_index())) && (index(member.next) < size())
-        ? detail::make_iterator_range(const_iterator(this, 0),
-                                      const_iterator(this, index(member.next)))
-        : detail::make_iterator_range(cend(), cend());
 }
 
 //-----------------------------------------------------------------------------
