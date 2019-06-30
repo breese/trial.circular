@@ -488,6 +488,7 @@ private:
         TRIAL_CXX14_CONSTEXPR
         void capacity(size_type) noexcept;
 
+        TRIAL_CXX14_CONSTEXPR
         void assign(const member_storage&, pointer) noexcept;
 
         pointer data;
@@ -527,6 +528,7 @@ private:
         TRIAL_CXX14_CONSTEXPR
         void capacity(size_type input) noexcept;
 
+        TRIAL_CXX14_CONSTEXPR
         void assign(const member_storage&, pointer) noexcept;
 
         pointer data;
