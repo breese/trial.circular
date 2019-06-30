@@ -541,6 +541,114 @@ void run()
 } // namespace inserter_suite
 
 //-----------------------------------------------------------------------------
+
+namespace range_for_suite
+{
+
+void empty()
+{
+    int array[4];
+    circular::span<int> span(array);
+    int sum = 0;
+    for (auto&& element : span)
+    {
+        sum += element;
+    }
+    TRIAL_TEST_EQ(sum, 0);
+}
+
+void full()
+{
+    int array[4];
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44 };
+    int sum = 0;
+    for (auto&& element : span)
+    {
+        sum += element;
+    }
+    TRIAL_TEST_EQ(sum, 11 + 22 + 33 + 44);
+}
+
+void overfull()
+{
+    int array[4];
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44, 55 };
+    int sum = 0;
+    for (auto&& element : span)
+    {
+        sum += element;
+    }
+    TRIAL_TEST_EQ(sum, 22 + 33 + 44 + 55);
+}
+
+void range_empty()
+{
+    int array[4];
+    circular::span<int> span(array);
+    int sum = 0;
+    for (auto&& element : span.front_range())
+    {
+        sum += element;
+    }
+    TRIAL_TEST_EQ(sum, 0);
+    for (auto&& element : span.back_range())
+    {
+        sum += element;
+    }
+    TRIAL_TEST_EQ(sum, 0);
+}
+
+void range_full()
+{
+    int array[4];
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44 };
+    int sum = 0;
+    for (auto&& element : span.front_range())
+    {
+        sum += element;
+    }
+    TRIAL_TEST_EQ(sum, 11 + 22 + 33 + 44);
+    for (auto&& element : span.back_range())
+    {
+        sum += element;
+    }
+    TRIAL_TEST_EQ(sum, 11 + 22 + 33 + 44);
+}
+
+void range_overfull()
+{
+    int array[4];
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44, 55 };
+    int sum = 0;
+    for (auto&& element : span.front_range())
+    {
+        sum += element;
+    }
+    TRIAL_TEST_EQ(sum, 22 + 33 + 44);
+    for (auto&& element : span.back_range())
+    {
+        sum += element;
+    }
+    TRIAL_TEST_EQ(sum, 22 + 33 + 44 + 55);
+}
+
+void run()
+{
+    empty();
+    full();
+    overfull();
+    range_empty();
+    range_full();
+    range_overfull();
+}
+
+} // namespace range_for_suite
+
+//-----------------------------------------------------------------------------
 // main
 //-----------------------------------------------------------------------------
 
@@ -550,6 +658,7 @@ int main()
     iterator_suite::run();
     reverse_suite::run();
     inserter_suite::run();
+    range_for_suite::run();
 
     return boost::report_errors();
 }

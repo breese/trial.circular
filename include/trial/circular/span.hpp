@@ -17,6 +17,7 @@
 #include <limits>
 #include <trial/circular/detail/config.hpp>
 #include <trial/circular/detail/type_traits.hpp>
+#include <trial/circular/detail/iterator_range.hpp>
 
 namespace trial
 {
@@ -102,13 +103,19 @@ private:
     };
 
 public:
-    //! @brief Bi-directional iterator.
+    //! @brief Bidirectional iterator.
     //!
     //! Mutable iterators are not supported to avoid incorrect use in mutating
     //! algorithms.
 
     using const_iterator = basic_iterator<typename std::add_const<value_type>::type>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
+    //! @brief Bidirectional range.
+    //!
+    //! Unspecified type that models the BidirectionalRange concept.
+
+    using const_range_type = circular::detail::iterator_range<const_iterator>;
 
     //! @brief Creates empty circular span.
     //!
@@ -398,6 +405,24 @@ public:
     //! @brief Returns reverse iterator to the end of the span.
 
     constexpr const_reverse_iterator crend() const noexcept;
+
+    //! @brief Returns range of the first contiguous part of the span.
+    //!
+    //! The range covers all elements from the beginning of the span until
+    //! the end of the storage if the span crosses the end of the storage;
+    //! otherwise until the end of the span.
+
+    constexpr const_range_type front_range() const noexcept;
+
+    //! @brief Returns range of the last contiguous part of the span.
+    //!
+    //! The range covers the remaining elements not covered by front_range().
+    //!
+    //! If the span does not cross the end of the storage, then a pair of end
+    //! iterators are returned. Otherwise, the range starts at the beginning
+    //! of the storage and ends at the end of the span.
+
+    constexpr const_range_type back_range() const noexcept;
 
 protected:
     //! @brief Creates circular span by copying.

@@ -362,25 +362,44 @@ constexpr auto span<T, E>::cend() const noexcept -> const_iterator
 template <typename T, std::size_t E>
 constexpr auto span<T, E>::rbegin() const noexcept -> const_reverse_iterator
 {
-    return const_reverse_iterator(end());
+    return const_reverse_iterator(std::move(end()));
 }
 
 template <typename T, std::size_t E>
 constexpr auto span<T, E>::rend() const noexcept -> const_reverse_iterator
 {
-    return const_reverse_iterator(begin());
+    return const_reverse_iterator(std::move(begin()));
 }
 
 template <typename T, std::size_t E>
 constexpr auto span<T, E>::crbegin() const noexcept -> const_reverse_iterator
 {
-    return const_reverse_iterator(end());
+    return const_reverse_iterator(std::move(end()));
 }
 
 template <typename T, std::size_t E>
 constexpr auto span<T, E>::crend() const noexcept -> const_reverse_iterator
 {
-    return const_reverse_iterator(begin());
+    return const_reverse_iterator(std::move(begin()));
+}
+
+template <typename T, std::size_t E>
+constexpr auto span<T, E>::front_range() const noexcept -> const_range_type
+{
+    return (index(front_index()) <= index(back_index()))
+        ? detail::make_iterator_range(const_iterator(this, front_index()),
+                                      cend())
+        : detail::make_iterator_range(const_iterator(this, front_index()),
+                                      const_iterator(this, capacity()));
+}
+
+template <typename T, std::size_t E>
+constexpr auto span<T, E>::back_range() const noexcept -> const_range_type
+{
+    return (index(front_index()) > index(back_index())) && (index(member.next) < size())
+        ? detail::make_iterator_range(const_iterator(this, 0),
+                                      const_iterator(this, index(member.next)))
+        : detail::make_iterator_range(cend(), cend());
 }
 
 //-----------------------------------------------------------------------------
