@@ -111,11 +111,11 @@ public:
     using const_iterator = basic_iterator<typename std::add_const<value_type>::type>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
-    //! @brief Bidirectional range.
+    //! @brief Bidirectional segment.
     //!
     //! Unspecified type that models the BidirectionalRange concept.
 
-    using const_range_type = circular::detail::iterator_range<const_iterator>;
+    using const_segment_type = circular::detail::iterator_range<const_iterator>;
 
     //! @brief Creates empty circular span.
     //!
@@ -406,23 +406,28 @@ public:
 
     constexpr const_reverse_iterator crend() const noexcept;
 
-    //! @brief Returns range of the first contiguous part of the span.
+    //! @brief Returns first contiguous segment of the span.
     //!
-    //! The range covers all elements from the beginning of the span until
-    //! the end of the storage if the span crosses the end of the storage;
+    //! The front segment covers all elements from the beginning of the span
+    //! until the end of the storage if the span crosses the end of the storage;
     //! otherwise until the end of the span.
-
-    constexpr const_range_type front_range() const noexcept;
-
-    //! @brief Returns range of the last contiguous part of the span.
     //!
-    //! The range covers the remaining elements not covered by front_range().
+    //! @pre capacity() > 0
+
+    constexpr const_segment_type front_segment() const noexcept;
+
+    //! @brief Returns last contiguous segment of the span.
+    //!
+    //! The back segment covers the remaining elements not covered by the front
+    //! segment.
     //!
     //! If the span does not cross the end of the storage, then a pair of end
-    //! iterators are returned. Otherwise, the range starts at the beginning
+    //! iterators are returned. Otherwise, the segment starts at the beginning
     //! of the storage and ends at the end of the span.
+    //!
+    //! @pre capacity() > 0
 
-    constexpr const_range_type back_range() const noexcept;
+    constexpr const_segment_type back_segment() const noexcept;
 
 protected:
     //! @brief Creates circular span by copying.

@@ -583,53 +583,53 @@ void overfull()
     TRIAL_TEST_EQ(sum, 22 + 33 + 44 + 55);
 }
 
-void range_empty()
+void segment_empty()
 {
     int array[4];
     circular::span<int> span(array);
     int sum = 0;
-    for (auto&& element : span.front_range())
+    for (auto&& element : span.front_segment())
     {
         sum += element;
     }
     TRIAL_TEST_EQ(sum, 0);
-    for (auto&& element : span.back_range())
+    for (auto&& element : span.back_segment())
     {
         sum += element;
     }
     TRIAL_TEST_EQ(sum, 0);
 }
 
-void range_full()
+void segment_full()
 {
     int array[4];
     circular::span<int> span(array);
     span = { 11, 22, 33, 44 };
     int sum = 0;
-    for (auto&& element : span.front_range())
+    for (auto&& element : span.front_segment())
     {
         sum += element;
     }
     TRIAL_TEST_EQ(sum, 11 + 22 + 33 + 44);
-    for (auto&& element : span.back_range())
+    for (auto&& element : span.back_segment())
     {
         sum += element;
     }
     TRIAL_TEST_EQ(sum, 11 + 22 + 33 + 44);
 }
 
-void range_overfull()
+void segment_overfull()
 {
     int array[4];
     circular::span<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     int sum = 0;
-    for (auto&& element : span.front_range())
+    for (auto&& element : span.front_segment())
     {
         sum += element;
     }
     TRIAL_TEST_EQ(sum, 22 + 33 + 44);
-    for (auto&& element : span.back_range())
+    for (auto&& element : span.back_segment())
     {
         sum += element;
     }
@@ -641,9 +641,9 @@ void run()
     empty();
     full();
     overfull();
-    range_empty();
-    range_full();
-    range_overfull();
+    segment_empty();
+    segment_full();
+    segment_overfull();
 }
 
 } // namespace range_for_suite

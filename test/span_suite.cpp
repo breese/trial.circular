@@ -453,24 +453,24 @@ void dynamic_is_normalized()
     TRIAL_TEST(span.is_normalized());
 }
 
-void dynamic_front_range()
+void dynamic_front_segment()
 {
     int array[4];
     circular::span<int> span(array);
     span = { 11, 22 };
-    auto range = span.front_range();
-    TRIAL_TEST(range.begin() == span.begin());
-    TRIAL_TEST(range.end() == span.end());
+    auto segment = span.front_segment();
+    TRIAL_TEST(segment.begin() == span.begin());
+    TRIAL_TEST(segment.end() == span.end());
 }
 
-void dynamic_back_range()
+void dynamic_back_segment()
 {
     int array[4];
     circular::span<int> span(array);
     span = { 11, 22 };
-    auto range = span.back_range();
-    TRIAL_TEST(range.begin() == span.end());
-    TRIAL_TEST(range.end() == span.end());
+    auto segment = span.back_segment();
+    TRIAL_TEST(segment.begin() == span.end());
+    TRIAL_TEST(segment.end() == span.end());
 }
 
 void run()
@@ -511,8 +511,8 @@ void run()
     dynamic_advance_right();
     dynamic_normalize();
     dynamic_is_normalized();
-    dynamic_front_range();
-    dynamic_back_range();
+    dynamic_front_segment();
+    dynamic_back_segment();
 }
 
 } // namespace api_dynamic_suite
@@ -970,24 +970,24 @@ void fixed_is_normalized()
     TRIAL_TEST(span.is_normalized());
 }
 
-void fixed_front_range()
+void fixed_front_segment()
 {
     int array[4];
     circular::span<int, 4> span(array);
     span = { 11, 22 };
-    auto range = span.front_range();
-    TRIAL_TEST(range.begin() == span.begin());
-    TRIAL_TEST(range.end() == span.end());
+    auto segment = span.front_segment();
+    TRIAL_TEST(segment.begin() == span.begin());
+    TRIAL_TEST(segment.end() == span.end());
 }
 
-void fixed_back_range()
+void fixed_back_segment()
 {
     int array[4];
     circular::span<int, 4> span(array);
     span = { 11, 22 };
-    auto range = span.back_range();
-    TRIAL_TEST(range.begin() == span.end());
-    TRIAL_TEST(range.end() == span.end());
+    auto segment = span.back_segment();
+    TRIAL_TEST(segment.begin() == span.end());
+    TRIAL_TEST(segment.end() == span.end());
 }
 
 void run()
@@ -1029,8 +1029,8 @@ void run()
     fixed_advance_right();
     fixed_normalize();
     fixed_is_normalized();
-    fixed_front_range();
-    fixed_back_range();
+    fixed_front_segment();
+    fixed_back_segment();
 }
 
 } // namespace api_fixed_suite
@@ -3183,206 +3183,206 @@ void run()
 
 } // namespace normalize_suite
 
-namespace range_suite
+namespace segment_suite
 {
 
-void range_empty()
+void segment_empty()
 {
     int array[4];
     circular::span<int> span(array);
     {
-        auto range = span.front_range();
-        TRIAL_TEST(range.begin() == span.begin());
-        TRIAL_TEST(range.end() == span.end());
+        auto segment = span.front_segment();
+        TRIAL_TEST(segment.begin() == span.begin());
+        TRIAL_TEST(segment.end() == span.end());
 
         std::vector<int> expect = { };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
-        TRIAL_TEST(range.begin() == span.end());
-        TRIAL_TEST(range.end() == span.end());
+        auto segment = span.back_segment();
+        TRIAL_TEST(segment.begin() == span.end());
+        TRIAL_TEST(segment.end() == span.end());
 
         std::vector<int> expect = { };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
 }
 
-void range_partial()
+void segment_partial()
 {
     int array[4];
     circular::span<int> span(array);
     // 11 X X X
     span = { 11 };
     {
-        auto range = span.front_range();
-        TRIAL_TEST(range.begin() == span.begin());
-        TRIAL_TEST(range.end() == span.end());
+        auto segment = span.front_segment();
+        TRIAL_TEST(segment.begin() == span.begin());
+        TRIAL_TEST(segment.end() == span.end());
 
         std::vector<int> expect = { 11 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
-        TRIAL_TEST(range.begin() == span.end());
-        TRIAL_TEST(range.end() == span.end());
+        auto segment = span.back_segment();
+        TRIAL_TEST(segment.begin() == span.end());
+        TRIAL_TEST(segment.end() == span.end());
 
         std::vector<int> expect = { };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // 11 22 X X
     span.push_back(22);
     {
-        auto range = span.front_range();
-        TRIAL_TEST(range.begin() == span.begin());
-        TRIAL_TEST(range.end() == span.end());
+        auto segment = span.front_segment();
+        TRIAL_TEST(segment.begin() == span.begin());
+        TRIAL_TEST(segment.end() == span.end());
 
         std::vector<int> expect = { 11, 22 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
-        TRIAL_TEST(range.begin() == span.end());
-        TRIAL_TEST(range.end() == span.end());
+        auto segment = span.back_segment();
+        TRIAL_TEST(segment.begin() == span.end());
+        TRIAL_TEST(segment.end() == span.end());
 
         std::vector<int> expect = { };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // 11 22 33 X
     span.push_back(33);
     {
-        auto range = span.front_range();
-        TRIAL_TEST(range.begin() == span.begin());
-        TRIAL_TEST(range.end() == span.end());
+        auto segment = span.front_segment();
+        TRIAL_TEST(segment.begin() == span.begin());
+        TRIAL_TEST(segment.end() == span.end());
 
         std::vector<int> expect = { 11, 22, 33 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
-        TRIAL_TEST(range.begin() == span.end());
-        TRIAL_TEST(range.end() == span.end());
+        auto segment = span.back_segment();
+        TRIAL_TEST(segment.begin() == span.end());
+        TRIAL_TEST(segment.end() == span.end());
 
         std::vector<int> expect = { };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // 11 22 33 44
     span.push_back(44);
     {
-        auto range = span.front_range();
-        TRIAL_TEST(range.begin() == span.begin());
-        TRIAL_TEST(range.end() == span.end());
+        auto segment = span.front_segment();
+        TRIAL_TEST(segment.begin() == span.begin());
+        TRIAL_TEST(segment.end() == span.end());
 
         std::vector<int> expect = { 11, 22, 33, 44 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
-        TRIAL_TEST(range.begin() == span.end());
-        TRIAL_TEST(range.end() == span.end());
+        auto segment = span.back_segment();
+        TRIAL_TEST(segment.begin() == span.end());
+        TRIAL_TEST(segment.end() == span.end());
 
         std::vector<int> expect = { };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
 }
 
-void range_overfull()
+void segment_overfull()
 {
     int array[4];
     circular::span<int> span(array);
     // 55 22 33 44
     span = { 11, 22, 33, 44, 55 };
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 22, 33, 44 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { 55 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // 55 66 33 44
     span.push_back(66);
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 33, 44 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { 55, 66 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // 55 66 77 44
     span.push_back(77);
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 44 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { 55, 66, 77 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // 55 66 77 88
     span.push_back(88);
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 55, 66, 77, 88 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // 99 66 77 88
     span.push_back(99);
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 66, 77, 88 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { 99 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
 }
 
-void range_overfull_1()
+void segment_overfull_1()
 {
     int array[4];
     circular::span<int> span(array);
@@ -3390,90 +3390,90 @@ void range_overfull_1()
     span = { 11, 22, 33, 44, 55 };
     span.pop_front();
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 33, 44 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { 55 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // 55 66 X 44
     span.push_back(66);
     span.pop_front();
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 44 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { 55, 66 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // 55 66 77 X
     span.push_back(77);
     span.pop_front();
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 55, 66, 77 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // X 66 77 88
     span.push_back(88);
     span.pop_front();
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 66, 77, 88 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // 99 X 77 88
     span.push_back(99);
     span.pop_front();
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 77, 88 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { 99 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
 }
 
-void range_overfull_2()
+void segment_overfull_2()
 {
     int array[4];
     circular::span<int> span(array);
@@ -3482,90 +3482,90 @@ void range_overfull_2()
     span.pop_front();
     span.pop_front();
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 44 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { 55 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // 55 66 X X
     span.push_back(66);
     span.pop_front();
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 55, 66 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // X 66 77 X
     span.push_back(77);
     span.pop_front();
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 66, 77 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // X X 77 88
     span.push_back(88);
     span.pop_front();
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 77, 88 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // 99 X X 88
     span.push_back(99);
     span.pop_front();
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 88 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { 99 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
 }
 
-void range_overfull_3()
+void segment_overfull_3()
 {
     int array[4];
     circular::span<int> span(array);
@@ -3575,100 +3575,100 @@ void range_overfull_3()
     span.pop_front();
     span.pop_front();
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 55 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // X 66 X X
     span.push_back(66);
     span.pop_front();
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 66 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // X X 77 X
     span.push_back(77);
     span.pop_front();
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 77 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // X X X 88
     span.push_back(88);
     span.pop_front();
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 88 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     // 99 X X X
     span.push_back(99);
     span.pop_front();
     {
-        auto range = span.front_range();
+        auto segment = span.front_segment();
 
         std::vector<int> expect = { 99 };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
     {
-        auto range = span.back_range();
+        auto segment = span.back_segment();
 
         std::vector<int> expect = { };
-        TRIAL_TEST_ALL_EQ(range.begin(), range.end(),
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
                           expect.begin(), expect.end());
     }
 }
 
 void run()
 {
-    range_empty();
-    range_partial();
-    range_overfull();
-    range_overfull_1();
-    range_overfull_2();
-    range_overfull_3();
+    segment_empty();
+    segment_partial();
+    segment_overfull();
+    segment_overfull_1();
+    segment_overfull_2();
+    segment_overfull_3();
 }
 
-} // namespace range_suite
+} // namespace segment_suite
 
 //-----------------------------------------------------------------------------
 // main
@@ -3687,7 +3687,7 @@ int main()
     window_size_suite::run();
     advance_suite::run();
     normalize_suite::run();
-    range_suite::run();
+    segment_suite::run();
  
     return boost::report_errors();
 }
