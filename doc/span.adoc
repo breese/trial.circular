@@ -170,8 +170,8 @@ Mutable `operator[]` also exists.
 [#rationale-subspans]
 === Subspans
 
-`span<T>::const_segment_type` is used to return subspans. The type must fulfill
-the _BidirectionalRange_ requirements, which means that it has `begin()` and `end()`
+`span<T>::const_segment` is used to return subspans. The type must fulfill the
+_BidirectionalRange_ requirements, which means that it has `begin()` and `end()`
 functions returning a _BidirectionalIterator_.
 
 Apart from the _BidirectionalRange_ requirement, the type is unspecified. This allows
