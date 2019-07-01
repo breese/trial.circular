@@ -143,11 +143,13 @@ constexpr auto span<T, E>::back() const noexcept -> const_reference
 template <typename T, std::size_t E>
 constexpr auto span<T, E>::front_segment() const noexcept -> const_segment
 {
-    return (index(front_index()) <= index(back_index()))
-        ? detail::make_iterator_range(const_iterator(this, front_index()),
-                                      cend())
-        : detail::make_iterator_range(const_iterator(this, front_index()),
-                                      const_iterator(this, capacity()));
+    return (empty())
+        ? detail::make_iterator_range(cend(), cend())
+        : ((index(front_index()) <= index(back_index()))
+           ? detail::make_iterator_range(const_iterator(this, front_index()),
+                                         cend())
+           : detail::make_iterator_range(const_iterator(this, front_index()),
+                                         const_iterator(this, capacity())));
 }
 
 template <typename T, std::size_t E>
