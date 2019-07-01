@@ -160,22 +160,44 @@ container by accessing the elements directly in storage, which means that the
 container is not informed about those changes. Consequently, the internal state
 of the input span is not copied to the destination span.
 
-Therefore there is a `circular::span<T>::const_iterator` but no `circular::span<T>::iterator`.
+Therefore there is a `circular::span<T>::const_iterator` but no
+`circular::span<T>::iterator`.
 
 Using `std::copy` with `std::front_inserter` or `std::back_inserter` does work as
 expected though.
 
-Mutable `operator[]` also exists.
+Mutable `operator[]` also exists if there is a need to update existing elements.
+This operator cannot insert new elements, so the above-mentioned problem for
+mutable iterators does not exists for mutable `operator[]`.
 
 [#rationale-subspans]
 === Subspans
 
-`span<T>::const_segment` is used to return subspans. The type must fulfill the
-_BidirectionalRange_ requirements, which means that it has `begin()` and `end()`
-functions returning a _BidirectionalIterator_.
+Circular span supports subspans, but unlike `std::span` a subspans of a circular
+span is not another circular span. Creating a circular span must be done on
+contiguous storage. Although circular span operates on contiguous storage, the
+range from `begin()` until `end()` is not guaranteed to be contiguous as it may
+wrap around the underlying storage. In other words, a circular span cannot be
+constructed from another circular span.
 
-Apart from the _BidirectionalRange_ requirement, the type is unspecified. This allows
-us to change the type later on to, say, `std::span`.
+Instead `span<T>::const_segment` is used to represent subspans. The type fulfills
+the _BidirectionalRange_ requirements, which means that it has `begin()` and
+`end()` functions returning a _BidirectionalIterator_. Beyond that, the type is
+unspecified.
+
+There are two member functions that returns a subspan: `front_segment()` returns
+a range of all contiguous elements starting from the front of the span, and
+`back_segment` returns a range of any left-over elements that have been wrapped
+around in the underlying storage.
+This functionality is useful for use cases such as zero-copy network transmission
+of the circular span.
+
+While `front_segment()` and `back_segment()` returns segments of contiguous storage
+and therefore could have returned a circular span, this is not necessarily the
+case for other kinds of subspans we may want to add. However, as the circular span
+itself fulfills the _BidirectionalRange_ we could choose to implement `const_segment`
+in terms of circular span, although a more lean span type, like `std::span` would
+be a more prudent choice.
 
 == Reference
 
