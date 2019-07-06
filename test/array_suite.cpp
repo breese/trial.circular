@@ -140,6 +140,22 @@ void api_back()
     TRIAL_TEST_EQ(data.back(), 11);
 }
 
+void api_front_segment()
+{
+    circular::array<int, 4> data = { 11, 22, 33 };
+    auto segment = data.front_segment();
+    TRIAL_TEST(segment.begin() == data.begin());
+    TRIAL_TEST(segment.end() == data.end());
+}
+
+void api_back_segment()
+{
+    circular::array<int, 4> data = { 11, 22, 33 };
+    auto segment = data.back_segment();
+    TRIAL_TEST(segment.begin() == data.end());
+    TRIAL_TEST(segment.end() == data.end());
+}
+
 void api_operator_index()
 {
     circular::array<int, 4> data = {11, 22, 33};
@@ -291,6 +307,8 @@ void run()
     api_full();
     api_front();
     api_back();
+    api_front_segment();
+    api_back_segment();
     api_operator_index();
     api_clear();
     api_push_front();

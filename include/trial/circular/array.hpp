@@ -47,6 +47,7 @@ public:
     using const_reference = typename span::const_reference;
     using const_iterator = typename span::const_iterator;
     using const_reverse_iterator = typename span::const_reverse_iterator;
+    using const_segment = typename span::const_segment;
 
     //! @brief Creates empty circular array.
     //!
@@ -131,6 +132,12 @@ public:
 
     //! @brief Returns reference to last element in span.
     using span::back;
+
+    //! @brief Returns first contiguous segment of circular array.
+    using span::front_segment;
+
+    //! @brief Returns last contiguous segment of circular array.
+    using span::back_segment;
 
     //! @brief Returns reference to element at position.
     using span::operator[];
