@@ -35,7 +35,7 @@ namespace circular
 //! Size is the current number of elements in the span.
 //!
 //! Capacity is the maximum number of elements that can be inserted without
-//! overwriting hold elements. Capacity cannot be changed.
+//! overwriting old elements. Capacity cannot be changed.
 //!
 //! Violation of any precondition results in undefined behavior.
 
@@ -134,6 +134,8 @@ public:
     //! @brief Creates circular span by copying.
     //!
     //! Enables copying mutable span to immutable span.
+    //!
+    //! @pre Extent == N or Extent == dynamic_extent
 
     template <typename OtherT,
               std::size_t OtherExtent,
@@ -169,6 +171,7 @@ public:
     //!
     //! The span covers the range from @c begin to @c end.
     //!
+    //! @pre Extent == std::distance(begin, end) or Extent == dynamic_extent
     //! @post capacity() == std::distance(begin, end)
     //! @post size() == 0
 
@@ -184,6 +187,7 @@ public:
     //! @c first had already been pushed onto the span.
     //!
     //! @pre length <= std::distance(first, end)
+    //! @pre Extent == std::distance(begin, end) or Extent == dynamic_extent
     //! @post capacity() == std::distance(begin, end)
     //! @post size() == length
 
@@ -308,6 +312,8 @@ public:
     //!
     //! If span is full, then the element at the end of the span is silently erased
     //! to make room for the @c input value.
+    //!
+    //! @pre capacity() > 0
 
     TRIAL_CXX14_CONSTEXPR
     void push_front(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
@@ -316,6 +322,8 @@ public:
     //!
     //! If span is full, then the element at the end of the span is silently erased
     //! to make room for the @c input value.
+    //!
+    //! @pre capacity() > 0
 
     TRIAL_CXX14_CONSTEXPR
     void push_back(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
