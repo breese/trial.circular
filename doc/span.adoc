@@ -158,13 +158,17 @@ destination container in a way that causes the destination span to become invali
 For instance `std::copy` copies the elements from one container into another
 container by accessing the elements directly in storage, which means that the
 container is not informed about those changes. Consequently, the internal state
-of the input span is not copied to the destination span.
+of the input span is not copied to the destination span. So copying a full span
+into an empty span will leave the destination span empty even though all elements
+have been copied into its storage.
 
-Therefore there is a `circular::span<T>::const_iterator` but no
-`circular::span<T>::iterator`.
+Therefore `circular::span<T>` has const iterators, such as `const_iterator` or
+`const_reverse_iterator`, but no mutable iterators, e.g. `iterator` or
+`reverse_iterator`.
 
-Using `std::copy` with `std::front_inserter` or `std::back_inserter` does work as
-expected though.
+Using `std::copy` with `std::back_inserter` invokes `circular::span<T>::push_back()`
+so it does work as expected. The same goes for `std::front_inserter`.
+The inserters do not require mutable iterators.
 
 Mutable `operator[]` also exists if there is a need to update existing elements.
 This operator cannot insert new elements, so the above-mentioned problem for
@@ -370,19 +374,19 @@ Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
 | `constexpr{wj}footnote:constexpr11[] reference front() noexcept` | Returns a reference to the first element in the span.
  +
  +
- _Expects:_ `!empty()`
+ _Expects:_ `size() > 0`
 | `constexpr const_reference front() const noexcept` | Returns a constant reference to the first element in the span.
  +
  +
- _Expects:_ `!empty()`
+ _Expects:_ `size() > 0`
 | `constexpr{wj}footnote:constexpr11[] reference back() noexcept` | Returns a reference to the last element in the span.
  +
  +
- _Expects:_ `!empty()`
+ _Expects:_ `size() > 0`
 | `constexpr const_reference back() const noexcept` | Returns a constant reference to the last element in the span.
  +
  +
- _Expects:_ `!empty()`
+ _Expects:_ `size() > 0`
 | `constexpr const_segment front_segment() const noexcept` | Returns a range of the first contiguous segment of the span.
  +
  +
@@ -399,7 +403,10 @@ Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
  +
  +
  _Expects:_ `pos < size()`
-| `constexpr{wj}footnote:constexpr11[] void clear() noexcept` | Clears the span. The elements in the underlying storage are not destroyed.
+| `constexpr{wj}footnote:constexpr11[] void clear() noexcept` | Clears the span.
+ +
+ +
+ The elements in the underlying storage are not destroyed.
  +
  +
  _Ensures:_ `size() == 0`
@@ -436,29 +443,45 @@ Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
 | `constexpr{wj}footnote:constexpr11[] void pop_front(size_type count) noexcept` | Erases the specified number of elements from the beginning of the span. If the argument is omitted, then only one element is erased.
  +
  +
- _Expects:_ `0 < count \<= size()`
+ The erased elements in the underlying storage are not destroyed.
+ +
+ +
+ _Expects:_ `count > 0`
+ +
+ _Expects:_ `count \<= size()`
 | `constexpr{wj}footnote:constexpr11[] void pop_back(size_type count) noexcept` | Erases the specified number of elements from the end of the span. If the argument is omitted, then only one element is erased.
  +
  +
- _Expects:_ `0 < count \<= size()`
+ The erased elements in the underlying storage are not destroyed.
+ +
+ +
+ _Expects:_ `count > 0`
+ +
+ _Expects:_ `count \<= size()`
 | `constexpr{wj}footnote:constexpr11[] value_type move_front() noexcept(_see Remarks_)` | Erases and returns an element from the beginning of the span.
  +
  +
- _Expects:_ `!empty()`
+ The erased element in the underlying storage is left in a moved-from state.
+ +
+ +
+ _Expects:_ `size() > 0`
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveConstructible_.
 | `constexpr{wj}footnote:constexpr11[] value_type move_back() noexcept(_see Remarks_)` | Erases and returns an element from the end of the span.
  +
  +
- _Expects:_ `!empty()`
+ The erased element in the underlying storage is left in a moved-from state.
+ +
+ +
+ _Expects:_ `size() > 0`
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveConstructible_.
 | `constexpr{wj}footnote:constexpr11[] void advance_left(size_type) noexcept(_see Remarks_)` | Rotates the span left by the specified amount.
  +
  +
-If the span is full, then the internal state is updated to emulate a rotate, but leaving the elements in their original memory position. Constant time complexity.
+If the span is full, then the internal state is updated to emulate a rotate, but leaving the elements in their original storage position. Constant time complexity.
  +
  +
 If the span is not full, then elements are moved. Linear time complexity.
@@ -468,14 +491,17 @@ If the span is not full, then elements are moved. Linear time complexity.
 | `constexpr{wj}footnote:constexpr11[] void advance_right(size_type) noexcept(_see Remarks_)` | Rotates the span right by the specified amount.
  +
  +
-If the span is full, then the internal state is updated to emulate a rotate, but leaving the elements in their original memory position. Constant time complexity.
+If the span is full, then the internal state is updated to emulate a rotate, but leaving the elements in their original storage position. Constant time complexity.
  +
  +
 If the span is not full, then elements are moved. Linear time complexity.
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveConstructible_ and _MoveAssignable_.
-| `constexpr{wj}footnote:constexpr11[] void normalize() noexcept(_see Remarks_)` | Rotates elements such that the span starts at the beginning of the storage. Normalization invalidates pointers and references, but does not invalidate iterators.
+| `constexpr{wj}footnote:constexpr11[] void normalize() noexcept(_see Remarks_)` | Moves elements such that the span starts at the beginning of the storage.
+ +
+ +
+ Normalization invalidates pointers and references, but does not invalidate iterators.
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _Swappable_.
