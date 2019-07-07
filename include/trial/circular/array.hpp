@@ -38,6 +38,7 @@ class array
 
     static_assert(std::is_destructible<T>::value, "T must be Erasable");
     static_assert(std::is_default_constructible<T>::value, "T must be DefaultConstructible");
+    static_assert(N != dynamic_extent, "N cannot be dynamic_extent");
 
 public:
     using element_type = typename span::element_type;
