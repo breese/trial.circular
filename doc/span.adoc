@@ -9,15 +9,24 @@
 
 = Circular Span
 
+[NOTE]
+.Precondition
+====
+[source,c++]
+----
+namespace circular = trial::circular;
+----
+====
+
 == Introduction
 
-The `circular::span<T>` template class is a span that turns continguous memory
+The `circular::span<T>` template class is a span that turns continguous storage
 into a double-ended circular queue.
 
 [cols="20,80",frame="none",grid="none",stripes=none]
 |===
-| Span | The storage is not owned by the span. The owner of the memory is
-   responsible for destroying the span before releasing the memory.
+| Span | The storage is not owned by the span. The owner of the storage is
+   responsible for destroying the span before releasing the storage.
 | Circular | Inserting elements into the span will remove elements at the
    other end of the span when the span is full. If elements always are inserted
    at the same end, then we effectively have a moving window over the most
@@ -203,6 +212,7 @@ itself fulfills the _BidirectionalRange_ we could choose to implement `const_seg
 in terms of circular span, although a more lean span type, like `std::span` would
 be a more prudent choice.
 
+[#ref]
 == Reference
 
 Defined in header `<trial/circular/span.hpp>`.
@@ -215,9 +225,9 @@ template <
     std::size_t Extent = dynamic_extent
 > class span;
 ----
-The span template class is a circular view of some contiguous memory. The memory
-is not owned by the span. The owner must ensure that the span is destroyed before
-the memory is released.
+The circular span template class is a circular view of some contiguous storage.
+The storage is not owned by the span. The owner must ensure that the span is
+destroyed before the storage is released.
 
 The size is the current number of elements in the span.
 
