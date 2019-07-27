@@ -138,7 +138,7 @@ void vector<T, A>::reserve(size_type capacity)
     // Update span in case storage is reallocated
     if (span::capacity() > 0)
     {
-        span::normalize();
+        span::rotate_front();
     }
     storage::reserve(capacity);
     span::operator=(span(storage::begin(),
@@ -156,7 +156,7 @@ void vector<T, A>::resize(size_type count)
 template <typename T, typename A>
 void vector<T, A>::resize(size_type count, const value_type& value)
 {
-    span::normalize();
+    span::rotate_front();
     storage::resize(count, value);
 
     // Fill new span elements with input value

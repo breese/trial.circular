@@ -381,9 +381,7 @@ public:
     //! Linear time complexity.
 
     TRIAL_CXX14_CONSTEXPR
-    void normalize() noexcept(detail::is_nothrow_swappable<value_type>::value);
-
-    constexpr bool is_normalized() const noexcept;
+    void rotate_front() noexcept(detail::is_nothrow_swappable<value_type>::value);
 
     //! @brief Returns iterator to the beginning of the span.
 
@@ -452,7 +450,7 @@ protected:
     //! @pre capacity() > 0
     //! @pre amount <= capacity()
     //!
-    //! @sa advance_position_left
+    //! @sa advance_left
 
     TRIAL_CXX14_CONSTEXPR
     void advance_right(size_type amount) noexcept;
@@ -469,7 +467,7 @@ private:
     constexpr const_reference at(size_type) const noexcept;
 
     TRIAL_CXX14_CONSTEXPR
-    void rotate(size_type lower_length, size_type upper_length) noexcept(detail::is_nothrow_swappable<value_type>::value);
+    void rotate_range(size_type lower_length, size_type upper_length) noexcept(detail::is_nothrow_swappable<value_type>::value);
 
     TRIAL_CXX14_CONSTEXPR
     void swap_range(size_type lhs, size_type rhs, size_type length) noexcept(detail::is_nothrow_swappable<value_type>::value);

@@ -405,12 +405,12 @@ void dynamic_move_back()
     }
 }
 
-void dynamic_normalize()
+void dynamic_rotate_front()
 {
     std::array<int, 4> array = {};
     circular::span<int> span(array.begin(), array.end());
     span = { 11, 22, 33, 44, 55 };
-    span.normalize();
+    span.rotate_front();
     {
         std::vector<int> expect = { 22, 33, 44, 55 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -418,13 +418,6 @@ void dynamic_normalize()
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           array.begin(), array.end());
     }
-}
-
-void dynamic_is_normalized()
-{
-    int array[4];
-    circular::span<int> span(array);
-    TRIAL_TEST(span.is_normalized());
 }
 
 void dynamic_front_segment()
@@ -481,8 +474,7 @@ void run()
     dynamic_pop_back_n();
     dynamic_move_front();
     dynamic_move_back();
-    dynamic_normalize();
-    dynamic_is_normalized();
+    dynamic_rotate_front();
     dynamic_front_segment();
     dynamic_back_segment();
 }
@@ -894,12 +886,12 @@ void fixed_move_back()
     }
 }
 
-void fixed_normalize()
+void fixed_rotate_front()
 {
     std::array<int, 4> array = {};
     circular::span<int, 4> span(array.begin(), array.end());
     span = { 11, 22, 33, 44, 55 };
-    span.normalize();
+    span.rotate_front();
     {
         std::vector<int> expect = { 22, 33, 44, 55 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -907,13 +899,6 @@ void fixed_normalize()
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           array.begin(), array.end());
     }
-}
-
-void fixed_is_normalized()
-{
-    int array[4];
-    circular::span<int, 4> span(array);
-    TRIAL_TEST(span.is_normalized());
 }
 
 void fixed_front_segment()
@@ -971,8 +956,7 @@ void run()
     fixed_pop_back_n();
     fixed_move_front();
     fixed_move_back();
-    fixed_normalize();
-    fixed_is_normalized();
+    fixed_rotate_front();
     fixed_front_segment();
     fixed_back_segment();
 }
@@ -2796,9 +2780,9 @@ void normalize_even()
     {
         // 55 22 33 44 => 22 33 44 55
         span = { 11, 22, 33, 44, 55 };
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 22, 33, 44, 55 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2815,9 +2799,9 @@ void normalize_odd()
     {
         // 66 22 33 44 55 => 22 33 44 55 66
         span = { 11, 22, 33, 44, 55, 66 };
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 22, 33, 44, 55, 66 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2834,9 +2818,9 @@ void normalize_increasing()
     {
         // 11 X X X => 11 X X X
         span = { 11 };
-        TRIAL_TEST(span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 11 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2847,9 +2831,9 @@ void normalize_increasing()
     {
         // 11 22 X X => 11 22 X X
         span = { 11, 22 };
-        TRIAL_TEST(span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 11, 22 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2860,9 +2844,9 @@ void normalize_increasing()
     {
         // 11 22 33 X => 11 22 33 X
         span = { 11, 22, 33 };
-        TRIAL_TEST(span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 11, 22, 33 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2873,9 +2857,9 @@ void normalize_increasing()
     {
         // 11 22 33 44 => 11 22 33 44
         span = { 11, 22, 33, 44 };
-        TRIAL_TEST(span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 11, 22, 33, 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2886,9 +2870,9 @@ void normalize_increasing()
     {
         // 55 22 33 44 => 22 33 44 55
         span = { 11, 22, 33, 44, 55 };
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 22, 33, 44, 55 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2899,9 +2883,9 @@ void normalize_increasing()
     {
         // 55 66 33 44 => 33 44 55 66
         span = { 11, 22, 33, 44, 55, 66 };
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 33, 44, 55, 66 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2912,9 +2896,9 @@ void normalize_increasing()
     {
         // 55 66 77 44 => 44 55 66 77
         span = { 11, 22, 33, 44, 55, 66, 77 };
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 44, 55, 66, 77 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2925,9 +2909,9 @@ void normalize_increasing()
     {
         // 55 66 77 88 => 55 66 77 88
         span = { 11, 22, 33, 44, 55, 66, 77, 88 };
-        TRIAL_TEST(span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 55, 66, 77, 88 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2945,9 +2929,9 @@ void normalize_decreasing()
         // X 22 33 44 => 22 33 44 X
         span = { 11, 22, 33, 44 };
         span.pop_front();
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 22, 33, 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2960,9 +2944,9 @@ void normalize_decreasing()
         span = { 11, 22, 33, 44 };
         span.pop_front();
         span.pop_front();
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 33, 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2976,9 +2960,9 @@ void normalize_decreasing()
         span.pop_front();
         span.pop_front();
         span.pop_front();
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2996,9 +2980,9 @@ void normalize_one()
         // X 22 33 44 => 22 33 44 X
         span = { 11, 22, 33, 44 };
         span.pop_front();
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 22, 33, 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -3010,9 +2994,9 @@ void normalize_one()
         // 55 X 33 44 => 33 44 55 X
         span = { 11, 22, 33, 44, 55 };
         span.pop_front();
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 33, 44, 55 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -3024,9 +3008,9 @@ void normalize_one()
         // 55 66 X 44 => 44 55 66 X
         span = { 11, 22, 33, 44, 55, 66 };
         span.pop_front();
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 44, 55, 66 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -3038,9 +3022,9 @@ void normalize_one()
         // 55 66 77 X => 55 66 77 X
         span = { 11, 22, 33, 44, 55, 66, 77 };
         span.pop_front();
-        TRIAL_TEST(span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 55, 66, 77 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -3052,9 +3036,9 @@ void normalize_one()
         // 66 77 88 X => 66 77 88 X
         span = { 11, 22, 33, 44, 55, 66, 77, 88 };
         span.pop_front();
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 66, 77, 88 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -3073,9 +3057,9 @@ void normalize_two()
         span = { 11, 22, 33, 44 };
         span.pop_front();
         span.pop_front();
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 33, 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -3088,9 +3072,9 @@ void normalize_two()
         span = { 11, 22, 33, 44, 55 };
         span.pop_front();
         span.pop_front();
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 44, 55 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -3103,9 +3087,9 @@ void normalize_two()
         span = { 11, 22, 33, 44, 55, 66 };
         span.pop_front();
         span.pop_front();
-        TRIAL_TEST(span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 55, 66 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -3118,9 +3102,9 @@ void normalize_two()
         span = { 11, 22, 33, 44, 55, 66, 77 };
         span.pop_front();
         span.pop_front();
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 66, 77 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -3133,9 +3117,9 @@ void normalize_two()
         span = { 11, 22, 33, 44, 55, 66, 77, 88 };
         span.pop_front();
         span.pop_front();
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 77, 88 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -3155,9 +3139,9 @@ void normalize_three()
         span.pop_front();
         span.pop_front();
         span.pop_front();
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -3171,9 +3155,9 @@ void normalize_three()
         span.pop_front();
         span.pop_front();
         span.pop_front();
-        TRIAL_TEST(span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 55 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -3187,9 +3171,9 @@ void normalize_three()
         span.pop_front();
         span.pop_front();
         span.pop_front();
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 66 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -3203,9 +3187,9 @@ void normalize_three()
         span.pop_front();
         span.pop_front();
         span.pop_front();
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 77 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -3219,9 +3203,9 @@ void normalize_three()
         span.pop_front();
         span.pop_front();
         span.pop_front();
-        TRIAL_TEST(!span.is_normalized());
-        span.normalize();
-        TRIAL_TEST(span.is_normalized());
+        TRIAL_TEST(std::addressof(*span.begin()) != std::addressof(*array.begin()));
+        span.rotate_front();
+        TRIAL_TEST(std::addressof(*span.begin()) == std::addressof(*array.begin()));
 
         std::vector<int> expect = { 88 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),

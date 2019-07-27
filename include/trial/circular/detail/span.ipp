@@ -302,7 +302,7 @@ void span<T, E>::advance_right(size_type count) noexcept
 
 template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
-void span<T, E>::normalize() noexcept(detail::is_nothrow_swappable<value_type>::value)
+void span<T, E>::rotate_front() noexcept(detail::is_nothrow_swappable<value_type>::value)
 {
     if (empty())
         return;
@@ -312,14 +312,8 @@ void span<T, E>::normalize() noexcept(detail::is_nothrow_swappable<value_type>::
         return;
 
     const auto last = capacity() - first;
-    rotate(first, last);
+    rotate_range(first, last);
     member.next = member.capacity() + size();
-}
-
-template <typename T, std::size_t E>
-constexpr bool span<T, E>::is_normalized() const noexcept
-{
-    return index(front_index()) == 0;
 }
 
 template <typename T, std::size_t E>
@@ -411,8 +405,8 @@ constexpr auto span<T, E>::at(size_type position) const noexcept -> const_refere
 
 template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
-void span<T, E>::rotate(size_type lower_length,
-                        size_type upper_length) noexcept(detail::is_nothrow_swappable<value_type>::value)
+void span<T, E>::rotate_range(size_type lower_length,
+                              size_type upper_length) noexcept(detail::is_nothrow_swappable<value_type>::value)
 {
     // Based on Gries-Mills block swapping rotate
     if (lower_length == 0 || upper_length == 0)
