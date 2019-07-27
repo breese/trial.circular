@@ -14,6 +14,7 @@
 #include <cmath>
 #include <algorithm>
 #include <sstream>
+#include <boost/version.hpp>
 #include <boost/detail/lightweight_test.hpp>
 
 namespace trial
@@ -21,6 +22,26 @@ namespace trial
 namespace detail
 {
 
+void test_success()
+{
+#if BOOST_VERSION >= 106800
+    ::boost::detail::test_results();
+#else
+    ::boost::detail::report_errors_remind();
+#endif
+}
+
+void test_failure()
+{
+#if BOOST_VERSION >= 106800
+    ::boost::detail::test_results().errors();
+#else
+    ++::boost::detail::test_errors();
+#endif
+}
+
+// Cannot use boost::detail::test_with_impl (introduced in 1.68) for
+// custom-defined predicates
 template <class T, template <class> class BinaryPredicate>
 void test_with_impl(char const * expr1,
                     char const * expr2,
@@ -30,7 +51,7 @@ void test_with_impl(char const * expr1,
 {
     if (predicate(lhs, rhs))
     {
-        boost::detail::report_errors_remind();
+        test_success();
     }
     else
     {
@@ -38,30 +59,11 @@ void test_with_impl(char const * expr1,
             << file << "(" << line << "): test '" << expr1 << " == " << expr2
             << "' failed in function '" << function << "': "
             << "'" << lhs << "' != '" << rhs << "' (" << predicate_text << ")" << std::endl;
-        ++boost::detail::test_errors();
+        test_failure();
     }
 }
                
-template<class T, class U>
-inline void test_close_impl(char const * expr1,
-                            char const * expr2,
-                            char const * file, int line, char const * function,
-                            const T& lhs, const U& rhs, double tolerance)
-{
-    if (std::fabs(lhs - rhs) <= tolerance)
-    {
-        boost::detail::report_errors_remind();
-    }
-    else
-    {
-        BOOST_LIGHTWEIGHT_TEST_OSTREAM
-            << file << "(" << line << "): test '" << expr1 << " == " << expr2
-            << "' failed in function '" << function << "': "
-            << "'" << lhs << "' != '" << rhs << "'" << std::endl;
-        ++boost::detail::test_errors();
-    }
-}
-
+#if !defined(BOOSST_TEST_ALL_EQ)
 template<class FormattedOutputFunction, class InputIterator1, class InputIterator2>
 void test_all_eq_impl(FormattedOutputFunction& output,
                       char const * file, int line, char const * function,
@@ -121,15 +123,17 @@ void test_all_eq_impl(FormattedOutputFunction& output,
 
     if (error_count == 0)
     {
-        boost::detail::report_errors_remind();
+        test_success();
     }
     else
     {
         output << std::endl;
-        ++boost::detail::test_errors();
+        test_failure();
     }
 }
+#endif
 
+#if !defined(BOOST_TEST_ALL_WITH)
 template<class FormattedOutputFunction, class InputIterator1, class InputIterator2, typename Predicate>
 void test_all_with_impl(FormattedOutputFunction& output,
                         char const * file, int line, char const * function,
@@ -190,14 +194,15 @@ void test_all_with_impl(FormattedOutputFunction& output,
 
     if (error_count == 0)
     {
-        boost::detail::report_errors_remind();
+        test_success();
     }
     else
     {
         output << std::endl;
-        ++boost::detail::test_errors();
+        test_failure();
     }
 }
+#endif
 
 } // namespace detail
 } // namespace trial
@@ -207,10 +212,16 @@ void test_all_with_impl(FormattedOutputFunction& output,
 
 #define TRIAL_TEST_WITH(expr1,expr2,predicate) ( ::trial::detail::test_with_impl(#expr1, #expr2, #predicate, __FILE__, __LINE__, BOOST_CURRENT_FUNCTION, expr1, expr2, predicate) )
 
-#define TRIAL_TEST_CLOSE(LHS, RHS, TOLERANCE) ::trial::detail::test_close_impl(#LHS, #RHS, __FILE__, __LINE__, BOOST_CURRENT_FUNCTION, LHS, RHS, TOLERANCE)
+#if !defined(BOOST_TEST_ALL_WITH)
+# define TRIAL_TEST_ALL_WITH(FIRST_BEGIN, FIRST_END, SECOND_BEGIN, SECOND_END, PREDICATE) ::trial::detail::test_all_with_impl(BOOST_LIGHTWEIGHT_TEST_OSTREAM, __FILE__, __LINE__, BOOST_CURRENT_FUNCTION, FIRST_BEGIN, FIRST_END, SECOND_BEGIN, SECOND_END, PREDICATE)
+#else
+# define TRIAL_TEST_ALL_WITH BOOST_TEST_ALL_WITH
+#endif
 
-#define TRIAL_TEST_ALL_WITH(FIRST_BEGIN, FIRST_END, SECOND_BEGIN, SECOND_END, PREDICATE) ::trial::detail::test_all_with_impl(BOOST_LIGHTWEIGHT_TEST_OSTREAM, __FILE__, __LINE__, BOOST_CURRENT_FUNCTION, FIRST_BEGIN, FIRST_END, SECOND_BEGIN, SECOND_END, PREDICATE)
-
-#define TRIAL_TEST_ALL_EQ(FIRST_BEGIN, FIRST_END, SECOND_BEGIN, SECOND_END) ::trial::detail::test_all_eq_impl(BOOST_LIGHTWEIGHT_TEST_OSTREAM, __FILE__, __LINE__, BOOST_CURRENT_FUNCTION, FIRST_BEGIN, FIRST_END, SECOND_BEGIN, SECOND_END)
+#if !defined(BOOST_TEST_ALL_EQ)
+# define TRIAL_TEST_ALL_EQ(FIRST_BEGIN, FIRST_END, SECOND_BEGIN, SECOND_END) ::trial::detail::test_all_eq_impl(BOOST_LIGHTWEIGHT_TEST_OSTREAM, __FILE__, __LINE__, BOOST_CURRENT_FUNCTION, FIRST_BEGIN, FIRST_END, SECOND_BEGIN, SECOND_END)
+#else
+# define TRIAL_TEST_ALL_EQ BOOST_TEST_ALL_EQ
+#endif
 
 #endif // TRIAL_DETAIL_LIGHTWEIGHT_TEST_HPP
