@@ -102,7 +102,7 @@ public:
     template <typename... Args>
     constexpr array(value_type, Args&&...) noexcept(std::is_nothrow_move_assignable<value_type>::value);
 
-    //! @brief Rereates circular array with element from initializer list.
+    //! @brief Recreates circular array with element from initializer list.
     //!
     //! All elements are inserted, but if input.size() > N then only the last N
     //! input elements will remain in the circular array.

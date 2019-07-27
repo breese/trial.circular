@@ -39,7 +39,7 @@ void test_adjacent_difference()
     circular::array<int, 4> data = {11, 22, 33};
     std::vector<int> result(4);
     auto last = std::adjacent_difference(data.begin(), data.end(), result.begin());
-    std::vector<int> expect = {11, 11, 11}; // First expected value is first input value
+    std::vector<int> expect = {11, 22 - 11, 33 - 22}; // First expected value is first input value
     TRIAL_TEST_ALL_EQ(result.begin(), last, expect.begin(), expect.end());
 }
 
