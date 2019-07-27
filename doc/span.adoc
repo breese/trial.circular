@@ -488,34 +488,13 @@ Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveConstructible_.
-| `constexpr{wj}footnote:constexpr11[] void advance_left(size_type) noexcept(_see Remarks_)` | Rotates the span left by the specified amount.
+| `constexpr{wj}footnote:constexpr11[] void rotate_front() noexcept(_see Remarks_)` | Moves elements such that the span starts at the beginning of the storage.
  +
  +
-If the span is full, then the internal state is updated to emulate a rotate, but leaving the elements in their original storage position. Constant time complexity.
- +
- +
-If the span is not full, then elements are moved. Linear time complexity.
- +
- +
- _Remarks:_ `noexcept` if `value_type` is nothrow _MoveConstructible_ and _MoveAssignable_.
-| `constexpr{wj}footnote:constexpr11[] void advance_right(size_type) noexcept(_see Remarks_)` | Rotates the span right by the specified amount.
- +
- +
-If the span is full, then the internal state is updated to emulate a rotate, but leaving the elements in their original storage position. Constant time complexity.
- +
- +
-If the span is not full, then elements are moved. Linear time complexity.
- +
- +
- _Remarks:_ `noexcept` if `value_type` is nothrow _MoveConstructible_ and _MoveAssignable_.
-| `constexpr{wj}footnote:constexpr11[] void normalize() noexcept(_see Remarks_)` | Moves elements such that the span starts at the beginning of the storage.
- +
- +
- Normalization invalidates pointers and references, but does not invalidate iterators.
+ Rotation invalidates pointers and references, but does not invalidate iterators.
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _Swappable_.
-| `constexpr bool is_normalized() const noexcept` | Checks if the span is normalized.
 | `constexpr const_iterator begin() const noexcept` | Returns an interator to the beginning of the span.
 | `constexpr const_iterator end() const noexcept` | Returns an interator to the end of the span.
 | `constexpr const_iterator cbegin() const noexcept` | Returns an interator to the beginning of the span.

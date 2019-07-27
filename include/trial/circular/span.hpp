@@ -369,14 +369,14 @@ public:
     //!   | C |   |   | A | B |
     //!   +---+---+---+---+---+
     //!
-    //! After normalization the elements are stored in memory as:
+    //! After rotation the elements are stored in memory as:
     //!
     //!   +---+---+---+---+---+
     //!   | A | B | C |   |   |
     //!   +---+---+---+---+---+
     //!
-    //! Normalization invalidates pointers and references.
-    //! Normalization does not invalidate iterators.
+    //! Rotation invalidates pointers and references.
+    //! Rotation does not invalidate iterators.
     //!
     //! Linear time complexity.
 
