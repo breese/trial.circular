@@ -216,7 +216,7 @@ void span<T, E>::push_front(value_type input) noexcept(std::is_nothrow_move_assi
 
     if (full())
     {
-        member.next = member.capacity() + index(member.next - 1);
+        advance_right(1);
     }
     else
     {
@@ -231,7 +231,7 @@ void span<T, E>::push_back(value_type input) noexcept(std::is_nothrow_move_assig
 {
     static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
 
-    member.next = member.capacity() + index(member.next + 1);
+    advance_left(1);
     if (!full())
     {
         ++member.size;
@@ -256,7 +256,7 @@ void span<T, E>::pop_back(size_type count) noexcept
     assert(count > 0);
     assert(count <= size());
 
-    member.next = member.capacity() + index(member.next - count);
+    advance_right(count);
     member.size -= count;
 }
 
@@ -284,54 +284,20 @@ auto span<T, E>::move_back() noexcept(std::is_nothrow_move_constructible<value_t
 
 template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
-void span<T, E>::advance_left(size_type count) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
+void span<T, E>::advance_left(size_type count) noexcept
 {
-    static_assert(std::is_move_constructible<T>::value, "T must be MoveConstructible");
-    static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
+    assert(count <= capacity());
 
-    if (size() < 2)
-        return;
-    count %= size();
-    if (count == 0)
-        return;
-
-    if (full())
-    {
-        member.next = member.capacity() + index(member.next + count);
-    }
-    else
-    {
-        while (count-- > 0)
-        {
-            push_back(std::move(move_front()));
-        }
-    }
+    member.next = member.capacity() + index(member.next + count);
 }
 
 template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
-void span<T, E>::advance_right(size_type count) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
+void span<T, E>::advance_right(size_type count) noexcept
 {
-    static_assert(std::is_move_constructible<T>::value, "T must be MoveConstructible");
-    static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
+    assert(count <= capacity());
 
-    if (size() < 2)
-        return;
-    count %= size();
-    if (count == 0)
-        return;
-
-    if (full())
-    {
-        member.next = member.capacity() + index(member.next - count);
-    }
-    else
-    {
-        while (count-- > 0)
-        {
-            push_front(std::move(move_back()));
-        }
-    }
+    member.next = member.capacity() + index(member.next - count);
 }
 
 template <typename T, std::size_t E>

@@ -360,26 +360,6 @@ public:
     TRIAL_CXX14_CONSTEXPR
     value_type move_back() noexcept(std::is_nothrow_move_constructible<value_type>::value);
 
-    //! @brief Rotates span left by amount.
-    //!
-    //! If the span is full, then internal state is updated to emulate a rotation, but
-    //! leaving the elements in their original memory position. Constant time complexity.
-    //!
-    //! If the span is not full, then elements are moved. Linear time complexity.
-
-    TRIAL_CXX14_CONSTEXPR
-    void advance_left(size_type amount) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value);
-
-    //! @brief Rotates span right by amount.
-    //!
-    //! If the span is full, then internal state is updated to emulate a rotation, but
-    //! leaving the elements in their original memory position. Constant time complexity.
-    //!
-    //! If the span is not full, then elements are moved. Linear time complexity.
-
-    TRIAL_CXX14_CONSTEXPR
-    void advance_right(size_type amount) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value);
-
     //! @brief Rotates elements so span starts at beginning of storage.
     //!
     //! For instance, a span consisting of the sequence A, B, C, may be stored
@@ -450,6 +430,32 @@ protected:
 
     TRIAL_CXX14_CONSTEXPR
     void assign(const span&, pointer) noexcept;
+
+    //! @brief Increases current position by amount.
+    //!
+    //! Performs a virtual rotation of the span across the entire capacity.
+    //! No elements are moved around in the storage. Constant time complexity.
+    //!
+    //! Use with caution when the span is not full. In this case the rotation
+    //! does not account for holes in the span. The resulting span may include
+    //! default-initialized or moved-from elements, and inserted elements may
+    //! be rotated out of the span.
+    //!
+    //! @pre capacity() > 0
+    //! @pre amount <= capacity()
+
+    TRIAL_CXX14_CONSTEXPR
+    void advance_left(size_type amount) noexcept;
+
+    //! @brief Decreases current position by amount.
+    //!
+    //! @pre capacity() > 0
+    //! @pre amount <= capacity()
+    //!
+    //! @sa advance_position_left
+
+    TRIAL_CXX14_CONSTEXPR
+    void advance_right(size_type amount) noexcept;
 
 private:
     constexpr size_type index(size_type) const noexcept;
