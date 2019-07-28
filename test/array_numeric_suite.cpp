@@ -43,6 +43,15 @@ void test_adjacent_difference()
     TRIAL_TEST_ALL_EQ(result.begin(), last, expect.begin(), expect.end());
 }
 
+void test_adjacent_difference_back_inserter()
+{
+    std::vector<int> data = {11, 22, 33, 44, 55};
+    circular::array<int, 4> result;
+    std::adjacent_difference(data.begin(), data.end(), std::back_inserter(result));
+    std::vector<int> expect = {22 - 11, 33 - 22, 44 - 33, 55 - 44};
+    TRIAL_TEST_ALL_EQ(result.begin(), result.end(), expect.begin(), expect.end());
+}
+
 void test_inner_product()
 {
     circular::array<int, 4> data;
@@ -92,6 +101,7 @@ void run()
 {
     test_accumulate();
     test_adjacent_difference();
+    test_adjacent_difference_back_inserter();
     test_inner_product();
     test_partial_sum();
 }
