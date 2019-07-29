@@ -400,8 +400,24 @@ Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
 | `constexpr const_segment front_segment() const noexcept` | Returns a range of the first contiguous segment of the span.
  +
  +
+ The front segment covers all elements from the beginning of the span until the end of the
+ underlying storage if the span crosses the end of the storage; otherwise until the end of
+ the span.
+ +
+ +
+ An empty segment is returned if the span is empty.
+ +
+ +
  _Expects:_ `capacity() > 0`
 | `constexpr const_segment back_segment() const noexcept` | Returns a range of the last contiguous segment of the span.
+ +
+ +
+ The back segment covers the remaining elements not covered by the front segment.
+ +
+ +
+ An empty segment is returned if the span is empty or does not cross the end of the
+ underlying storage. Otherwise, the back segment starts at the beginning of the underlying
+ storage and ends at the end of the span.
  +
  +
  _Expects:_ `capacity() > 0`
@@ -491,7 +507,16 @@ Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
 | `constexpr{wj}footnote:constexpr11[] void rotate_front() noexcept(_see Remarks_)` | Moves elements such that the span starts at the beginning of the storage.
  +
  +
+ Rotation does not alter the sequence of elements in the span. It only rearranges elements in
+ the underlying storage such that first element in the span is located at the first position
+ in the storage. This ensures that the elements are stored contiguously. Consequently the
+ back segment will be empty.
+ +
+ +
  Rotation invalidates pointers and references, but does not invalidate iterators.
+ +
+ +
+ _Ensures:_ `std::distance(back_segment().begin(), back_segment.end()) == 0`
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _Swappable_.
