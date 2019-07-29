@@ -466,20 +466,38 @@ Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveAssignable_.
-| `constexpr{wj}footnote:constexpr11[] void pop_front(size_type count) noexcept` | Erases the specified number of elements from the beginning of the span. If the argument is omitted, then only one element is erased.
+| `constexpr{wj}footnote:constexpr11[] void pop_front() noexcept` | Erases element from the beginning of the span.
+ +
+ +
+ The erased element in the underlying storage is not destroyed.
+ +
+ +
+ _Expects:_ `size() > 0`
+| `constexpr{wj}footnote:constexpr11[] void pop_front(size_type count) noexcept` | Erases the specified number of elements from the beginning of the span.
  +
  +
  The erased elements in the underlying storage are not destroyed.
  +
+ +
+ _Expects:_ `size() > 0`
  +
  _Expects:_ `count > 0`
  +
  _Expects:_ `count \<= size()`
-| `constexpr{wj}footnote:constexpr11[] void pop_back(size_type count) noexcept` | Erases the specified number of elements from the end of the span. If the argument is omitted, then only one element is erased.
+| `constexpr{wj}footnote:constexpr11[] void pop_back() noexcept` | Erases element from the end of the span.
+ +
+ +
+ The erased element in the underlying storage is not destroyed.
+ +
+ +
+ _Expects:_ `size() > 0`
+| `constexpr{wj}footnote:constexpr11[] void pop_back(size_type count) noexcept` | Erases the specified number of elements from the end of the span.
  +
  +
  The erased elements in the underlying storage are not destroyed.
  +
+ +
+ _Expects:_ `size() > 0`
  +
  _Expects:_ `count > 0`
  +

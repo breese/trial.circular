@@ -243,6 +243,7 @@ template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
 void span<T, E>::pop_front(size_type count) noexcept
 {
+    assert(size() > 0);
     assert(count > 0);
     assert(count <= size());
 
@@ -253,6 +254,7 @@ template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
 void span<T, E>::pop_back(size_type count) noexcept
 {
+    assert(size() > 0);
     assert(count > 0);
     assert(count <= size());
 
