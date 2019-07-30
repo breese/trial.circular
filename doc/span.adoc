@@ -41,6 +41,8 @@ into a double-ended circular queue.
 [#span-tutorial]
 == Tutorial
 
+=== Running Average
+
 Suppose we receive a sequence of numerical values one by one over time, and we
 want to calculate the running average of the `N` most recent values. Our class
 should at least support the following interface for inserting new values and
@@ -139,6 +141,7 @@ T waverage::mean() const noexcept
 }
 ----
 
+[#span-rationale]
 == Design Rationale
 
 This section describes the choices behind the design of the circular span.

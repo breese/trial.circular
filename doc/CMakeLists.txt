@@ -7,12 +7,16 @@ function(trial_circular_add_doc name source)
     )
 endfunction()
 
+trial_circular_add_doc(trial-circular-doc-circular circular.adoc)
 trial_circular_add_doc(trial-circular-doc-span span.adoc)
+trial_circular_add_doc(trial-circular-doc-array array.adoc)
 
 if (AsciiDoctor_FOUND)
 
   add_custom_target(doc
+    DEPENDS trial-circular-doc-circular
     DEPENDS trial-circular-doc-span
+    DEPENDS trial-circular-doc-array
     )
 
 else() # No AsciiDoctor

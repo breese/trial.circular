@@ -1,0 +1,25 @@
+:doctype: book
+:icons: font
+
+= Trial.Circular
+
+Bjørn Reese
+
+Trial.Circular is a C++11 header-only library for circular queues consisting
+of a circular span, a fixed-sized circular buffer, and a dynamically resizable
+circular buffer.
+
+:leveloffset: +1
+
+= <<span.adoc#,Circular Span>>
+
+The circular span is a view that makes user-owned contiguous storage appear
+like a circular queue.
+
+= <<array.adoc#,Circular Array>>
+
+The fixed-sized circular array is a circular queue operating on an embedded
+`std::array<T, N>`. Unlike `std::array<T, N>` this class also keeps track of how
+many elements have been inserted.
+
+:leveloffset: -1
