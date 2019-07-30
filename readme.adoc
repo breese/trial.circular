@@ -1,0 +1,8 @@
+:doctype: book
+:icons: font
+
+= Trial.Circular
+
+C++11 header-only library for circular queues.
+
+See <<doc/circular.adoc#,documentation>>.
