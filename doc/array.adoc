@@ -351,6 +351,18 @@ Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveAssignable_.
+| `template <typename InputIterator>
+ +
+ constexpr{wj}footnote:constexpr11[] void push_front(InputIterator first, InputIterator last) noexcept(_see Remarks_)` | Inserts elements from iterator range at the beginning of the circular array.
+ +
+ +
+ _Constraint:_ `value_type` must be _CopyAssignable_.
+ +
+ +
+ _Expects:_ `capacity() > 0`
+ +
+ +
+ _Remarks:_ `noexcept` if `value_type` is nothrow _CopyAssignable_.
 | `constexpr{wj}footnote:constexpr11[] void push_back(value_type) noexcept(_see Remarks_)` | Inserts an element at the end of the circular array.
  +
  +
@@ -364,6 +376,18 @@ Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveAssignable_.
+| `template <typename InputIterator>
+ +
+ constexpr{wj}footnote:constexpr11[] void push_back(value_type) noexcept(_see Remarks_)` | Inserts elements from iterator range at the end of the circular span.
+ +
+ +
+ _Constraint:_ `value_type` must be _CopyAssignable_.
+ +
+ +
+ _Expects:_ `capacity() > 0`
+ +
+ +
+ _Remarks:_ `noexcept` if `value_type` is nothrow _CopyAssignable_.
 | `constexpr{wj}footnote:constexpr11[] void pop_front() noexcept` | Erases element from the beginning of the circular array.
  +
  +

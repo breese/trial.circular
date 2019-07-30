@@ -308,7 +308,20 @@ void dynamic_push_front()
     span = {11, 22, 33};
     span.push_front(44);
     {
-        std::vector<int> expect = {44, 11, 22, 33};
+        std::vector<int> expect = { 44, 11, 22, 33 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void dynamic_push_front_iterator()
+{
+    int array[4];
+    circular::span<int> span(array);
+    std::vector<int> input = { 11, 22, 33, 44 };
+    span.push_front(input.begin(), input.end());
+    {
+        std::vector<int> expect = { 44, 33, 22, 11 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
@@ -320,6 +333,19 @@ void dynamic_push_back()
     circular::span<int> span(array);
     span = {11, 22, 33};
     span.push_back(44);
+    {
+        std::vector<int> expect = { 11, 22, 33, 44 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void dynamic_push_back_iterator()
+{
+    int array[4];
+    circular::span<int> span(array);
+    std::vector<int> input = { 11, 22, 33, 44 };
+    span.push_back(input.begin(), input.end());
     {
         std::vector<int> expect = {11, 22, 33, 44};
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -467,7 +493,9 @@ void run()
     dynamic_assign_iterator();
     dynamic_assign_initializer_list();
     dynamic_push_front();
+    dynamic_push_front_iterator();
     dynamic_push_back();
+    dynamic_push_back_iterator();
     dynamic_pop_front();
     dynamic_pop_front_n();
     dynamic_pop_back();
@@ -789,7 +817,20 @@ void fixed_push_front()
     span = {11, 22, 33};
     span.push_front(44);
     {
-        std::vector<int> expect = {44, 11, 22, 33};
+        std::vector<int> expect = { 44, 11, 22, 33 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void fixed_push_front_iterator()
+{
+    int array[4];
+    circular::span<int, 4> span(array);
+    std::vector<int> input = { 11, 22, 33, 44 };
+    span.push_front(input.begin(), input.end());
+    {
+        std::vector<int> expect = { 44, 33, 22, 11 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
@@ -802,7 +843,20 @@ void fixed_push_back()
     span = {11, 22, 33};
     span.push_back(44);
     {
-        std::vector<int> expect = {11, 22, 33, 44};
+        std::vector<int> expect = { 11, 22, 33, 44 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void fixed_push_back_iterator()
+{
+    int array[4];
+    circular::span<int, 4> span(array);
+    std::vector<int> input = { 11, 22, 33, 44 };
+    span.push_back(input.begin(), input.end());
+    {
+        std::vector<int> expect = { 11, 22, 33, 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
@@ -949,7 +1003,9 @@ void run()
     fixed_assign_iterator();
     fixed_assign_initializer_list();
     fixed_push_front();
+    fixed_push_front_iterator();
     fixed_push_back();
+    fixed_push_back_iterator();
     fixed_pop_front();
     fixed_pop_front_n();
     fixed_pop_back();

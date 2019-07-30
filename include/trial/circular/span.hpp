@@ -318,6 +318,14 @@ public:
     TRIAL_CXX14_CONSTEXPR
     void push_front(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
 
+    //! @brief Inserts element at beginning of span.
+    //!
+    //! @pre capacity() > 0
+
+    template <typename InputIterator>
+    TRIAL_CXX14_CONSTEXPR
+    void push_front(InputIterator first, InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value);
+
     //! @brief Inserts element at end of span.
     //!
     //! If span is full, then the element at the end of the span is silently erased
@@ -327,6 +335,14 @@ public:
 
     TRIAL_CXX14_CONSTEXPR
     void push_back(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
+
+    //! @brief Inserts elements at end of span.
+    //!
+    //! @pre capacity() > 0
+
+    template <typename InputIterator>
+    TRIAL_CXX14_CONSTEXPR
+    void push_back(InputIterator first, InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value);
 
     //! @brief Erases elements from beginning of span.
     //!

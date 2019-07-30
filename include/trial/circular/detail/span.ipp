@@ -188,11 +188,7 @@ TRIAL_CXX14_CONSTEXPR
 void span<T, E>::assign(InputIterator first, InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value)
 {
     clear();
-    while (first != last)
-    {
-        push_back(*first);
-        ++first;
-    }
+    push_back(std::move(first), std::move(last));
 }
 
 template <typename T, std::size_t E>
@@ -226,6 +222,21 @@ void span<T, E>::push_front(value_type input) noexcept(std::is_nothrow_move_assi
 }
 
 template <typename T, std::size_t E>
+template <typename InputIterator>
+TRIAL_CXX14_CONSTEXPR
+void span<T, E>::push_front(InputIterator first,
+                            InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value)
+{
+    static_assert(std::is_copy_assignable<T>::value, "T must be CopyAssignable");
+
+    while (first != last)
+    {
+        push_front(*first);
+        ++first;
+    }
+}
+
+template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
 void span<T, E>::push_back(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value)
 {
@@ -237,6 +248,21 @@ void span<T, E>::push_back(value_type input) noexcept(std::is_nothrow_move_assig
         ++member.size;
     }
     back() = std::move(input);
+}
+
+template <typename T, std::size_t E>
+template <typename InputIterator>
+TRIAL_CXX14_CONSTEXPR
+void span<T, E>::push_back(InputIterator first,
+                           InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value)
+{
+    static_assert(std::is_copy_assignable<T>::value, "T must be CopyAssignable");
+
+    while (first != last)
+    {
+        push_back(*first);
+        ++first;
+    }
 }
 
 template <typename T, std::size_t E>

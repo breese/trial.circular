@@ -444,6 +444,9 @@ Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
  constexpr{wj}footnote:constexpr11[] void assign(InputIterator first, InputIterator last) noexcept(_see Remarks_)` | Replaces the span with elements from iterator range.
  +
  +
+ _Constraint:_ `value_type` must be _CopyAssignable_.
+ +
+ +
  _Ensures:_ `size() == std::min(std::distance(first, last), capacity())`
  +
  +
@@ -451,24 +454,63 @@ Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
 | `constexpr{wj}footnote:constexpr11[] void assign(std::initializer_list<value_type> input) noexcept(_see Remarks_)` | Replaces the span with elements from initializer list.
  +
  +
+ _Constraint:_ `value_type` must be _MoveAssignable_.
+ +
+ +
  _Ensures:_ `size() == std::min(input.size(), capacity())`
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveAssignable_.
-| `constexpr{wj}footnote:constexpr11[] void push_front(value_type) noexcept(_see Remarks_)` | Inserts an element at the beginning of the span. If the span is full, then the element at the end of the span is silently erased to make room for new element.
+| `constexpr{wj}footnote:constexpr11[] void push_front(value_type) noexcept(_see Remarks_)` | Inserts an element at the beginning of the span.
+ +
+ +
+ If the span is full, then the element at the end of the span is silently erased to make room for new element.
+ +
+ +
+ _Constraint:_ `value_type` must be _MoveAssignable_.
  +
  +
  _Expects:_ `capacity() > 0`
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveAssignable_.
-| `constexpr{wj}footnote:constexpr11[] void push_back(value_type) noexcept(_see Remarks_)` | Inserts an element at the end of the span. If the span is full, then the element at the beginning of the span is silently erased to make room for new element.
+| `template <typename InputIterator>
+ +
+ constexpr{wj}footnote:constexpr11[] void push_front(InputIterator first, InputIterator last) noexcept(_see Remarks_)` | Inserts elements from iterator range at the beginning of the span.
+ +
+ +
+ _Constraint:_ `value_type` must be _CopyAssignable_.
+ +
+ +
+ _Expects:_ `capacity() > 0`
+ +
+ +
+ _Remarks:_ `noexcept` if `value_type` is nothrow _CopyAssignable_.
+| `constexpr{wj}footnote:constexpr11[] void push_back(value_type) noexcept(_see Remarks_)` | Inserts an element at the end of the span.
+ +
+ +
+ If the span is full, then the element at the beginning of the span is silently erased to make room for new element.
+ +
+ +
+ _Constraint:_ `value_type` must be _MoveAssignable_.
  +
  +
  _Expects:_ `capacity() > 0`
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveAssignable_.
+| `template <typename InputIterator>
+ +
+ constexpr{wj}footnote:constexpr11[] void push_back(value_type) noexcept(_see Remarks_)` | Inserts elements from iterator range at the end of the span.
+ +
+ +
+ _Constraint:_ `value_type` must be _CopyAssignable_.
+ +
+ +
+ _Expects:_ `capacity() > 0`
+ +
+ +
+ _Remarks:_ `noexcept` if `value_type` is nothrow _CopyAssignable_.
 | `constexpr{wj}footnote:constexpr11[] void pop_front() noexcept` | Erases element from the beginning of the span.
  +
  +
