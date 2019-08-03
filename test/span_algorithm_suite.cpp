@@ -26,7 +26,7 @@ namespace copy_suite
 
 void copy()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     std::vector<int> input = { 111, 222, 333, 444, 555 };
     std::copy(input.begin(), input.end(), std::back_inserter(span));
@@ -39,7 +39,7 @@ void copy()
 
 void copy_if()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     std::vector<int> input = { 111, 222, 333, 444, 555 };
     std::copy_if(input.begin(), input.end(), std::back_inserter(span), [](int value) { return value > 222; });
@@ -52,7 +52,7 @@ void copy_if()
 
 void copy_n()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     std::vector<int> input = { 111, 222, 333, 444, 555 };
     std::copy_n(input.begin(), input.size(), std::back_inserter(span));
@@ -65,7 +65,7 @@ void copy_n()
 
 void partition_copy()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     int yes_copy_array[4];
@@ -87,7 +87,7 @@ void partition_copy()
 
 void remove_copy()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     int copy_array[4];
@@ -102,7 +102,7 @@ void remove_copy()
 
 void reverse_copy()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     int copy_array[4];
@@ -117,7 +117,7 @@ void reverse_copy()
 
 void rotate_copy()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     int copy_array[4];
@@ -132,7 +132,7 @@ void rotate_copy()
 
 void unique_copy()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44, 55, 55 };
     int copy_array[4];
@@ -167,7 +167,7 @@ namespace count_suite
 
 void count_full()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     TRIAL_TEST_EQ(std::count(span.begin(), span.end(), 11), 0);
@@ -176,7 +176,7 @@ void count_full()
 
 void count_if_full()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     TRIAL_TEST_EQ(std::count_if(span.begin(), span.end(), [](int value) { return value % 2 == 0; }), 2);
@@ -197,7 +197,7 @@ namespace fill_suite
 
 void fill_n_full()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     std::fill_n(std::back_inserter(span), 2 * span.capacity(), 55);
     TRIAL_TEST_EQ(span.size(), span.capacity());
@@ -222,7 +222,7 @@ namespace find_suite
 
 void find()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44 };
     auto where = std::find(span.begin(), span.end(), 33);
@@ -235,7 +235,7 @@ void find()
 
 void find_if()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44 };
     auto where = std::find_if(span.begin(), span.end(), [](int value){ return value > 22; });
@@ -248,7 +248,7 @@ void find_if()
 
 void adjacent_find()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 33, 44 };
     auto where = std::adjacent_find(span.begin(), span.end());
@@ -266,7 +266,7 @@ void adjacent_find()
 
 void adjacent_find_if()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 44, 33, 33, 22, 11 };
     auto where = std::adjacent_find(span.begin(), span.end(), std::greater<int>());
@@ -284,7 +284,7 @@ void adjacent_find_if()
 
 void lower_bound()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44 };
     auto lower = std::lower_bound(span.begin(), span.end(), 33);
@@ -297,7 +297,7 @@ void lower_bound()
 
 void upper_bound()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44 };
     auto upper = std::upper_bound(span.begin(), span.end(), 33);
@@ -310,7 +310,7 @@ void upper_bound()
 
 void minmax_element()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44 };
     auto where = std::minmax_element(span.begin(), span.end());
@@ -338,7 +338,7 @@ namespace predicate_suite
 
 void test_all_of()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span.push_back(11);
     TRIAL_TEST(std::all_of(span.begin(), span.end(), [] (int current) { return current == 11; }));
@@ -354,7 +354,7 @@ void test_all_of()
 
 void test_any_of()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44 };
     TRIAL_TEST(std::any_of(span.begin(), span.end(), [] (int current) { return current == 11; }));
@@ -364,7 +364,7 @@ void test_any_of()
 
 void test_none_of()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44 };
     TRIAL_TEST(!std::none_of(span.begin(), span.end(), [] (int current) { return current == 11; }));

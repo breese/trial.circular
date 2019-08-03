@@ -23,7 +23,7 @@ namespace accumulate_suite
 
 void test_overfull()
 {
-    std::array<int, 4> array;
+    std::array<int, 4> array = {};
     circular::span<int> span(array.begin(), array.end());
     span = { 11, 22, 33, 44 };
     TRIAL_TEST_EQ(std::accumulate(span.begin(), span.end(), 0), 11 + 22 + 33 + 44);
@@ -45,7 +45,7 @@ namespace inner_product_suite
 
 void test_overfull()
 {
-    std::array<int, 4> array;
+    std::array<int, 4> array = {};
     circular::span<int> span(array.begin(), array.end());
     span = { 11, 22, 33, 44 };
     TRIAL_TEST_EQ(std::inner_product(span.begin(), span.end(), array.begin(), 0),

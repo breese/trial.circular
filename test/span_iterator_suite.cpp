@@ -203,14 +203,14 @@ namespace iterator_suite
 
 void test_empty()
 {
-    std::array<int, 4> array;
+    std::array<int, 4> array = {};
     circular::span<int> span(array.begin(), array.end());
     TRIAL_TEST(span.begin() == span.end());
 }
 
 void test_iterator()
 {
-    std::array<int, 4> array;
+    std::array<int, 4> array = {};
     circular::span<int> span(array.begin(), array.end());
     span.push_back(11);
     TRIAL_TEST(span.begin() != span.end());
@@ -223,7 +223,7 @@ void test_iterator()
 
 void test_iterator_constructible()
 {
-    std::array<int, 4> array;
+    std::array<int, 4> array = {};
     circular::span<int> span(array.begin(), array.end());
     span.push_back(11);
     decltype(span)::const_iterator alpha; // DefaultConstructible
@@ -235,7 +235,7 @@ void test_iterator_constructible()
 
 void test_const_iterator()
 {
-    std::array<int, 4> array;
+    std::array<int, 4> array = {};
     circular::span<int> span(array.begin(), array.end());
     span.push_back(11);
     TRIAL_TEST(span.cbegin() != span.cend());
@@ -248,7 +248,7 @@ void test_const_iterator()
 
 void test_push_back()
 {
-    std::array<int, 4> array;
+    std::array<int, 4> array = {};
     circular::span<int> span(array.begin(), array.end());
     span.push_back(11);
     TRIAL_TEST(span.begin() != span.end());
@@ -291,7 +291,7 @@ void test_push_back()
 
 void test_push_front()
 {
-    std::array<int, 4> array;
+    std::array<int, 4> array = {};
     circular::span<int> span(array.begin(), array.end());
     span.push_front(11);
     {
@@ -333,7 +333,7 @@ void test_push_front()
 
 void test_push_alternating()
 {
-    std::array<int, 4> array;
+    std::array<int, 4> array = {};
     circular::span<int> span(array.begin(), array.end());
     span.push_back(11);
     {
@@ -393,14 +393,14 @@ namespace reverse_suite
 
 void test_empty()
 {
-    std::array<int, 4> array;
+    std::array<int, 4> array = {};
     circular::span<int> span(array.begin(), array.end());
     TRIAL_TEST(span.rbegin() == span.rend());
 }
 
 void test_reverse()
 {
-    std::array<int, 4> array;
+    std::array<int, 4> array = {};
     circular::span<int> span(array.begin(), array.end());
     span = { 11, 22, 33 };
     {
@@ -439,7 +439,7 @@ void test_reverse()
 
 void test_const_reverse()
 {
-    std::array<int, 4> array;
+    std::array<int, 4> array = {};
     circular::span<int> span(array.begin(), array.end());
     span = { 11, 22, 33 };
     {
@@ -492,7 +492,7 @@ namespace inserter_suite
 
 void test_back_inserter()
 {
-    std::array<int, 4> array;
+    std::array<int, 4> array = {};
     circular::span<int> span(array.begin(), array.end());
     span = { 11 };
     std::fill_n(std::back_inserter(span), 3, 22);
@@ -513,7 +513,7 @@ void test_back_inserter()
 
 void test_front_inserter()
 {
-    std::array<int, 4> array;
+    std::array<int, 4> array = {};
     circular::span<int> span(array.begin(), array.end());
     span = { 11 };
     std::fill_n(std::front_inserter(span), 3, 22);
@@ -547,7 +547,7 @@ namespace range_for_suite
 
 void empty()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     int sum = 0;
     for (auto&& element : span)
@@ -559,7 +559,7 @@ void empty()
 
 void full()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44 };
     int sum = 0;
@@ -572,7 +572,7 @@ void full()
 
 void overfull()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     int sum = 0;
@@ -585,7 +585,7 @@ void overfull()
 
 void segment_empty()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     int sum = 0;
     for (auto&& element : span.front_segment())
@@ -602,7 +602,7 @@ void segment_empty()
 
 void segment_full()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44 };
     int sum = 0;
@@ -620,7 +620,7 @@ void segment_full()
 
 void segment_overfull()
 {
-    int array[4];
+    int array[4] = {};
     circular::span<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     int sum = 0;
