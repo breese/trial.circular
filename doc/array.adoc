@@ -378,7 +378,7 @@ Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveAssignable_.
 | `template <typename InputIterator>
  +
- constexpr{wj}footnote:constexpr11[] void push_back(value_type) noexcept(_see Remarks_)` | Inserts elements from iterator range at the end of the circular span.
+ constexpr{wj}footnote:constexpr11[] void push_back(InputIterator first, InputIterator last) noexcept(_see Remarks_)` | Inserts elements from iterator range at the end of the circular span.
  +
  +
  _Constraint:_ `value_type` must be _CopyAssignable_.
