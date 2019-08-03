@@ -5,4 +5,4 @@
 
 C++11 header-only library for circular queues.
 
-See <<doc/circular.adoc#,documentation>>.
+See <<../doc/circular.adoc#,documentation>>.
