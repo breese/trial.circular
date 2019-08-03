@@ -487,7 +487,9 @@ constexpr span<T, E>::member_storage<T1, E1>::member_storage() noexcept
 
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
-constexpr span<T, E>::member_storage<T1, E1>::member_storage(pointer data, size_type size, size_type next) noexcept
+constexpr span<T, E>::member_storage<T1, E1>::member_storage(pointer data,
+                                                             size_type size,
+                                                             size_type next) noexcept
     : data(data),
       size(size),
       next(next)
@@ -496,7 +498,8 @@ constexpr span<T, E>::member_storage<T1, E1>::member_storage(pointer data, size_
 
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
-constexpr span<T, E>::member_storage<T1, E1>::member_storage(const member_storage& other, pointer data) noexcept
+constexpr span<T, E>::member_storage<T1, E1>::member_storage(const member_storage& other,
+                                                             pointer data) noexcept
     : data(data),
       size(other.size),
       next(other.next)
@@ -506,7 +509,8 @@ constexpr span<T, E>::member_storage<T1, E1>::member_storage(const member_storag
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
 template <typename OtherT, std::size_t OtherExtent>
-constexpr span<T, E>::member_storage<T1, E1>::member_storage(const span<OtherT, OtherExtent>& other) noexcept
+constexpr span<T, E>::member_storage<T1, E1>::member_storage(const span<OtherT,
+                                                             OtherExtent>& other) noexcept
     : data(other.member.data),
       size(other.member.size),
       next(other.member.next)
@@ -516,24 +520,29 @@ constexpr span<T, E>::member_storage<T1, E1>::member_storage(const span<OtherT, 
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
 template <typename ContiguousIterator>
-constexpr span<T, E>::member_storage<T1, E1>::member_storage(ContiguousIterator begin, ContiguousIterator end) noexcept
+TRIAL_CXX14_CONSTEXPR
+span<T, E>::member_storage<T1, E1>::member_storage(ContiguousIterator begin,
+                                                   ContiguousIterator end) noexcept
     : data(&*begin),
       size(0),
       next(size_type(end - begin))
 {
+    assert(size_type(end - begin) == capacity());
 }
 
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
 template <typename ContiguousIterator>
-constexpr span<T, E>::member_storage<T1, E1>::member_storage(ContiguousIterator begin,
-                                                             ContiguousIterator end,
-                                                             ContiguousIterator first,
-                                                             size_type length) noexcept
+TRIAL_CXX14_CONSTEXPR
+span<T, E>::member_storage<T1, E1>::member_storage(ContiguousIterator begin,
+                                                   ContiguousIterator end,
+                                                   ContiguousIterator first,
+                                                   size_type length) noexcept
     : data(&*begin),
       size(length),
       next(size_type(end - begin) + length - size_type(first - begin))
 {
+    assert(size_type(end - begin) == capacity());
 }
 
 template <typename T, std::size_t E>
@@ -562,7 +571,8 @@ void span<T, E>::member_storage<T1, E1>::capacity(size_type) noexcept
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
 TRIAL_CXX14_CONSTEXPR
-void span<T, E>::member_storage<T1, E1>::assign(const member_storage& other, pointer data) noexcept
+void span<T, E>::member_storage<T1, E1>::assign(const member_storage& other,
+                                                pointer data) noexcept
 {
     this->data = data;
     this->size = other.size;
@@ -585,7 +595,9 @@ constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage() noexc
 
 template <typename T, std::size_t E>
 template <typename T1>
-constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(pointer data, size_type capacity, size_type size, size_type next) noexcept
+constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(pointer data,
+                                                                         size_type capacity,
+                                                                         size_type size, size_type next) noexcept
     : data(data),
       cap(capacity),
       size(size),
@@ -595,7 +607,8 @@ constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(pointer
 
 template <typename T, std::size_t E>
 template <typename T1>
-constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(const member_storage& other, pointer data) noexcept
+constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(const member_storage& other,
+                                                                         pointer data) noexcept
     : data(data),
       cap(other.cap),
       size(other.size),
@@ -617,7 +630,8 @@ constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(const s
 template <typename T, std::size_t E>
 template <typename T1>
 template <typename ContiguousIterator>
-constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(ContiguousIterator begin, ContiguousIterator end) noexcept
+constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(ContiguousIterator begin,
+                                                                         ContiguousIterator end) noexcept
     : data(&*begin),
       cap(size_type(end - begin)),
       size(0),
@@ -665,7 +679,8 @@ void span<T, E>::member_storage<T1, dynamic_extent>::capacity(size_type value) n
 template <typename T, std::size_t E>
 template <typename T1>
 TRIAL_CXX14_CONSTEXPR
-void span<T, E>::member_storage<T1, dynamic_extent>::assign(const member_storage& other, pointer data) noexcept
+void span<T, E>::member_storage<T1, dynamic_extent>::assign(const member_storage& other,
+                                                            pointer data) noexcept
 {
     this->data = data;
     capacity(other.capacity());

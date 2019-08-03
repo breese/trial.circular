@@ -508,10 +508,12 @@ private:
         explicit constexpr member_storage(const span<OtherT, OtherExtent>&) noexcept;
 
         template <typename ContiguousIterator>
-        constexpr member_storage(ContiguousIterator, ContiguousIterator) noexcept;
+        TRIAL_CXX14_CONSTEXPR
+        member_storage(ContiguousIterator, ContiguousIterator) noexcept;
 
         template <typename ContiguousIterator>
-        constexpr member_storage(ContiguousIterator, ContiguousIterator, ContiguousIterator, size_type) noexcept;
+        TRIAL_CXX14_CONSTEXPR
+        member_storage(ContiguousIterator, ContiguousIterator, ContiguousIterator, size_type) noexcept;
 
         template <std::size_t N>
         explicit constexpr member_storage(value_type (&array)[N]) noexcept;
