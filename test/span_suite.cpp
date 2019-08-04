@@ -2153,26 +2153,26 @@ class cspan : protected circular::span<T>
 public:
     using size_type = typename super::size_type;
     using super::super;
-    using super::empty;
+    using super::size;
     using super::operator=;
     using super::push_front;
     using super::push_back;
     using super::begin;
     using super::end;
     // Make public
-    using super::advance_left;
-    using super::advance_right;
+    using super::advance_front;
+    using super::advance_back;
 };
 
 void advance_empty()
 {
     int array[4] = {};
     cspan<int> span(array);
-    TRIAL_TEST(span.empty());
-    span.advance_left(1);
-    TRIAL_TEST(span.empty());
-    span.advance_right(1);
-    TRIAL_TEST(span.empty());
+    TRIAL_TEST_EQ(span.size(), 0);
+    span.advance_back(1);
+    TRIAL_TEST_EQ(span.size(), 1);
+    span.advance_front(1);
+    TRIAL_TEST_EQ(span.size(), 2);
 }
 
 void advance_0()
@@ -2186,26 +2186,26 @@ void advance_0()
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_left(0);
+    span.advance_front(0);
     {
         std::vector<int> expect = { 11 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_right(0);
+    span.advance_back(0);
     {
         std::vector<int> expect = { 11 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
     span = { 11, 22, 33, 44 };
-    span.advance_left(0);
+    span.advance_front(0);
     {
         std::vector<int> expect = { 11, 22, 33, 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_right(0);
+    span.advance_back(0);
     {
         std::vector<int> expect = { 11, 22, 33, 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2213,7 +2213,7 @@ void advance_0()
     }
 }
 
-void advance_back_left_1()
+void advance_back_front_1()
 {
     int array[4] = {};
     cspan<int> span(array);
@@ -2226,42 +2226,144 @@ void advance_back_left_1()
                           expect.begin(), expect.end());
     }
     // 11 XX XX XX
-    //    <>
-    span.advance_left(1);
+    // ->       <-
+    span.advance_front(1);
     {
-        std::vector<int> expect = { 0 };
+        std::vector<int> expect = { 0, 11 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    // 11 XX 22 XX
-    //    <--->
+    // 11 22 XX XX
+    // ---->    <-
     span.push_back(22);
     {
-        std::vector<int> expect = { 0, 22 };
+        std::vector<int> expect = { 0, 11, 22 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // 11 22 XX XX
+    // ----> <----
+    span.advance_front(1);
+    {
+        std::vector<int> expect = { 0, 0, 11, 22 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // 11 22 33 XX
+    // -------> <-
+    span.push_back(33);
+    {
+        std::vector<int> expect = { 0, 11, 22, 33 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // 11 22 33 XX
+    // ----> <----
+    span.advance_front(1);
+    {
+        std::vector<int> expect = { 33, 0, 11, 22 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // 11 22 44 XX
+    // -------> <-
+    span.push_back(44);
+    {
+        std::vector<int> expect = { 0, 11, 22, 44 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // 11 22 44 XX
+    // ----> <----
+    span.advance_front(1);
+    {
+        std::vector<int> expect = { 44, 0, 11, 22 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // 11 22 55 XX
+    // -------> <-
+    span.push_back(55);
+    {
+        std::vector<int> expect = { 0, 11, 22, 55 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // 11 22 55 XX
+    // ----> <----
+    span.advance_front(1);
+    {
+        std::vector<int> expect = { 55, 0, 11, 22 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // 11 22 66 XX
+    // -------> <-
+    span.push_back(66);
+    {
+        std::vector<int> expect = { 0, 11, 22, 66 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // 11 22 66 XX
+    // ----> <----
+    span.advance_front(1);
+    {
+        std::vector<int> expect = { 66, 0, 11, 22 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void advance_back_back_1()
+{
+    int array[4] = {};
+    cspan<int> span(array);
+    // 11 XX XX XX
+    // <>
+    span.push_back(11);
+    {
+        std::vector<int> expect = { 11 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // 11 XX XX XX
+    // <--->
+    span.advance_back(1);
+    {
+        std::vector<int> expect = { 11, 0 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
     // 11 XX 22 XX
-    //       <--->
-    span.advance_left(1);
+    // <------>
+    span.push_back(22);
     {
-        std::vector<int> expect = { 22, 0 };
+        std::vector<int> expect = { 11, 0, 22 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // 11 XX 22 XX
+    // <--------->
+    span.advance_back(1);
+    {
+        std::vector<int> expect = { 11, 0, 22, 0 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
     // 33 XX 22 XX
-    // ->    <----
+    // -> <-------
     span.push_back(33);
     {
-        std::vector<int> expect = { 22, 0, 33 };
+        std::vector<int> expect = { 0, 22, 0, 33 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
     // 33 XX 22 XX
-    // ---->    <-
-    span.advance_left(1);
+    // ----> <----
+    span.advance_back(1);
     {
-        std::vector<int> expect = { 0, 33, 0 };
+        std::vector<int> expect = { 22, 0, 33, 0 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
@@ -2275,7 +2377,7 @@ void advance_back_left_1()
     }
     // 33 XX 44 XX
     // <--------->
-    span.advance_left(1);
+    span.advance_back(1);
     {
         std::vector<int> expect = { 33, 0, 44, 0 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2291,7 +2393,7 @@ void advance_back_left_1()
     }
     // 55 XX 44 XX
     // ----> <----
-    span.advance_left(1);
+    span.advance_back(1);
     {
         std::vector<int> expect = { 44, 0, 55, 0 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2307,7 +2409,7 @@ void advance_back_left_1()
     }
     // 55 XX 66 XX
     // <--------->
-    span.advance_left(1);
+    span.advance_back(1);
     {
         std::vector<int> expect = { 55, 0, 66, 0 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2315,259 +2417,55 @@ void advance_back_left_1()
     }
 }
 
-void advance_back_right_1()
+void advance_front_front_1()
 {
     int array[4] = {};
     cspan<int> span(array);
-    // 11 XX XX XX
-    // <>
-    span.push_back(11);
+    // XX XX XX 11
+    //          <>
+    span.push_front(11);
     {
         std::vector<int> expect = { 11 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    // 11 XX XX XX
-    //          <>
-    span.advance_right(1);
-    {
-        std::vector<int> expect = { 0 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // 22 XX XX XX
-    // ->       <-
-    span.push_back(22);
-    {
-        std::vector<int> expect = { 0, 22 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // 22 XX XX XX
+    // XX XX XX 11
     //       <--->
-    span.advance_right(1);
+    span.advance_front(1);
     {
-        std::vector<int> expect = { 0, 0 };
+        std::vector<int> expect = { 0, 11 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    // 33 XX XX XX
-    // ->    <----
-    span.push_back(33);
-    {
-        std::vector<int> expect = { 0, 0, 33 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // 33 XX XX XX
+    // XX 22 XX 11
     //    <------>
-    span.advance_right(1);
-    {
-        std::vector<int> expect = { 0, 0, 0 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // 44 XX XX XX
-    // -> <-------
-    span.push_back(44);
-    {
-        std::vector<int> expect = { 0, 0, 0, 44 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // 44 XX XX XX
-    // <--------->
-    span.advance_right(1);
-    {
-        std::vector<int> expect = { 44, 0, 0, 0 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // 55 XX XX XX
-    // -> <-------
-    span.push_back(55);
-    {
-        std::vector<int> expect = { 0, 0, 0, 55 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // 55 XX XX XX
-    // <--------->
-    span.advance_right(1);
-    {
-        std::vector<int> expect = { 55, 0, 0, 0 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // 66 XX XX XX
-    // -> <-------
-    span.push_back(66);
-    {
-        std::vector<int> expect = { 0, 0, 0, 66 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // 66 XX XX XX
-    // <--------->
-    span.advance_right(1);
-    {
-        std::vector<int> expect = { 66, 0, 0, 0 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-}
-
-void advance_front_left_1()
-{
-    int array[4] = {};
-    cspan<int> span(array);
-    // XX XX XX 11
-    //          <>
-    span.push_front(11);
-    {
-        std::vector<int> expect = { 11 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // XX XX XX 11
-    // <>
-    span.advance_left(1);
-    {
-        std::vector<int> expect = { 0 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // XX XX XX 22
-    // ->       <-
     span.push_front(22);
     {
-        std::vector<int> expect = { 22, 0 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // XX XX XX 22
-    // <--->
-    span.advance_left(1);
-    {
-        std::vector<int> expect = { 0, 0 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // XX XX XX 33
-    // ---->    <-
-    span.push_front(33);
-    {
-        std::vector<int> expect = { 33, 0, 0 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // XX XX XX 33
-    // <------>
-    span.advance_left(1);
-    {
-        std::vector<int> expect = { 0, 0, 0 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // XX XX XX 44
-    // -------> <-
-    span.push_front(44);
-    {
-        std::vector<int> expect = { 44, 0, 0, 0 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // XX XX XX 44
-    // <--------->
-    span.advance_left(1);
-    {
-        std::vector<int> expect = { 0, 0, 0, 44 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // XX XX XX 55
-    // -------> <-
-    span.push_front(55);
-    {
-        std::vector<int> expect = { 55, 0, 0, 0 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // XX XX XX 55
-    // <--------->
-    span.advance_left(1);
-    {
-        std::vector<int> expect = { 0, 0, 0, 55 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // XX XX XX 66
-    // -------> <-
-    span.push_front(66);
-    {
-        std::vector<int> expect = { 66, 0, 0, 0 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // XX XX XX 66
-    // <--------->
-    span.advance_left(1);
-    {
-        std::vector<int> expect = { 0, 0, 0, 66 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-}
-
-void advance_front_right_1()
-{
-    int array[4] = {};
-    cspan<int> span(array);
-    // XX XX XX 11
-    //          <>
-    span.push_front(11);
-    {
-        std::vector<int> expect = { 11 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // XX XX XX 11
-    //       <>
-    span.advance_right(1);
-    {
-        std::vector<int> expect = { 0 };
+        std::vector<int> expect = { 22, 0, 11 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
     // XX 22 XX 11
-    //    <--->
-    span.push_front(22);
+    // <--------->
+    span.advance_front(1);
     {
-        std::vector<int> expect = { 22, 0 };
-        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
-                          expect.begin(), expect.end());
-    }
-    // XX 22 XX 11
-    // <--->
-    span.advance_right(1);
-    {
-        std::vector<int> expect = { 0, 22 };
+        std::vector<int> expect = { 0, 22, 0, 11 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
     // XX 22 XX 33
-    // ---->    <-
+    // -------> <-
     span.push_front(33);
     {
-        std::vector<int> expect = { 33, 0, 22 };
+        std::vector<int> expect = { 33, 0, 22, 0 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
     // XX 22 XX 33
-    // ->    <----
-    span.advance_right(1);
+    // ----> <----
+    span.advance_front(1);
     {
-        std::vector<int> expect = { 0, 33, 0 };
+        std::vector<int> expect = { 0, 33, 0, 22 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
@@ -2581,7 +2479,7 @@ void advance_front_right_1()
     }
     // XX 44 XX 33
     // <--------->
-    span.advance_right(1);
+    span.advance_front(1);
     {
         std::vector<int> expect = { 0, 44, 0, 33 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2597,7 +2495,7 @@ void advance_front_right_1()
     }
     // XX 44 XX 55
     // ----> <----
-    span.advance_right(1);
+    span.advance_front(1);
     {
         std::vector<int> expect = { 0, 55, 0, 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2613,7 +2511,7 @@ void advance_front_right_1()
     }
     // XX 66 XX 55
     // <--------->
-    span.advance_right(1);
+    span.advance_front(1);
     {
         std::vector<int> expect = { 0, 66, 0, 55 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2621,36 +2519,138 @@ void advance_front_right_1()
     }
 }
 
-void advance_left_n()
+void advance_front_back_1()
+{
+    int array[4] = {};
+    cspan<int> span(array);
+    // XX XX XX 11
+    //          <>
+    span.push_front(11);
+    {
+        std::vector<int> expect = { 11 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // XX XX XX 11
+    // ->       <-
+    span.advance_back(1);
+    {
+        std::vector<int> expect = { 11, 0 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // XX XX 22 11
+    // ->    <----
+    span.push_front(22);
+    {
+        std::vector<int> expect = { 22, 11, 0 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // XX XX 22 11
+    // ----> <----
+    span.advance_back(1);
+    {
+        std::vector<int> expect = { 22, 11, 0, 0 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // XX 33 22 11
+    // -> <-------
+    span.push_front(33);
+    {
+        std::vector<int> expect = { 33, 22, 11, 0 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // XX 33 22 11
+    // ----> <----
+    span.advance_back(1);
+    {
+        std::vector<int> expect = { 22, 11, 0, 33 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // XX 44 22 11
+    // -> <-------
+    span.push_front(44);
+    {
+        std::vector<int> expect = { 44, 22, 11, 0 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // XX 44 22 11
+    // ----> <----
+    span.advance_back(1);
+    {
+        std::vector<int> expect = { 22, 11, 0, 44 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // XX 55 22 11
+    // -> <-------
+    span.push_front(55);
+    {
+        std::vector<int> expect = { 55, 22, 11, 0 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // XX 55 22 11
+    // ----> <----
+    span.advance_back(1);
+    {
+        std::vector<int> expect = { 22, 11, 0, 55 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // XX 66 22 11
+    // -> <-------
+    span.push_front(66);
+    {
+        std::vector<int> expect = { 66, 22, 11, 0 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    // XX 66 22 11
+    // ----> <----
+    span.advance_back(1);
+    {
+        std::vector<int> expect = { 22, 11, 0, 66 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void advance_back_n()
 {
     int array[4] = {};
     cspan<int> span(array);
     span = { 11, 22, 33, 44 };
-    span.advance_left(1);
+    span.advance_back(1);
     {
         std::vector<int> expect = { 22, 33, 44, 11 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_left(1);
+    span.advance_back(1);
     {
         std::vector<int> expect = { 33, 44, 11, 22 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_left(1);
+    span.advance_back(1);
     {
         std::vector<int> expect = { 44, 11, 22, 33 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_left(1);
+    span.advance_back(1);
     {
         std::vector<int> expect = { 11, 22, 33, 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_left(1);
+    span.advance_back(1);
     {
         std::vector<int> expect = { 22, 33, 44, 11 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2658,36 +2658,36 @@ void advance_left_n()
     }
 }
 
-void advance_right_n()
+void advance_front_n()
 {
     int array[4] = {};
     cspan<int> span(array);
     span = { 11, 22, 33, 44 };
-    span.advance_right(1);
+    span.advance_front(1);
     {
         std::vector<int> expect = { 44, 11, 22, 33 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_right(1);
+    span.advance_front(1);
     {
         std::vector<int> expect = { 33, 44, 11, 22 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_right(1);
+    span.advance_front(1);
     {
         std::vector<int> expect = { 22, 33, 44, 11 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_right(1);
+    span.advance_front(1);
     {
         std::vector<int> expect = { 11, 22, 33, 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_right(1);
+    span.advance_front(1);
     {
         std::vector<int> expect = { 44, 11, 22, 33 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2705,103 +2705,103 @@ void advance_alternating_n()
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_left(0);
+    span.advance_front(0);
     {
         std::vector<int> expect = { 11, 22, 33, 44, 55, 66, 77, 88 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_left(1);
+    span.advance_back(1);
     {
         std::vector<int> expect = { 22, 33, 44, 55, 66, 77, 88, 11 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_right(1);
+    span.advance_front(1);
     {
         std::vector<int> expect = { 11, 22, 33, 44, 55, 66, 77, 88 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_left(2);
+    span.advance_back(2);
     {
         std::vector<int> expect = { 33, 44, 55, 66, 77, 88, 11, 22 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_right(2);
+    span.advance_front(2);
     {
         std::vector<int> expect = { 11, 22, 33, 44, 55, 66, 77, 88 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_left(3);
+    span.advance_back(3);
     {
         std::vector<int> expect = { 44, 55, 66, 77, 88, 11, 22, 33 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_right(3);
+    span.advance_front(3);
     {
         std::vector<int> expect = { 11, 22, 33, 44, 55, 66, 77, 88 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_left(4);
+    span.advance_back(4);
     {
         std::vector<int> expect = { 55, 66, 77, 88, 11, 22, 33, 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_right(4);
+    span.advance_front(4);
     {
         std::vector<int> expect = { 11, 22, 33, 44, 55, 66, 77, 88 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_left(5);
+    span.advance_back(5);
     {
         std::vector<int> expect = { 66, 77, 88, 11, 22, 33, 44, 55 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_right(5);
+    span.advance_front(5);
     {
         std::vector<int> expect = { 11, 22, 33, 44, 55, 66, 77, 88 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_left(6);
+    span.advance_back(6);
     {
         std::vector<int> expect = { 77, 88, 11, 22, 33, 44, 55, 66 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_right(6);
+    span.advance_front(6);
     {
         std::vector<int> expect = { 11, 22, 33, 44, 55, 66, 77, 88 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_left(7);
+    span.advance_back(7);
     {
         std::vector<int> expect = { 88, 11, 22, 33, 44, 55, 66, 77 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_right(7);
+    span.advance_front(7);
     {
         std::vector<int> expect = { 11, 22, 33, 44, 55, 66, 77, 88 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_left(8);
+    span.advance_back(8);
     {
         std::vector<int> expect = { 11, 22, 33, 44, 55, 66, 77, 88 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
-    span.advance_right(8);
+    span.advance_front(8);
     {
         std::vector<int> expect = { 11, 22, 33, 44, 55, 66, 77, 88 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2813,12 +2813,12 @@ void run()
 {
     advance_empty();
     advance_0();
-    advance_back_left_1();
-    advance_back_right_1();
-    advance_front_left_1();
-    advance_front_right_1();
-    advance_left_n();
-    advance_right_n();
+    advance_back_front_1();
+    advance_back_back_1();
+    advance_front_front_1();
+    advance_front_back_1();
+    advance_back_n();
+    advance_front_n();
     advance_alternating_n();
 }
 

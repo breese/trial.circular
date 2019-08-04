@@ -445,31 +445,30 @@ protected:
     TRIAL_CXX14_CONSTEXPR
     void assign(const span&, pointer) noexcept;
 
-    //! @brief Increases current position by amount.
+    //! @brief Allot elements at the beginning of the span.
     //!
-    //! Performs a virtual rotation of the span across the entire capacity.
-    //! No elements are moved around in the storage. Constant time complexity.
+    //! Make room for @c amount elements at the front. These elements may include
+    //! default-initialized or moved-from elements, and must be overwritten with
+    //! properly initialized values.
     //!
-    //! Use with caution when the span is not full. In this case the rotation
-    //! does not account for holes in the span. The resulting span may include
-    //! default-initialized or moved-from elements, and inserted elements may
-    //! be rotated out of the span.
+    //! If the span is full, then the elements at the front are taken from the
+    //! back.
     //!
     //! @pre capacity() > 0
     //! @pre amount <= capacity()
 
     TRIAL_CXX14_CONSTEXPR
-    void advance_left(size_type amount) noexcept;
+    void advance_front(size_type amount) noexcept;
 
-    //! @brief Decreases current position by amount.
+    //! @brief Allot elements at the end of the span.
     //!
     //! @pre capacity() > 0
     //! @pre amount <= capacity()
     //!
-    //! @sa advance_left
+    //! @sa advance_front
 
     TRIAL_CXX14_CONSTEXPR
-    void advance_right(size_type amount) noexcept;
+    void advance_back(size_type amount) noexcept;
 
 private:
     constexpr size_type index(size_type) const noexcept;

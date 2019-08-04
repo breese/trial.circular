@@ -210,14 +210,7 @@ void span<T, E>::push_front(value_type input) noexcept(std::is_nothrow_move_assi
 {
     static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
 
-    if (full())
-    {
-        advance_right(1);
-    }
-    else
-    {
-        ++member.size;
-    }
+    advance_front(1);
     front() = std::move(input);
 }
 
@@ -242,11 +235,7 @@ void span<T, E>::push_back(value_type input) noexcept(std::is_nothrow_move_assig
 {
     static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
 
-    advance_left(1);
-    if (!full())
-    {
-        ++member.size;
-    }
+    advance_back(1);
     back() = std::move(input);
 }
 
@@ -284,7 +273,7 @@ void span<T, E>::pop_back(size_type count) noexcept
     assert(count > 0);
     assert(count <= size());
 
-    advance_right(count);
+    member.next = member.capacity() + index(member.next - count);
     member.size -= count;
 }
 
@@ -312,20 +301,37 @@ auto span<T, E>::move_back() noexcept(std::is_nothrow_move_constructible<value_t
 
 template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
-void span<T, E>::advance_left(size_type count) noexcept
+void span<T, E>::advance_front(size_type count) noexcept
 {
     assert(count <= capacity());
 
-    member.next = member.capacity() + index(member.next + count);
+    if (count > capacity() - size())
+    {
+        member.next = member.capacity() + index(member.next - count);
+        member.size = member.capacity();
+    }
+    else
+    {
+        member.size += count;
+    }
 }
 
 template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
-void span<T, E>::advance_right(size_type count) noexcept
+void span<T, E>::advance_back(size_type count) noexcept
 {
     assert(count <= capacity());
 
-    member.next = member.capacity() + index(member.next - count);
+    if (count > capacity() - size())
+    {
+        member.next = member.capacity() + index(member.next + count);
+        member.size = capacity();
+    }
+    else
+    {
+        member.next = member.capacity() + index(member.next + count);
+        member.size += count;
+    }
 }
 
 template <typename T, std::size_t E>
