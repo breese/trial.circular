@@ -378,7 +378,7 @@ Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveAssignable_.
 | `template <typename InputIterator>
  +
- constexpr{wj}footnote:constexpr11[] void push_back(InputIterator first, InputIterator last) noexcept(_see Remarks_)` | Inserts elements from iterator range at the end of the circular span.
+ constexpr{wj}footnote:constexpr11[] void push_back(InputIterator first, InputIterator last) noexcept(_see Remarks_)` | Inserts elements from iterator range at the end of the circular array.
  +
  +
  _Constraint:_ `value_type` must be _CopyAssignable_.
@@ -388,62 +388,102 @@ Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _CopyAssignable_.
-| `constexpr{wj}footnote:constexpr11[] void pop_front() noexcept` | Erases element from the beginning of the circular array.
+| `constexpr{wj}footnote:constexpr11[] value_type move_front() noexcept(_see Remarks_)` | Removes and returns an element from the beginning of the circular array.
  +
  +
- The erased elements in the underlying storage is not destroyed.
- +
- +
- _Expects:_ `size() > 0`
-| `constexpr{wj}footnote:constexpr11[] void pop_front(size_type count) noexcept` | Erases the specified number of elements from the beginning of the circular array.
- +
- +
- The erased elements in the underlying storage are not destroyed.
- +
- +
- _Expects:_ `size() > 0`
- +
- _Expects:_ `count > 0`
- +
- _Expects:_ `count \<= size()`
-| `constexpr{wj}footnote:constexpr11[] void pop_back() noexcept` | Erases element from the end of the circular array.
- +
- +
- The erased element in the underlying storage is not destroyed.
- +
- +
- _Expects:_ `size() > 0`
-| `constexpr{wj}footnote:constexpr11[] void pop_back(size_type count) noexcept` | Erases the specified number of elements from the end of the circular array.
- +
- +
- The erased elements in the underlying storage are not destroyed.
- +
- +
- _Expects:_ `size() > 0`
- +
- _Expects:_ `count > 0`
- +
- _Expects:_ `count \<= size()`
-| `constexpr{wj}footnote:constexpr11[] value_type move_front() noexcept(_see Remarks_)` | Erases and returns an element from the beginning of the circular array.
- +
- +
- The erased element in the underlying storage is left in a moved-from state.
+ The removed element in the underlying storage is left in a moved-from state.
  +
  +
  _Expects:_ `size() > 0`
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveConstructible_.
-| `constexpr{wj}footnote:constexpr11[] value_type move_back() noexcept(_see Remarks_)` | Erases and returns an element from the end of the circular array.
+| `constexpr{wj}footnote:constexpr11[] value_type move_back() noexcept(_see Remarks_)` | Removes and returns an element from the end of the circular array.
  +
  +
- The erased element in the underlying storage is left in a moved-from state.
+ The removed element in the underlying storage is left in a moved-from state.
  +
  +
  _Expects:_ `size() > 0`
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveConstructible_.
+| `constexpr{wj}footnote:constexpr11[] void increment_front() noexcept` | Inserts unspecified element at the beginning of the circular array.
+ +
+ +
+ Makes room for one element at the front. The inserted element is in an unspecified but valid state.
+ +
+ +
+ If the circular array is full, then the element is taken from the end of the circular array. This effectively rotates the circular array without touching the elements in the underlying storage. Otherwise, the circular array is enlarged.
+ +
+ +
+ _Expects:_ `capacity() > 0`
+| `constexpr{wj}footnote:constexpr11[] void increment_front(size_type count) noexcept` | Inserts unspecified elements at the beginning of the circular array.
+ +
+ +
+ Makes room for `count` elements at the front. The inserted elements are in an unspecified but valid state.
+ +
+ +
+ If the circular array is full, then the elements are taken from the end of the circular array. This effectively rotates the circular array without touching the elements in the underlying storage. Otherwise, the circular array is enlarged.
+ +
+ +
+ _Expects:_ `capacity() > 0`
+ +
+ _Expects:_ `count \<= capacity()`
+| `constexpr{wj}footnote:constexpr11[] void increment_back() noexcept` | Inserts unspecified element at the end of the circular array.
+ +
+ +
+ Makes room for one element at the back. The inserted element is in an unspecified but valid state.
+ +
+ +
+ If the circular array is full, then the element is taken from the beginning of the circular array. This effectively rotates the circular array without touching the elements in the underlying storage. Otherwise, the circular array is enlarged.
+ +
+ +
+ _Expects:_ `capacity() > 0`
+| `constexpr{wj}footnote:constexpr11[] void increment_back(size_type count) noexcept` | Inserts unspecified elements at the end of the circular array.
+ +
+ +
+ Makes room for `count` elements at the back. The inserted elements are in an unspecified but valid state.
+ +
+ +
+ If the circular array is full, then the elements are taken from the beginning of the circular array. This effectively rotates the circular array without touching the elements in the underlying storage. Otherwise, the circular array is enlarged.
+ +
+ +
+ _Expects:_ `capacity() > 0`
+ +
+ _Expects:_ `count \<= capacity()`
+| `constexpr{wj}footnote:constexpr11[] void decrement_front() noexcept` | Removes element from the beginning of the circular array.
+ +
+ +
+ The removed element in the underlying storage is not destroyed.
+ +
+ +
+ _Expects:_ `size() > 0`
+| `constexpr{wj}footnote:constexpr11[] void decrement_front(size_type count) noexcept` | Removes the specified number of elements from the beginning of the circular array.
+ +
+ +
+ The removed elements in the underlying storage are not destroyed.
+ +
+ +
+ _Expects:_ `size() > 0`
+ +
+ _Expects:_ `count \<= size()`
+| `constexpr{wj}footnote:constexpr11[] void decrement_back() noexcept` | Removes element from the end of the circular array.
+ +
+ +
+ The removed element in the underlying storage is not destroyed.
+ +
+ +
+ _Expects:_ `size() > 0`
+| `constexpr{wj}footnote:constexpr11[] void decrement_back(size_type count) noexcept` | Removed the specified number of elements from the end of the circular array.
+ +
+ +
+ The removed elements in the underlying storage are not destroyed.
+ +
+ +
+ _Expects:_ `size() > 0`
+ +
+ _Expects:_ `count \<= size()`
 | `constexpr const_iterator begin() const noexcept` | Returns an interator to the beginning of the circular array.
 | `constexpr const_iterator end() const noexcept` | Returns an interator to the end of the circular array.
 | `constexpr const_iterator cbegin() const noexcept` | Returns an interator to the beginning of the circular array.

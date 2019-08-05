@@ -255,13 +255,21 @@ public:
 
     void push_back(value_type);
 
+    //! @brief Inserts uninitialized element at beginning of circular vector.
+
+    using span::increment_front;
+
+    //! @brief Inserts uninitialized element at end of circular vector.
+
+    using span::increment_back;
+
     //! @brief Erases element from beginning of circular vector.
 
-    using span::pop_front;
+    using span::decrement_front;
 
     //! @brief Erases element from end of circular vector.
 
-    using span::pop_back;
+    using span::decrement_back;
 
     //! @brief Moves element from beginning of circular vector.
 

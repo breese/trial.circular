@@ -203,44 +203,6 @@ void api_push_back_iterator()
     TRIAL_TEST_EQ(data.size(), 2);
 }
 
-void api_pop_front()
-{
-    circular::array<int, 4> data;
-    data.push_front(11);
-    TRIAL_TEST_EQ(data.size(), 1);
-    data.pop_front();
-    TRIAL_TEST_EQ(data.size(), 0);
-}
-
-void api_pop_front_n()
-{
-    circular::array<int, 4> data;
-    data.push_front(11);
-    data.push_front(11);
-    TRIAL_TEST_EQ(data.size(), 2);
-    data.pop_front(2);
-    TRIAL_TEST_EQ(data.size(), 0);
-}
-
-void api_pop_back()
-{
-    circular::array<int, 4> data;
-    data.push_back(11);
-    TRIAL_TEST_EQ(data.size(), 1);
-    data.pop_back();
-    TRIAL_TEST_EQ(data.size(), 0);
-}
-
-void api_pop_back_n()
-{
-    circular::array<int, 4> data;
-    data.push_back(11);
-    data.push_back(11);
-    TRIAL_TEST_EQ(data.size(), 2);
-    data.pop_back(2);
-    TRIAL_TEST_EQ(data.size(), 0);
-}
-
 void api_move_front()
 {
     circular::array<int, 4> data;
@@ -256,6 +218,82 @@ void api_move_back()
     data.push_back(11);
     TRIAL_TEST_EQ(data.size(), 1);
     TRIAL_TEST_EQ(data.move_back(), 11);
+    TRIAL_TEST_EQ(data.size(), 0);
+}
+
+void api_increment_front()
+{
+    circular::array<int, 4> data;
+    data.push_front(11);
+    TRIAL_TEST_EQ(data.size(), 1);
+    data.increment_front();
+    TRIAL_TEST_EQ(data.size(), 2);
+}
+
+void api_increment_front_n()
+{
+    circular::array<int, 4> data;
+    data.push_front(11);
+    data.push_front(11);
+    TRIAL_TEST_EQ(data.size(), 2);
+    data.increment_front(2);
+    TRIAL_TEST_EQ(data.size(), 4);
+}
+
+void api_decrement_front()
+{
+    circular::array<int, 4> data;
+    data.push_front(11);
+    TRIAL_TEST_EQ(data.size(), 1);
+    data.decrement_front();
+    TRIAL_TEST_EQ(data.size(), 0);
+}
+
+void api_decrement_front_n()
+{
+    circular::array<int, 4> data;
+    data.push_front(11);
+    data.push_front(11);
+    TRIAL_TEST_EQ(data.size(), 2);
+    data.decrement_front(2);
+    TRIAL_TEST_EQ(data.size(), 0);
+}
+
+void api_increment_back()
+{
+    circular::array<int, 4> data;
+    data.push_back(11);
+    TRIAL_TEST_EQ(data.size(), 1);
+    data.increment_back();
+    TRIAL_TEST_EQ(data.size(), 2);
+}
+
+void api_increment_back_n()
+{
+    circular::array<int, 4> data;
+    data.push_back(11);
+    data.push_back(11);
+    TRIAL_TEST_EQ(data.size(), 2);
+    data.increment_back(2);
+    TRIAL_TEST_EQ(data.size(), 4);
+}
+
+void api_decrement_back()
+{
+    circular::array<int, 4> data;
+    data.push_back(11);
+    TRIAL_TEST_EQ(data.size(), 1);
+    data.decrement_back();
+    TRIAL_TEST_EQ(data.size(), 0);
+}
+
+void api_decrement_back_n()
+{
+    circular::array<int, 4> data;
+    data.push_back(11);
+    data.push_back(11);
+    TRIAL_TEST_EQ(data.size(), 2);
+    data.decrement_back(2);
     TRIAL_TEST_EQ(data.size(), 0);
 }
 
@@ -331,12 +369,16 @@ void run()
     api_push_front_iterator();
     api_push_back();
     api_push_back_iterator();
-    api_pop_front();
-    api_pop_front_n();
-    api_pop_back();
-    api_pop_back_n();
     api_move_front();
     api_move_back();
+    api_increment_front();
+    api_increment_front_n();
+    api_decrement_front();
+    api_decrement_front_n();
+    api_increment_back();
+    api_increment_back_n();
+    api_decrement_back();
+    api_decrement_back_n();
 
     api_begin_end();
     api_cbegin_cend();

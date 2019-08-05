@@ -344,24 +344,6 @@ public:
     TRIAL_CXX14_CONSTEXPR
     void push_back(InputIterator first, InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value);
 
-    //! @brief Erases elements from beginning of span.
-    //!
-    //! By default only one element is erased.
-    //!
-    //! @pre 0 < count <= size()
-
-    TRIAL_CXX14_CONSTEXPR
-    void pop_front(size_type count = 1U) noexcept;
-
-    //! @brief Erases elements from end of span.
-    //!
-    //! By default only one element is erased.
-    //!
-    //! @pre 0 < count <= size()
-
-    TRIAL_CXX14_CONSTEXPR
-    void pop_back(size_type count = 1U) noexcept;
-
     //! @brief Removes and returns element from beginning of span.
     //!
     //! @pre !empty()
@@ -375,6 +357,55 @@ public:
 
     TRIAL_CXX14_CONSTEXPR
     value_type move_back() noexcept(std::is_nothrow_move_constructible<value_type>::value);
+
+    //! @brief Inserts unspecified elements at the beginning of the span.
+    //!
+    //! Make room for @c count elements at the front. No elements are constructed
+    //! in the underlying storage. The elements are in an unspecified but valid
+    //! state that may be default-initialized, previously properly initialized,
+    //! or in a moved-from state. The elements must be overwritten with properly
+    //! initialized values.
+    //!
+    //! If the span is full, then the elements at the front are taken from the
+    //! back.
+    //!
+    //! @pre capacity() > 0
+    //! @pre count <= capacity()
+
+    TRIAL_CXX14_CONSTEXPR
+    void increment_front(size_type count = 1U) noexcept;
+
+    //! @brief Inserts unspecified elements at the end of the span.
+    //!
+    //! @pre capacity() > 0
+    //! @pre count <= capacity()
+    //!
+    //! @sa increment_front
+
+    TRIAL_CXX14_CONSTEXPR
+    void increment_back(size_type count = 1U) noexcept;
+
+    //! @brief Removes elements from beginning of span.
+    //!
+    //! The removed elements in the underlying storage are not destroyed.
+    //!
+    //! By default only one element is erased.
+    //!
+    //! @pre 0 < count <= size()
+
+    TRIAL_CXX14_CONSTEXPR
+    void decrement_front(size_type count = 1U) noexcept;
+
+    //! @brief Removes elements from end of span.
+    //!
+    //! The removed elements in the underlying storage are not destroyed.
+    //!
+    //! By default only one element is erased.
+    //!
+    //! @pre 0 < count <= size()
+
+    TRIAL_CXX14_CONSTEXPR
+    void decrement_back(size_type count = 1U) noexcept;
 
     //! @brief Rotates elements so span starts at beginning of storage.
     //!
@@ -444,31 +475,6 @@ protected:
 
     TRIAL_CXX14_CONSTEXPR
     void assign(const span&, pointer) noexcept;
-
-    //! @brief Allot elements at the beginning of the span.
-    //!
-    //! Make room for @c amount elements at the front. These elements may include
-    //! default-initialized or moved-from elements, and must be overwritten with
-    //! properly initialized values.
-    //!
-    //! If the span is full, then the elements at the front are taken from the
-    //! back.
-    //!
-    //! @pre capacity() > 0
-    //! @pre amount <= capacity()
-
-    TRIAL_CXX14_CONSTEXPR
-    void advance_front(size_type amount) noexcept;
-
-    //! @brief Allot elements at the end of the span.
-    //!
-    //! @pre capacity() > 0
-    //! @pre amount <= capacity()
-    //!
-    //! @sa advance_front
-
-    TRIAL_CXX14_CONSTEXPR
-    void advance_back(size_type amount) noexcept;
 
 private:
     constexpr size_type index(size_type) const noexcept;

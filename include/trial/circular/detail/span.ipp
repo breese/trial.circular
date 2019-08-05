@@ -210,7 +210,7 @@ void span<T, E>::push_front(value_type input) noexcept(std::is_nothrow_move_assi
 {
     static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
 
-    advance_front(1);
+    increment_front();
     front() = std::move(input);
 }
 
@@ -235,7 +235,7 @@ void span<T, E>::push_back(value_type input) noexcept(std::is_nothrow_move_assig
 {
     static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
 
-    advance_back(1);
+    increment_back();
     back() = std::move(input);
 }
 
@@ -256,35 +256,12 @@ void span<T, E>::push_back(InputIterator first,
 
 template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
-void span<T, E>::pop_front(size_type count) noexcept
-{
-    assert(size() > 0);
-    assert(count > 0);
-    assert(count <= size());
-
-    member.size -= count;
-}
-
-template <typename T, std::size_t E>
-TRIAL_CXX14_CONSTEXPR
-void span<T, E>::pop_back(size_type count) noexcept
-{
-    assert(size() > 0);
-    assert(count > 0);
-    assert(count <= size());
-
-    member.next = member.capacity() + index(member.next - count);
-    member.size -= count;
-}
-
-template <typename T, std::size_t E>
-TRIAL_CXX14_CONSTEXPR
 auto span<T, E>::move_front() noexcept(std::is_nothrow_move_constructible<value_type>::value) -> value_type
 {
     static_assert(std::is_move_constructible<T>::value, "T must be MoveConstructible");
 
     auto& old_front = front();
-    pop_front(); // Item still lingers in storage
+    decrement_front(); // Item still lingers in storage
     return std::move(old_front);
 }
 
@@ -295,19 +272,20 @@ auto span<T, E>::move_back() noexcept(std::is_nothrow_move_constructible<value_t
     static_assert(std::is_move_constructible<T>::value, "T must be MoveConstructible");
 
     auto& old_back = back();
-    pop_back(); // Item still lingers in storage
+    decrement_back(); // Item still lingers in storage
     return std::move(old_back);
 }
 
 template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
-void span<T, E>::advance_front(size_type count) noexcept
+void span<T, E>::increment_front(size_type count) noexcept
 {
     assert(count <= capacity());
 
-    if (count > capacity() - size())
+    const auto unused = capacity() - size();
+    if (count > unused)
     {
-        member.next = member.capacity() + index(member.next - count);
+        member.next = member.capacity() + index(member.next - count + unused);
         member.size = member.capacity();
     }
     else
@@ -318,7 +296,7 @@ void span<T, E>::advance_front(size_type count) noexcept
 
 template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
-void span<T, E>::advance_back(size_type count) noexcept
+void span<T, E>::increment_back(size_type count) noexcept
 {
     assert(count <= capacity());
 
@@ -332,6 +310,27 @@ void span<T, E>::advance_back(size_type count) noexcept
         member.next = member.capacity() + index(member.next + count);
         member.size += count;
     }
+}
+
+template <typename T, std::size_t E>
+TRIAL_CXX14_CONSTEXPR
+void span<T, E>::decrement_front(size_type count) noexcept
+{
+    assert(size() > 0);
+    assert(count <= size());
+
+    member.size -= count;
+}
+
+template <typename T, std::size_t E>
+TRIAL_CXX14_CONSTEXPR
+void span<T, E>::decrement_back(size_type count) noexcept
+{
+    assert(size() > 0);
+    assert(count <= size());
+
+    member.next = member.capacity() + index(member.next - count);
+    member.size -= count;
 }
 
 template <typename T, std::size_t E>
