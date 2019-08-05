@@ -349,14 +349,14 @@ public:
     //! @pre !empty()
 
     TRIAL_CXX14_CONSTEXPR
-    value_type move_front() noexcept(std::is_nothrow_move_constructible<value_type>::value);
+    value_type pop_front() noexcept(std::is_nothrow_move_constructible<value_type>::value);
 
     //! @brief Removes and returns element from end of span.
     //!
     //! @pre !empty()
 
     TRIAL_CXX14_CONSTEXPR
-    value_type move_back() noexcept(std::is_nothrow_move_constructible<value_type>::value);
+    value_type pop_back() noexcept(std::is_nothrow_move_constructible<value_type>::value);
 
     //! @brief Inserts unspecified elements at the beginning of the span.
     //!

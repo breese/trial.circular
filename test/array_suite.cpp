@@ -203,21 +203,21 @@ void api_push_back_iterator()
     TRIAL_TEST_EQ(data.size(), 2);
 }
 
-void api_move_front()
+void api_pop_front()
 {
     circular::array<int, 4> data;
     data.push_front(11);
     TRIAL_TEST_EQ(data.size(), 1);
-    TRIAL_TEST_EQ(data.move_front(), 11);
+    TRIAL_TEST_EQ(data.pop_front(), 11);
     TRIAL_TEST_EQ(data.size(), 0);
 }
 
-void api_move_back()
+void api_pop_back()
 {
     circular::array<int, 4> data;
     data.push_back(11);
     TRIAL_TEST_EQ(data.size(), 1);
-    TRIAL_TEST_EQ(data.move_back(), 11);
+    TRIAL_TEST_EQ(data.pop_back(), 11);
     TRIAL_TEST_EQ(data.size(), 0);
 }
 
@@ -369,8 +369,8 @@ void run()
     api_push_front_iterator();
     api_push_back();
     api_push_back_iterator();
-    api_move_front();
-    api_move_back();
+    api_pop_front();
+    api_pop_back();
     api_increment_front();
     api_increment_front_n();
     api_decrement_front();

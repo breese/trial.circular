@@ -388,20 +388,26 @@ Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _CopyAssignable_.
-| `constexpr{wj}footnote:constexpr11[] value_type move_front() noexcept(_see Remarks_)` | Removes and returns an element from the beginning of the circular array.
+| `constexpr{wj}footnote:constexpr11[] value_type pop_front() noexcept(_see Remarks_)` | Removes and returns an element from the beginning of the circular array.
  +
  +
  The removed element in the underlying storage is left in a moved-from state.
+ +
+ +
+ If the return value is unused, then `decrement_front()` is a more efficient method for removing the front element.
  +
  +
  _Expects:_ `size() > 0`
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveConstructible_.
-| `constexpr{wj}footnote:constexpr11[] value_type move_back() noexcept(_see Remarks_)` | Removes and returns an element from the end of the circular array.
+| `constexpr{wj}footnote:constexpr11[] value_type pop_back() noexcept(_see Remarks_)` | Removes and returns an element from the end of the circular array.
  +
  +
  The removed element in the underlying storage is left in a moved-from state.
+ +
+ +
+ If the return value is unused, then `decrement_back()` is a more efficient method for removing the back element.
  +
  +
  _Expects:_ `size() > 0`

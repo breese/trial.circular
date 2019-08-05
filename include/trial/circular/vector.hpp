@@ -255,6 +255,14 @@ public:
 
     void push_back(value_type);
 
+    //! @brief Removes and returns element from beginning of circular vector.
+
+    using span::pop_front;
+
+    //! @brief Removes and returns element from end of circular vector.
+
+    using span::pop_back;
+
     //! @brief Inserts uninitialized element at beginning of circular vector.
 
     using span::increment_front;
@@ -270,14 +278,6 @@ public:
     //! @brief Erases element from end of circular vector.
 
     using span::decrement_back;
-
-    //! @brief Moves element from beginning of circular vector.
-
-    using span::move_front;
-
-    //! @brief Moves element from end of circular vector.
-
-    using span::move_back;
 
     //! @brief Returns iterator to beginning of circular vector.
 

@@ -152,14 +152,14 @@ public:
     //! @brief Inserts element at beginning of circular array.
     using span::push_front;
 
-    //! @brief Inserts element at end of circular array.
+    //! @brief Removes and returns element at end of circular array.
     using span::push_back;
 
-    //! @brief Moves element from beginning of circular array.
-    using span::move_front;
+    //! @brief Removes and returns element from beginning of circular array.
+    using span::pop_front;
 
     //! @brief Moves element from end of circular array.
-    using span::move_back;
+    using span::pop_back;
 
     //! @brief Inserts unspecified elements at beginning of circular array.
     using span::increment_front;

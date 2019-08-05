@@ -256,7 +256,7 @@ void span<T, E>::push_back(InputIterator first,
 
 template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
-auto span<T, E>::move_front() noexcept(std::is_nothrow_move_constructible<value_type>::value) -> value_type
+auto span<T, E>::pop_front() noexcept(std::is_nothrow_move_constructible<value_type>::value) -> value_type
 {
     static_assert(std::is_move_constructible<T>::value, "T must be MoveConstructible");
 
@@ -267,7 +267,7 @@ auto span<T, E>::move_front() noexcept(std::is_nothrow_move_constructible<value_
 
 template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
-auto span<T, E>::move_back() noexcept(std::is_nothrow_move_constructible<value_type>::value) -> value_type
+auto span<T, E>::pop_back() noexcept(std::is_nothrow_move_constructible<value_type>::value) -> value_type
 {
     static_assert(std::is_move_constructible<T>::value, "T must be MoveConstructible");
 
