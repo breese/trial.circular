@@ -373,7 +373,7 @@ public:
     //! @pre count <= capacity()
 
     TRIAL_CXX14_CONSTEXPR
-    void increment_front(size_type count = 1U) noexcept;
+    void append_front(size_type count = 1U) noexcept;
 
     //! @brief Inserts unspecified elements at the end of the span.
     //!
@@ -383,7 +383,7 @@ public:
     //! @sa increment_front
 
     TRIAL_CXX14_CONSTEXPR
-    void increment_back(size_type count = 1U) noexcept;
+    void append_back(size_type count = 1U) noexcept;
 
     //! @brief Removes elements from beginning of span.
     //!
@@ -394,7 +394,7 @@ public:
     //! @pre 0 < count <= size()
 
     TRIAL_CXX14_CONSTEXPR
-    void decrement_front(size_type count = 1U) noexcept;
+    void remove_front(size_type count = 1U) noexcept;
 
     //! @brief Removes elements from end of span.
     //!
@@ -405,7 +405,7 @@ public:
     //! @pre 0 < count <= size()
 
     TRIAL_CXX14_CONSTEXPR
-    void decrement_back(size_type count = 1U) noexcept;
+    void remove_back(size_type count = 1U) noexcept;
 
     //! @brief Rotates elements so span starts at beginning of storage.
     //!

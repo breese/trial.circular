@@ -162,16 +162,16 @@ public:
     using span::pop_back;
 
     //! @brief Inserts unspecified elements at beginning of circular array.
-    using span::increment_front;
+    using span::append_front;
 
     //! @brief Inserts unspecified elements at end of circular array.
-    using span::increment_back;
+    using span::append_back;
 
     //! @brief Removes elements from beginning of circular array.
-    using span::decrement_front;
+    using span::remove_front;
 
     //! @brief Removes elements from end of circular array.
-    using span::decrement_back;
+    using span::remove_back;
 
     //! @brief Returns iterator to beginning of circular array.
     using span::begin;

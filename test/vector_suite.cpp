@@ -380,67 +380,67 @@ void api_pop_back()
     TRIAL_TEST_EQ(data.size(), 1);
 }
 
-void api_increment_front()
+void api_append_front()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
-    data.increment_front();
+    data.append_front();
     TRIAL_TEST_EQ(data.size(), 2); // capacity
 }
 
-void api_increment_front_n()
+void api_append_front_n()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
-    data.increment_front(2);
+    data.append_front(2);
     TRIAL_TEST_EQ(data.size(), 2); // capacity
 }
 
-void api_decrement_front()
+void api_remove_front()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
-    data.decrement_front();
+    data.remove_front();
     TRIAL_TEST_EQ(data.size(), 1);
 }
 
-void api_decrement_front_n()
+void api_remove_front_n()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
-    data.decrement_front(2);
+    data.remove_front(2);
     TRIAL_TEST_EQ(data.size(), 0);
 }
 
-void api_increment_back()
+void api_append_back()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
-    data.increment_back();
+    data.append_back();
     TRIAL_TEST_EQ(data.size(), 2); // capacity
 }
 
-void api_increment_back_n()
+void api_append_back_n()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
-    data.increment_back(2);
+    data.append_back(2);
     TRIAL_TEST_EQ(data.size(), 2); // capacity
 }
 
-void api_decrement_back()
+void api_remove_back()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
-    data.decrement_back();
+    data.remove_back();
     TRIAL_TEST_EQ(data.size(), 1);
 }
 
-void api_decrement_back_n()
+void api_remove_back_n()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
-    data.decrement_back(2);
+    data.remove_back(2);
     TRIAL_TEST_EQ(data.size(), 0);
 }
 
@@ -481,14 +481,14 @@ void run()
     api_push_back();
     api_pop_front();
     api_pop_back();
-    api_increment_front();
-    api_increment_front_n();
-    api_decrement_front();
-    api_decrement_front_n();
-    api_increment_back();
-    api_increment_back_n();
-    api_decrement_back();
-    api_decrement_back_n();
+    api_append_front();
+    api_append_front_n();
+    api_remove_front();
+    api_remove_front_n();
+    api_append_back();
+    api_append_back_n();
+    api_remove_back();
+    api_remove_back_n();
 }
 
 } // namespace api_suite
@@ -873,7 +873,7 @@ void reserve_one()
     {
         circular::vector<int> data(4);
         data = { 01, 11, 22, 33 };
-        data.decrement_front();
+        data.remove_front();
         // X 11 22 33 => 11 22 33 X X X
         data.reserve(6);
         {
@@ -898,7 +898,7 @@ void reserve_one()
     {
         circular::vector<int> data(4);
         data = { 01, 02, 11, 22, 33 };
-        data.decrement_front();
+        data.remove_front();
         // 33 X 11 22 => 11 22 33 X X X
         data.reserve(6);
         {
@@ -923,7 +923,7 @@ void reserve_one()
     {
         circular::vector<int> data(4);
         data = { 01, 02, 03, 11, 22, 33 };
-        data.decrement_front();
+        data.remove_front();
         // 22 33 X 11 => 11 22 33 X X X
         data.reserve(6);
         {
@@ -948,7 +948,7 @@ void reserve_one()
     {
         circular::vector<int> data(4);
         data = { 01, 02, 02, 04, 11, 22, 33 };
-        data.decrement_front();
+        data.remove_front();
         // 11 22 33 X => 11 22 33 X X X
         data.reserve(6);
         {
@@ -977,7 +977,7 @@ void reserve_two()
     {
         circular::vector<int> data(4);
         data = { 01, 02, 11, 22 };
-        data.decrement_front(2);
+        data.remove_front(2);
         // X X 11 22 => 11 22 X X X X
         data.reserve(6);
         {
@@ -1008,7 +1008,7 @@ void reserve_two()
     {
         circular::vector<int> data(4);
         data = { 01, 02, 03, 11, 22 };
-        data.decrement_front(2);
+        data.remove_front(2);
         // 22 X X 11 => 11 22 X X X X
         data.reserve(6);
         {
@@ -1039,7 +1039,7 @@ void reserve_two()
     {
         circular::vector<int> data(4);
         data = { 01, 02, 03, 04, 11, 22 };
-        data.decrement_front(2);
+        data.remove_front(2);
         // 11 22 X X => 11 22 X X X X
         data.reserve(6);
         {
@@ -1070,7 +1070,7 @@ void reserve_two()
     {
         circular::vector<int> data(4);
         data = { 01, 02, 03, 04, 05, 11, 22 };
-        data.decrement_front(2);
+        data.remove_front(2);
         // X 11 22 X => 11 22 X X X X
         data.reserve(6);
         {
@@ -1105,7 +1105,7 @@ void reserve_three()
     {
         circular::vector<int> data(4);
         data = { 01, 02, 03, 11 };
-        data.decrement_front(3);
+        data.remove_front(3);
         // X X X 11 => 11 X X X X X
         data.reserve(6);
         {
@@ -1142,7 +1142,7 @@ void reserve_three()
     {
         circular::vector<int> data(4);
         data = { 01, 02, 03, 04, 11 };
-        data.decrement_front(3);
+        data.remove_front(3);
         // 11 X X X => 11 X X X X X
         data.reserve(6);
         {
@@ -1179,7 +1179,7 @@ void reserve_three()
     {
         circular::vector<int> data(4);
         data = { 01, 02, 03, 04, 05, 11 };
-        data.decrement_front(3);
+        data.remove_front(3);
         // X 11 X X => 11 X X X X X
         data.reserve(6);
         {
@@ -1216,7 +1216,7 @@ void reserve_three()
     {
         circular::vector<int> data(4);
         data = { 01, 02, 03, 04, 05, 06, 11 };
-        data.decrement_front(3);
+        data.remove_front(3);
         // X X 11 X => 11 X X X X X
         data.reserve(6);
         {
