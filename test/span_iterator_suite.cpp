@@ -24,6 +24,185 @@ namespace concept_suite
 
 void iterator_move_constructible()
 {
+    static_assert(std::is_move_constructible<circular::span<int>::iterator>::value, "is_move_constructible");
+}
+
+void iterator_copy_constructible()
+{
+    static_assert(std::is_copy_constructible<circular::span<int>::iterator>::value, "is_copy_constructible");
+}
+
+void iterator_copy_assignable()
+{
+    static_assert(std::is_copy_assignable<circular::span<int>::iterator>::value, "is_copy_assignable");
+}
+
+void iterator_destructible()
+{
+    static_assert(std::is_destructible<circular::span<int>::iterator>::value, "is_destructible");
+}
+
+void iterator_swappable()
+{
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::iterator a = span.begin();
+    circular::span<int>::iterator b = span.end();
+    using std::swap;
+    swap(a, b);
+    TRIAL_TEST(a == span.end());
+    TRIAL_TEST(b == span.begin());
+}
+
+void iterator_traits()
+{
+    static_assert(std::is_same<std::iterator_traits<circular::span<int>::iterator>::value_type, circular::span<int>::iterator::value_type>::value, "value_type");
+    static_assert(std::is_same<std::iterator_traits<circular::span<int>::iterator>::difference_type, circular::span<int>::iterator::difference_type>::value, "difference_type");
+    static_assert(std::is_same<std::iterator_traits<circular::span<int>::iterator>::reference, circular::span<int>::iterator::reference>::value, "reference");
+    static_assert(std::is_same<std::iterator_traits<circular::span<int>::iterator>::pointer, circular::span<int>::iterator::pointer>::value, "pointer");
+    static_assert(std::is_same<std::iterator_traits<circular::span<int>::iterator>::iterator_category, circular::span<int>::iterator::iterator_category>::value, "iterator_category");
+}
+
+void iterator_dereferenceable()
+{
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::iterator a = span.begin();
+    int result = *a;
+    TRIAL_TEST_EQ(result, 11);
+}
+
+void iterator_incrementable()
+{
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::iterator a = span.begin();
+    circular::span<int>::iterator& b = ++a;
+    TRIAL_TEST(b == a);
+    TRIAL_TEST(b != span.begin());
+}
+
+void input_iterator_equality_comparable()
+{
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::iterator a = span.begin();
+    circular::span<int>::iterator b = span.begin();
+    circular::span<int>::iterator c = span.begin();
+    TRIAL_TEST(a == a);
+    TRIAL_TEST(a == b);
+    TRIAL_TEST(b == a);
+    TRIAL_TEST(b == c);
+    TRIAL_TEST(a == c);
+
+    circular::span<int>::iterator d = span.end();
+    TRIAL_TEST(a != d);
+}
+
+void input_iterator_dereferenceable()
+{
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::iterator a = span.begin();
+    TRIAL_TEST_EQ(*a, 11);
+}
+
+void input_iterator_post_incrementable()
+{
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::iterator a = span.begin();
+    circular::span<int>::iterator b = a++;
+    TRIAL_TEST(a != span.begin());
+    TRIAL_TEST(b == span.begin());
+}
+
+void forward_iterator_default_constructible()
+{
+    // Only valid operations on default constructed iterator are assignment and
+    // destruction (see [iterator.requirements.general] / 7)
+
+    static_assert(std::is_default_constructible<circular::span<int>::iterator>::value, "default constructible");
+
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::iterator a = span.begin();
+    circular::span<int>::iterator b; // Singular value not associated with span
+    b = span.begin();
+    TRIAL_TEST(a == b);
+    TRIAL_TEST(b == a);
+}
+
+void forward_iterator_multipass()
+{
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::iterator a = span.begin();
+    circular::span<int>::iterator b = a;
+    TRIAL_TEST(a == b);
+    ++a;
+    ++b;
+    TRIAL_TEST(a == b);
+    TRIAL_TEST(*a == *b);
+}
+
+void bidirectional_iterator_decrementable()
+{
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::iterator a = span.begin();
+    ++a;
+    circular::span<int>::iterator& b = --a;
+    TRIAL_TEST(b == a);
+    TRIAL_TEST(b == span.begin());
+}
+
+void bidirectional_iterator_post_decrementable()
+{
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::iterator a = span.begin();
+    ++a;
+    circular::span<int>::iterator b = a--;
+    TRIAL_TEST(a == span.begin());
+    TRIAL_TEST(b != span.begin());
+}
+
+void run()
+{
+    // [iterator.iterators]
+    iterator_move_constructible();
+    iterator_copy_constructible();
+    iterator_copy_assignable();
+    iterator_destructible();
+    iterator_swappable();
+    iterator_traits();
+    iterator_dereferenceable();
+    iterator_incrementable();
+
+    // [input.iterators]
+    input_iterator_equality_comparable();
+    input_iterator_dereferenceable();
+    input_iterator_post_incrementable();
+
+    // [forward.iterators]
+    forward_iterator_default_constructible();
+    forward_iterator_multipass();
+
+    // [bidirectional.iterators]
+    bidirectional_iterator_decrementable();
+    bidirectional_iterator_post_decrementable();
+}
+
+} // namespace concept_suite
+
+//-----------------------------------------------------------------------------
+
+namespace concept_const_suite
+{
+
+void iterator_move_constructible()
+{
     static_assert(std::is_move_constructible<circular::span<int>::const_iterator>::value, "is_move_constructible");
 }
 
@@ -45,7 +224,7 @@ void iterator_destructible()
 void iterator_swappable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
     circular::span<int>::const_iterator a = span.begin();
     circular::span<int>::const_iterator b = span.end();
     using std::swap;
@@ -66,7 +245,7 @@ void iterator_traits()
 void iterator_dereferenceable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
     circular::span<int>::const_iterator a = span.begin();
     int result = *a;
     TRIAL_TEST_EQ(result, 11);
@@ -75,7 +254,7 @@ void iterator_dereferenceable()
 void iterator_incrementable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
     circular::span<int>::const_iterator a = span.begin();
     circular::span<int>::const_iterator& b = ++a;
     TRIAL_TEST(b == a);
@@ -85,7 +264,7 @@ void iterator_incrementable()
 void input_iterator_equality_comparable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
     circular::span<int>::const_iterator a = span.begin();
     circular::span<int>::const_iterator b = span.begin();
     circular::span<int>::const_iterator c = span.begin();
@@ -102,7 +281,7 @@ void input_iterator_equality_comparable()
 void input_iterator_dereferenceable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
     circular::span<int>::const_iterator a = span.begin();
     TRIAL_TEST_EQ(*a, 11);
 }
@@ -110,7 +289,7 @@ void input_iterator_dereferenceable()
 void input_iterator_post_incrementable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
     circular::span<int>::const_iterator a = span.begin();
     circular::span<int>::const_iterator b = a++;
     TRIAL_TEST(a != span.begin());
@@ -125,7 +304,7 @@ void forward_iterator_default_constructible()
     static_assert(std::is_default_constructible<circular::span<int>::const_iterator>::value, "default constructible");
 
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
     circular::span<int>::const_iterator a = span.begin();
     circular::span<int>::const_iterator b; // Singular value not associated with span
     b = span.begin();
@@ -136,7 +315,7 @@ void forward_iterator_default_constructible()
 void forward_iterator_multipass()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
     circular::span<int>::const_iterator a = span.begin();
     circular::span<int>::const_iterator b = a;
     TRIAL_TEST(a == b);
@@ -149,7 +328,7 @@ void forward_iterator_multipass()
 void bidirectional_iterator_decrementable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
     circular::span<int>::const_iterator a = span.begin();
     ++a;
     circular::span<int>::const_iterator& b = --a;
@@ -160,7 +339,7 @@ void bidirectional_iterator_decrementable()
 void bidirectional_iterator_post_decrementable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
     circular::span<int>::const_iterator a = span.begin();
     ++a;
     circular::span<int>::const_iterator b = a--;
@@ -226,10 +405,10 @@ void test_iterator_constructible()
     std::array<int, 4> array = {};
     circular::span<int> span(array.begin(), array.end());
     span.push_back(11);
-    decltype(span)::const_iterator alpha; // DefaultConstructible
+    decltype(span)::iterator alpha; // DefaultConstructible
     alpha = span.begin();
     TRIAL_TEST(alpha == span.begin());
-    decltype(span)::const_iterator bravo(alpha); // CopyConstructible
+    decltype(span)::iterator bravo(alpha); // CopyConstructible
     TRIAL_TEST(bravo == span.begin());
 }
 
@@ -244,6 +423,19 @@ void test_const_iterator()
         TRIAL_TEST_ALL_EQ(span.cbegin(), span.cend(),
                           expect.begin(), expect.end());
     }
+}
+
+void test_const_iterator_constructible()
+{
+    // Also checks implicit conversion from iterator to const_iterator
+    std::array<int, 4> array = {};
+    circular::span<int> span(array.begin(), array.end());
+    span.push_back(11);
+    decltype(span)::const_iterator alpha; // DefaultConstructible
+    alpha = span.begin();
+    TRIAL_TEST(alpha == span.begin());
+    decltype(span)::const_iterator bravo(alpha); // CopyConstructible
+    TRIAL_TEST(bravo == span.begin());
 }
 
 void test_push_back()
@@ -379,6 +571,7 @@ void run()
     test_iterator();
     test_iterator_constructible();
     test_const_iterator();
+    test_const_iterator_constructible();
     test_push_front();
     test_push_back();
     test_push_alternating();
@@ -655,6 +848,7 @@ void run()
 int main()
 {
     concept_suite::run();
+    concept_const_suite::run();
     iterator_suite::run();
     reverse_suite::run();
     inserter_suite::run();

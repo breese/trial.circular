@@ -18,6 +18,5 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 add_subdirectory(cmake)
 add_subdirectory(doc EXCLUDE_FROM_ALL)
 
-
 enable_testing()
 add_subdirectory(test)

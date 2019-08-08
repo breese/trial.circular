@@ -46,7 +46,9 @@ public:
     using size_type = typename span::size_type;
     using reference = typename span::reference;
     using const_reference = typename span::const_reference;
+    using iterator = typename span::iterator;
     using const_iterator = typename span::const_iterator;
+    using reverse_iterator = typename span::reverse_iterator;
     using const_reverse_iterator = typename span::const_reverse_iterator;
     using const_segment = typename span::const_segment;
 

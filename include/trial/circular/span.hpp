@@ -50,7 +50,7 @@ public:
     using size_type = std::size_t;
     using pointer = typename std::add_pointer<element_type>::type;
     using reference = typename std::add_lvalue_reference<element_type>::type;
-    using const_reference = typename std::add_const<reference>::type;
+    using const_reference = typename std::add_lvalue_reference<typename std::add_const<element_type>::type>::type;
 
 private:
     template <typename, std::size_t>
@@ -65,7 +65,7 @@ private:
         using difference_type = std::ptrdiff_t;
         using pointer = typename std::add_pointer<element_type>::type;
         using reference = typename std::add_lvalue_reference<element_type>::type;
-        using const_reference = typename std::add_const<reference>::type;
+        using const_reference = typename std::add_lvalue_reference<typename std::add_const<element_type>::type>::type;
         using iterator_type = basic_iterator<U>;
 
         constexpr basic_iterator() noexcept = default;
@@ -75,6 +75,14 @@ private:
         basic_iterator& operator=(const basic_iterator&) noexcept = default;
         TRIAL_CXX14_CONSTEXPR
         basic_iterator& operator=(basic_iterator&&) noexcept = default;
+
+        // iterator is convertible to const_iterator
+        template <typename ConstU = U,
+                  typename std::enable_if<std::is_const<ConstU>::value, int>::type = 0>
+        constexpr basic_iterator(const basic_iterator<typename std::remove_const<ConstU>::type>& other) noexcept
+            : parent(other.parent),
+              current(other.current)
+        {}
 
         TRIAL_CXX14_CONSTEXPR
         iterator_type& operator++() noexcept;
@@ -87,6 +95,8 @@ private:
 
         TRIAL_CXX14_CONSTEXPR
         pointer operator->() noexcept;
+        TRIAL_CXX14_CONSTEXPR
+        reference operator*() noexcept;
         constexpr const_reference operator*() const noexcept;
 
         constexpr bool operator==(const iterator_type&) const noexcept;
@@ -95,10 +105,14 @@ private:
     private:
         friend class span<T, Extent>;
 
-        constexpr basic_iterator(const span<T, Extent>* parent, const size_type index) noexcept;
+        using span_pointer = typename std::conditional<std::is_const<U>::value,
+                                                       typename std::add_pointer<typename std::add_const<span<T, Extent>>::type>::type,
+                                                       typename std::add_pointer<span<T, Extent>>::type>::type;
+
+        constexpr basic_iterator(span_pointer parent, const size_type index) noexcept;
 
     private:
-        const span<T, Extent>* parent;
+        span_pointer parent;
         size_type current;
     };
 
@@ -108,7 +122,9 @@ public:
     //! Mutable iterators are not supported to avoid incorrect use in mutating
     //! algorithms.
 
-    using const_iterator = basic_iterator<typename std::add_const<value_type>::type>;
+    using iterator = basic_iterator<element_type>;
+    using const_iterator = basic_iterator<typename std::add_const<element_type>::type>;
+    using reverse_iterator = std::reverse_iterator<iterator>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
     //! @brief Bidirectional segment.
@@ -432,7 +448,17 @@ public:
 
     //! @brief Returns iterator to the beginning of the span.
 
+    TRIAL_CXX14_CONSTEXPR
+    iterator begin() noexcept;
+
+    //! @brief Returns iterator to the beginning of the span.
+
     constexpr const_iterator begin() const noexcept;
+
+    //! @brief Returns iterator to the ending of the span.
+
+    TRIAL_CXX14_CONSTEXPR
+    iterator end() noexcept;
 
     //! @brief Returns iterator to the ending of the span.
 
@@ -448,7 +474,17 @@ public:
 
     //! @brief Returns reverse iterator to the beginning of the span.
 
+    TRIAL_CXX14_CONSTEXPR
+    reverse_iterator rbegin() noexcept;
+
+    //! @brief Returns reverse iterator to the beginning of the span.
+
     constexpr const_reverse_iterator rbegin() const noexcept;
+
+    //! @brief Returns reverse iterator to the end of the span.
+
+    TRIAL_CXX14_CONSTEXPR
+    reverse_iterator rend() noexcept;
 
     //! @brief Returns reverse iterator to the end of the span.
 

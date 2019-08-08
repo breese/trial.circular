@@ -350,6 +350,13 @@ void span<T, E>::rotate_front() noexcept(detail::is_nothrow_swappable<value_type
 }
 
 template <typename T, std::size_t E>
+TRIAL_CXX14_CONSTEXPR
+auto span<T, E>::begin() noexcept -> iterator
+{
+    return iterator(this, vindex(front_index()));
+}
+
+template <typename T, std::size_t E>
 constexpr auto span<T, E>::begin() const noexcept -> const_iterator
 {
     return const_iterator(this, vindex(front_index()));
@@ -359,6 +366,13 @@ template <typename T, std::size_t E>
 constexpr auto span<T, E>::cbegin() const noexcept -> const_iterator
 {
     return const_iterator(this, vindex(front_index()));
+}
+
+template <typename T, std::size_t E>
+TRIAL_CXX14_CONSTEXPR
+auto span<T, E>::end() noexcept -> iterator
+{
+    return iterator(this, vindex(member.next));
 }
 
 template <typename T, std::size_t E>
@@ -374,9 +388,23 @@ constexpr auto span<T, E>::cend() const noexcept -> const_iterator
 }
 
 template <typename T, std::size_t E>
+TRIAL_CXX14_CONSTEXPR
+auto span<T, E>::rbegin() noexcept -> reverse_iterator
+{
+    return reverse_iterator(std::move(end()));
+}
+
+template <typename T, std::size_t E>
 constexpr auto span<T, E>::rbegin() const noexcept -> const_reverse_iterator
 {
     return const_reverse_iterator(std::move(end()));
+}
+
+template <typename T, std::size_t E>
+TRIAL_CXX14_CONSTEXPR
+auto span<T, E>::rend() noexcept -> reverse_iterator
+{
+    return reverse_iterator(std::move(begin()));
 }
 
 template <typename T, std::size_t E>
@@ -602,7 +630,8 @@ template <typename T, std::size_t E>
 template <typename T1>
 constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(pointer data,
                                                                          size_type capacity,
-                                                                         size_type size, size_type next) noexcept
+                                                                         size_type size,
+                                                                         size_type next) noexcept
     : data(data),
       cap(capacity),
       size(size),
@@ -699,7 +728,7 @@ void span<T, E>::member_storage<T1, dynamic_extent>::assign(const member_storage
 
 template <typename T, std::size_t E>
 template <typename U>
-constexpr span<T, E>::basic_iterator<U>::basic_iterator(const span<T, E>* parent,
+constexpr span<T, E>::basic_iterator<U>::basic_iterator(span_pointer parent,
                                                         size_type position) noexcept
     : parent(parent),
       current(position)
@@ -760,6 +789,16 @@ auto span<T, E>::basic_iterator<U>::operator-> () noexcept -> pointer
     assert(parent);
 
     return *parent->at(current);
+}
+
+template <typename T, std::size_t E>
+template <typename U>
+TRIAL_CXX14_CONSTEXPR
+auto span<T, E>::basic_iterator<U>::operator*() noexcept -> reference
+{
+    assert(parent);
+
+    return parent->at(current);
 }
 
 template <typename T, std::size_t E>

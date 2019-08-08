@@ -39,7 +39,7 @@ definition for a running average containing both an array and a span.
 [source,c++,numbered]
 ----
 template <typename T, std::size_t N>
-class waverage
+class average
 {
 public:
     using value_type = T; 
@@ -60,7 +60,7 @@ the circular array, so we can replace the storage and span with
 [source,c++,numbered]
 ----
 template <typename T, std::size_t N>
-class waverage
+class average
 {
 public:
     using value_type = T; 
@@ -94,8 +94,6 @@ There are some significant deviations.
    the underlying storage is filled with default constructed elements, they do
    not count as inserted elements. Inserted elements are those that have been
    assigned to the container, or that have been pushed to the front or the back.
- - The circular array does not have <<span.adoc#rationale-no-mutable-iterator,mutable iterators>>
-   and therefore does not model the _Container_ concept.
  - The circular array does not fulfill the _ContiguousContainer_ requirements
    even though the storage is contiguous. This is because the circular array
    can wrap around the end of the storage, so it cannot fulfill the
@@ -162,7 +160,6 @@ are inserted or destroyed when the circular array is destroyed.
 | `const_reverse_iterator` | `std::reverse_iterator<const_iterator>`
 | `const_segment` | _BidirectionalRange_ with `const value_type`
 |===
-Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
 
 === Member functions
 
@@ -496,12 +493,36 @@ Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
  +
  +
  _Ensures:_ `capacity() - size() >= count`
-| `constexpr const_iterator begin() const noexcept` | Returns an interator to the beginning of the circular array.
-| `constexpr const_iterator end() const noexcept` | Returns an interator to the end of the circular array.
-| `constexpr const_iterator cbegin() const noexcept` | Returns an interator to the beginning of the circular array.
-| `constexpr const_iterator cend() const noexcept` | Returns an interator to the end of the circular array.
-| `constexpr const_iterator rbegin() const noexcept` | Returns a reverse interator to the beginning of the circular array.
-| `constexpr const_iterator rend() const noexcept` | Returns a reverse interator to the end of the circular array.
-| `constexpr const_iterator crbegin() const noexcept` | Returns a reverse interator to the beginning of the circular array.
-| `constexpr const_iterator crend() const noexcept` | Returns a reverse interator to the end of the circular array.
+| `constexpr{wj}footnote:constexpr11[] iterator begin() noexcept`
+ +
+ +
+ `constexpr const_iterator begin() const noexcept`
+ +
+ +
+ `constexpr const_iterator cbegin() const noexcept`
+ | Returns an interator to the beginning of the circular array.
+| `constexpr{wj}footnote:constexpr11[] iterator end() noexcept`
+ +
+ +
+ `constexpr const_iterator end() const noexcept`
+ +
+ +
+ `constexpr const_iterator cend() const noexcept`
+ | Returns an interator to the end of the circular array.
+| `constexpr{wj}footnote:constexpr11[] reverse_iterator rbegin() noexcept`
+ +
+ +
+ `constexpr const_reverse_iterator rbegin() const noexcept`
+ +
+ +
+ `constexpr const_reverse_iterator crbegin() const noexcept`
+ | Returns a reverse interator to the beginning of the circular array.
+| `constexpr{wj}footnote:constexpr11[] reverse_iterator rend() noexcept`
+ +
+ +
+ `constexpr const_reverse_iterator rend() const noexcept`
+ +
+ +
+ `constexpr const_reverse_iterator crend() const noexcept`
+ | Returns a reverse interator to the end of the circular array.
 |===

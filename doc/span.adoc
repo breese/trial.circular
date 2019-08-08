@@ -50,12 +50,12 @@ for returning the current mean.
 [source,c++,numbered]
 ----
 template <typename T, std::size_t N>
-class waverage
+class average
 {
 public:
     using value_type = T; 
 
-    waverage() noexcept;
+    average() noexcept;
 
     // Insert new value
     void push(value_type value) noexcept;
@@ -72,12 +72,12 @@ that uses an array (`value_type storage[N]`) as storage.
 [source,c++,numbered]
 ----
 template <typename T, std::size_t N>
-class waverage
+class average
 {
 public:
     using value_type = T; 
 
-    waverage() noexcept;
+    average() noexcept;
 
     void push(value_type input) noexcept;
     value_type mean() const noexcept;
@@ -93,7 +93,7 @@ We start by initializing the circular span to use the array as storage.
 [source,c++,numbered]
 ----
 template <typename T, std::size_t N>
-waverage::waverage()
+average::average()
     : window(storage) // Instruct span to use storage
 {
 }
@@ -113,7 +113,7 @@ that we update the running sum before we store the input value.
 [source,c++,numbered]
 ----
 template <typename T, std::size_t N>
-void waverage::push(value_type input) noexcept
+void average::push(value_type input) noexcept
 {
     // Update the current mean
     if (window.full())
@@ -133,7 +133,7 @@ elements in the window.
 [source,c++,numbered]
 ----
 template <typename T, std::size_t N>
-T waverage::mean() const noexcept
+T average::mean() const noexcept
 {
     assert(!window.empty());
 
@@ -160,31 +160,31 @@ case, the capacity is stored as a member variable.
 
 The extent has been introduced for alignment with `std::span<T, Extent>`.
 
-[#rationale-no-mutable-iterator]
-=== No Mutable Iterators
+[#rationale-lazy-destruction]
+=== Lazy Destruction
 
-Although `circular::span<T>` has been designed to work well with standard algorithms,
-it has no mutable iterators. Some mutating algorithms may modify the storage of the
-destination container in a way that causes the destination span to become invalid.
+The circular queue uses a lazy destruction policy when elements are removed
+from the queue.
+The removed elements are not destroyed immediately but linger in the underlying
+storage until they are overwritten by an insertion, or the underlying storage
+is destroyed.
 
-For instance `std::copy` copies the elements from one container into another
-container by accessing the elements directly in storage, which means that the
-container is not informed about those changes. Consequently, the internal state
-of the input span is not copied to the destination span. So copying a full span
-into an empty span will leave the destination span empty even though all elements
-have been copied into its storage.
+ * When elements are removed by `remove_front()` or `remove_back()` they are
+   left untouched in the underlying storage. Only the internal state of the
+   span is modified.
 
-Therefore `circular::span<T>` has const iterators, such as `const_iterator` or
-`const_reverse_iterator`, but no mutable iterators, e.g. `iterator` or
-`reverse_iterator`.
+ * When elements are popped by `pop_front()` or `pop_back()` they are left in
+   a moved-from state in the underlying storage.
 
-Using `std::copy` with `std::back_inserter` invokes `circular::span<T>::push_back()`
-so it does work as expected. The same goes for `std::front_inserter`.
-The inserters do not require mutable iterators.
+In both cases the removed elements in the underlying storage are left in an
+unspecified but valid state, which enables us to overwrite them later on.
 
-Mutable `operator[]` also exists if there is a need to update existing elements.
-This operator cannot insert new elements, so the above-mentioned problem for
-mutable iterators does not exists for mutable `operator[]`.
+The reason is that the storage is contiguous, so there have to be some unused
+elements in the storage. The removed elements are therefore left in their
+position in the storage, and only destroyed when when the position is needed
+by another insertion.
+The removed elements are not replaced by some default element for performance
+reasons.
 
 [#rationale-subspans]
 === Subspans
@@ -268,7 +268,6 @@ specified `Extent` template argument. Dynamic extent is used by default.
 | `const_reverse_iterator` | `std::reverse_iterator<const_iterator>`
 | `const_segment` | _BidirectionalRange_ with `const value_type`
 |===
-Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
 
 === Member functions
 
@@ -636,14 +635,38 @@ Notice that there are <<rationale-no-mutable-iterator,no mutable iterators>>.
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _Swappable_.
-| `constexpr const_iterator begin() const noexcept` | Returns an interator to the beginning of the span.
-| `constexpr const_iterator end() const noexcept` | Returns an interator to the end of the span.
-| `constexpr const_iterator cbegin() const noexcept` | Returns an interator to the beginning of the span.
-| `constexpr const_iterator cend() const noexcept` | Returns an interator to the end of the span.
-| `constexpr const_iterator rbegin() const noexcept` | Returns a reverse interator to the beginning of the span.
-| `constexpr const_iterator rend() const noexcept` | Returns a reverse interator to the end of the span.
-| `constexpr const_iterator crbegin() const noexcept` | Returns a reverse interator to the beginning of the span.
-| `constexpr const_iterator crend() const noexcept` | Returns a reverse interator to the end of the span.
+| `constexpr{wj}footnote:constexpr11[] iterator begin() noexcept`
+ +
+ +
+ `constexpr const_iterator begin() const noexcept`
+ +
+ +
+ `constexpr const_iterator cbegin() const noexcept`
+ | Returns an interator to the beginning of the span.
+| `constexpr{wj}footnote:constexpr11[] iterator end() noexcept`
+ +
+ +
+ `constexpr const_iterator end() const noexcept`
+ +
+ +
+ `constexpr const_iterator cend() const noexcept`
+ | Returns an interator to the end of the span.
+| `constexpr{wj}footnote:constexpr11[] reverse_iterator rbegin() noexcept`
+ +
+ +
+ `constexpr const_reverse_iterator rbegin() const noexcept`
+ +
+ +
+ `constexpr const_reverse_iterator crbegin() const noexcept`
+ | Returns a reverse interator to the beginning of the span.
+| `constexpr{wj}footnote:constexpr11[] reverse_iterator rend() noexcept`
+ +
+ +
+ `constexpr const_reverse_iterator rend() const noexcept`
+ +
+ +
+ `constexpr const_reverse_iterator crend() const noexcept`
+ | Returns a reverse interator to the end of the span.
 |===
 
 === Non-member constants
