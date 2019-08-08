@@ -5,3 +5,4 @@ add_executable(circex-concurrent
   )
 
 target_link_libraries(circex-concurrent trial-circular Threads::Threads)
+add_dependencies(example circex-concurrent)
