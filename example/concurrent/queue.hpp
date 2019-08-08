@@ -27,7 +27,6 @@ class concurrent_queue
 {
 public:
     using value_type = T;
-    using size_type = std::size_t;
 
     concurrent_queue() = default;
 
