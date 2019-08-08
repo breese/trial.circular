@@ -16,6 +16,7 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
 add_subdirectory(cmake)
+add_subdirectory(example)
 add_subdirectory(doc EXCLUDE_FROM_ALL)
 
 enable_testing()

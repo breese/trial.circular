@@ -48,7 +48,7 @@ public:
 
 private:
     static_assert(N > 0, "N must be greater than zero");
-    value_type current_mean = {};
+    value_type sum = {};
     // Storage and window
     value_type storage[N];
     circular::span<value_type, N> window;
@@ -69,7 +69,7 @@ public:
 
 private:
     static_assert(N > 0, "N must be greater than zero");
-    value_type current_mean = {};
+    value_type sum = {};
     // Window contains storage
     circular::array<value_type, N> window;
 };
