@@ -264,7 +264,9 @@ specified `Extent` template argument. Dynamic extent is used by default.
 | `pointer` | `element_type*`
 | `reference` | `element_type&`
 | `const_reference` | `const element_type&`
+| `iterator` | _BidirectionalIterator_ with `value_type`
 | `const_iterator` | _BidirectionalIterator_ with `const value_type`
+| `reverse_iterator` | `std::reverse_iterator<iterator>`
 | `const_reverse_iterator` | `std::reverse_iterator<const_iterator>`
 | `const_segment` | _BidirectionalRange_ with `const value_type`
 |===
