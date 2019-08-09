@@ -6,6 +6,7 @@
 :prewrap!:
 :pygments-style: vs
 :icons: font
+:stem: latexmath
 
 = Circular Span
 
@@ -43,10 +44,26 @@ into a double-ended circular queue.
 
 === Running Average
 
-Suppose we receive a sequence of numerical values one by one over time, and we
-want to calculate the running average of the `N` most recent values. Our class
-should at least support the following interface for inserting new values and
-for returning the current mean.
+This tutorial demonstrates a reasonably simple use of a circular span where
+values are continuously inserted, but only the most recent ones are remembered
+and used.
+
+Suppose we receive a sequence of numerical values latexmath:[x[n\]] one by one
+over time latexmath:[n], and we want to calculate the running average
+latexmath:[\bar{x}[n\]] of the `N` most recent values. This is easily done by
+maintaining a running sum latexmath:[M_1[n\]].
+
+[latexmath]
+++++
+\begin{aligned}
+M_1[n] &= M_1[n-1] + x[n] - x[n-N] \\
+\bar{x}[n] &= \frac{M_1[n]}{N}
+\end{aligned}
+++++
+
+Our class should at least support the following interface for inserting new
+values and for returning the current mean.
+
 [source,c++,numbered]
 ----
 template <typename T, std::size_t N>
@@ -63,8 +80,9 @@ public:
     value_type mean() const noexcept;
 };
 ----
+
 When we insert a new value, the oldest value must be removed from our running
-average, so we have to remember the `N` most recent values.
+sum, so we have to remember the `N` most recent values.
 We therefore want to reserve storage for `N` values, and have an efficient way
 of inserting new values and removing old values from this storage.
 We are going to use a circular span (`circular::span<value_type, N> window`)
@@ -74,6 +92,8 @@ that uses an array (`value_type storage[N]`) as storage.
 template <typename T, std::size_t N>
 class average
 {
+    static_assert(N > 0, "N must be greater than zero");
+
 public:
     using value_type = T; 
 
@@ -83,14 +103,15 @@ public:
     value_type mean() const noexcept;
 
 private:
-    static_assert(N > 0, "N must be greater than zero");
     value_type sum = {};
     value_type storage[N];
     circular::span<value_type, N> window;
 };
 ----
+
 We start by initializing the circular span to use the array as storage.
 [source,c++,numbered]
+
 ----
 template <typename T, std::size_t N>
 average::average()
@@ -98,6 +119,7 @@ average::average()
 {
 }
 ----
+
 Notice that the array is automatically filled with default-constructed elements.
 These will be overwritten one by one when inserting new values into the window.
 
@@ -110,6 +132,7 @@ Afterwards we store the input value in the window (`window.push_back(input)`)
 such that we can undo its effect when it later leaves the window. As the
 `push_back()` function overwrites the oldest value at the front, it is important
 that we update the running sum before we store the input value.
+
 [source,c++,numbered]
 ----
 template <typename T, std::size_t N>
@@ -128,8 +151,10 @@ void average::push(value_type input) noexcept
     window.push_back(input);
 }
 ----
+
 The current mean is the calculated as the running sum divided by the number of
 elements in the window.
+
 [source,c++,numbered]
 ----
 template <typename T, std::size_t N>
@@ -140,6 +165,108 @@ T average::mean() const noexcept
     return sum / window.size();
 }
 ----
+
+=== Finite Impulse Response
+
+This tutorial demonstrates how to use algorithms on the circular span. All we
+need are well-behaved iterators. The circular span iterators are bidirectional
+iterators that allows you to traverse all elements from the front to the back,
+or vice versa with reverse iterators. The iterators automatically handle that
+the elements may wrap around the underlying storage.
+
+The Finite Impulse Response filter is one of the basic digital filters in the
+signal processing repertoire. A filtered value latexmath:[y[n\]] at time
+latexmath:[n] is calculated as a weighted sum of input values latexmath:[x[i\]].
+
+[latexmath]
+++++
+y[n] = \sum_{i=0}^{N} w_i\, x[n - i]
+++++
+
+In other words, the filtered value is the inner product of the weights and
+the input values.
+
+We need two containers - one for the weights and one for the input values.
+The weights are given upon initialization, and the input values are accrued
+over time. We are only interested in the last `N` input values, so we use
+a circular span to store the input values.
+
+[source,c++,numbered]
+----
+template <typename T, std::size_t N>
+class impulse
+{
+    static_assert(std::is_arithmetic<T>::value, "T must be arithmetic");
+
+public:
+    using value_type = T;
+
+    template <typename... Weights>
+    impulse(Weights&&...);
+
+    // Insert new input value
+    void push(value_type);
+    // Return filtered value
+    value_type value() const;
+
+private:
+    // Storage for weights
+    std::array<value_type, N> weights;
+    // Storage for input values
+    value_type storage[N];
+    circular::span<value_type, N> window;
+};
+----
+
+The weights a passed to the constructor, which also pairs the span to its
+storage.
+
+[source,c++,numbered]
+----
+template <typename T, std::size_t N>
+template <typename... Weights>
+impulse::impulse(Weights... weights)
+    : weights(std::forward<Weights>(weights)...),
+      window(storage) // Instruct span to use storage
+{
+}
+----
+
+Accruing input values is done by pushing them into the span.
+The order of the weights are customarily specified starting with the
+weight latexmath:[w_0] that is multiplied to the most recent input value
+latexmath:[x[n\]], and so on.
+We therefore insert the input values at the front of the span, so that
+when we iterate from the beginning towards the end, we will visit the
+most recent input values first.
+
+[source,c++,numbered]
+----
+template <typename T, std::size_t N>
+void impulse::push(value_type input)
+{
+    window.push_front(std::move(input));
+}
+----
+
+Finally, calculating the filtered value is done using the inner product,
+which is were we need the iterators.
+
+[source,c++,numbered]
+----
+template <typename T, std::size_t N>
+auto impulse::value() const -> value_type
+{
+    // Function is const, so const_iterators are used.
+    return std::inner_product(window.begin(),
+                              window.end(),
+                              weights.begin(),
+                              value_type{});
+}
+----
+
+Other variations are possible. For instance, we could have pushed the input
+values at the end of the span, and then used reverse iterators in the algorithm.
 
 [#span-rationale]
 == Design Rationale
