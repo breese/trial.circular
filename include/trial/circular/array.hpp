@@ -50,6 +50,7 @@ public:
     using const_iterator = typename span::const_iterator;
     using reverse_iterator = typename span::reverse_iterator;
     using const_reverse_iterator = typename span::const_reverse_iterator;
+    using segment = typename span::segment;
     using const_segment = typename span::const_segment;
 
     //! @brief Creates empty circular array.
@@ -136,12 +137,6 @@ public:
     //! @brief Returns reference to last element in span.
     using span::back;
 
-    //! @brief Returns first contiguous segment of circular array.
-    using span::first_segment;
-
-    //! @brief Returns last contiguous segment of circular array.
-    using span::last_segment;
-
     //! @brief Returns reference to element at position.
     using span::operator[];
 
@@ -198,6 +193,18 @@ public:
 
     //! @brief Returns const reverse iterator to ending of circular array.
     using span::crend;
+
+    //! @brief Returns first contiguous segment of circular array.
+    using span::first_segment;
+
+    //! @brief Returns last contiguous segment of circular array.
+    using span::last_segment;
+
+    //! @brief Returns first contiguous unused segment of circular array.
+    using span::first_unused_segment;
+
+    //! @brief Returns last contiguous unused segment of circular array.
+    using span::last_unused_segment;
 };
 
 } // namespace circular

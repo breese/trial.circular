@@ -264,48 +264,6 @@ public:
 
     constexpr const_reference back() const noexcept;
 
-    //! @brief Returns first contiguous segment of the span.
-    //!
-    //! The first segment covers the longest contiguous sequence of used
-    //! elements in the underlying storage from the beginning of the span.
-    //!
-    //! @pre capacity() > 0
-    //!
-    //! @post std::distance(first_segment().begin(), first_segment().end()) > 0 unless empty()
-
-    TRIAL_CXX14_CONSTEXPR
-    segment first_segment() noexcept;
-
-    //! @brief Returns first contiguous segment of the span.
-    //!
-    //! The first segment covers the longest contiguous sequence of used
-    //! elements in the underlying storage from the beginning of the span.
-    //!
-    //! @pre capacity() > 0
-    //!
-    //! @post std::distance(first_segment().begin(), first_segment().end()) > 0 unless empty()
-
-    constexpr const_segment first_segment() const noexcept;
-
-    //! @brief Returns last contiguous segment of the span.
-    //!
-    //! The last segment covers the remaining used elements not covered by the
-    //! first segment.
-    //!
-    //! @pre capacity() > 0
-
-    TRIAL_CXX14_CONSTEXPR
-    segment last_segment() noexcept;
-
-    //! @brief Returns last contiguous segment of the span.
-    //!
-    //! The last segment covers the remaining used elements not covered by the
-    //! first segment.
-    //!
-    //! @pre capacity() > 0
-
-    constexpr const_segment last_segment() const noexcept;
-
     //! @brief Returns reference to element at position.
     //!
     //! @pre size() > position
@@ -517,6 +475,71 @@ public:
 
     constexpr const_reverse_iterator crend() const noexcept;
 
+    //! @brief Returns first contiguous segment of the span.
+    //!
+    //! The first segment covers the longest contiguous sequence of used
+    //! elements in the underlying storage from the beginning of the span.
+    //!
+    //! @pre capacity() > 0
+    //!
+    //! @post std::distance(first_segment().begin(), first_segment().end()) > 0 unless empty()
+
+    TRIAL_CXX14_CONSTEXPR
+    segment first_segment() noexcept;
+
+    //! @brief Returns first contiguous segment of the span.
+    //!
+    //! The first segment covers the longest contiguous sequence of used
+    //! elements in the underlying storage from the beginning of the span.
+    //!
+    //! @pre capacity() > 0
+    //!
+    //! @post std::distance(first_segment().begin(), first_segment().end()) > 0 unless empty()
+
+    constexpr const_segment first_segment() const noexcept;
+
+    //! @brief Returns last contiguous segment of the span.
+    //!
+    //! The last segment covers the remaining used elements not covered by the
+    //! first segment.
+    //!
+    //! @pre capacity() > 0
+
+    TRIAL_CXX14_CONSTEXPR
+    segment last_segment() noexcept;
+
+    //! @brief Returns last contiguous segment of the span.
+    //!
+    //! The last segment covers the remaining used elements not covered by the
+    //! first segment.
+    //!
+    //! @pre capacity() > 0
+
+    constexpr const_segment last_segment() const noexcept;
+
+    //! @brief Returns first contiguous unused segment of the span.
+    //!
+    //! The unused first segment covers the longest contiguous sequence of
+    //! unused elements in the underlying storage from the end of the span.
+    //!
+    //! @pre capacity() > 0
+    //! @post std::distance(unused_back_segment().begin(), unused_back_segment().end()) > 0 unless full()
+
+    TRIAL_CXX14_CONSTEXPR
+    segment first_unused_segment() noexcept;
+    constexpr const_segment first_unused_segment() const noexcept;
+
+    //! @brief Returns last contiguous unused segment of the span.
+    //!
+    //! The unused last segment covers the remaining unused elements in the
+    //! underlying storage not covered by the unused first segment.
+    //!
+    //! @pre capacity() > 0
+
+    TRIAL_CXX14_CONSTEXPR
+    segment last_unused_segment() noexcept;
+    constexpr const_segment last_unused_segment() const noexcept;
+
 protected:
     //! @brief Creates circular span by copying.
     //!
@@ -543,6 +566,7 @@ private:
     constexpr const_reference at(size_type) const noexcept;
 
     constexpr bool wraparound() const noexcept;
+    constexpr bool unused_wraparound() const noexcept;
 
     TRIAL_CXX14_CONSTEXPR
     void rotate_range(size_type lower_length, size_type upper_length) noexcept(detail::is_nothrow_swappable<value_type>::value);

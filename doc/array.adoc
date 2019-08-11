@@ -281,39 +281,6 @@ are inserted or destroyed when the circular array is destroyed.
  +
  +
  _Expects:_ `size() > 0`
-| `constexpr{wj}footnote:constexpr11[] segment first_segment() noexcept`
- +
- +`constexpr const_segment first_segment() const noexcept` | Returns the first contiguous segment of the circular array.
- +
- +
- The first segment covers the longest contiguous sequence of used elements in the
- underlying storage from the beginning of the circular array.
- +
- +
- An empty segment is returned if the circular array is empty.
- +
- +
- _Expects:_ `capacity() > 0`
- +
- +
- _Ensures:_ `std::distance(first_segment().begin(), first_segment().end()) > 0` unless `empty()`
-| `constexpr{wj}footnote:constexpr11[] segment last_segment() noexcept`
- +
- +`constexpr const_segment last_segment() const noexcept` | Returns the last contiguous segment of the circular array.
- +
- +
- The last segment covers the remaining used elements not covered by the first segment.
- +
- +
- _Expects:_ `capacity() > 0`
-| `constexpr{wj}footnote:constexpr11[] reference operator[](size_type position) noexcept` | Returns a reference to the element at the given position in the circular array.
- +
- +
- _Expects:_ `position < size()`
-| `constexpr const_reference operator[](size_type positon) const noexcept` | Returns a reference to the element at the given position in the circular array.
- +
- +
- _Expects:_ `position < size()`
 | `constexpr{wj}footnote:constexpr11[] void clear() noexcept` | Clears the circular array.
  +
  +
@@ -529,4 +496,65 @@ are inserted or destroyed when the circular array is destroyed.
  +
  `constexpr const_reverse_iterator crend() const noexcept`
  | Returns a reverse interator to the end of the circular array.
+| `constexpr{wj}footnote:constexpr11[] segment first_segment() noexcept`
+ +
+ +`constexpr const_segment first_segment() const noexcept` | Returns the first contiguous segment of the circular array.
+ +
+ +
+ The first segment covers the longest contiguous sequence of used elements in the
+ underlying storage from the beginning of the circular array.
+ +
+ +
+ An empty segment is returned if the circular array is empty.
+ +
+ +
+ _Expects:_ `capacity() > 0`
+ +
+ +
+ _Ensures:_ `std::distance(first_segment().begin(), first_segment().end()) > 0` unless `empty()`
+| `constexpr{wj}footnote:constexpr11[] segment last_segment() noexcept`
+ +
+ +`constexpr const_segment last_segment() const noexcept` | Returns the last contiguous segment of the circular array.
+ +
+ +
+ The last segment covers the remaining used elements not covered by the first segment.
+ +
+ +
+ _Expects:_ `capacity() > 0`
+| `constexpr{wj}footnote:constexpr11[] reference operator[](size_type position) noexcept` | Returns a reference to the element at the given position in the circular array.
+ +
+ +
+ _Expects:_ `position < size()`
+| `constexpr const_reference operator[](size_type positon) const noexcept` | Returns a reference to the element at the given position in the circular array.
+ +
+ +
+ _Expects:_ `position < size()`
+| `constexpr{wj}footnote:constexpr11[] segment first_unused_segment() noexcept`
+ +
+ +
+ `constexpr const_segment first_unused_segment() const noexcept` | Returns the first contiguous unused segment of the circular array.
+ +
+ +
+ The unused first segment covers the longest contiguous sequence of unused elements
+ from the end of the circular array.
+ +
+ +
+ An empty segment is returned if the circular array is full.
+ +
+ +
+ _Expects:_ `capacity() > 0`
+ +
+ +
+ _Ensures:_ `std::distance(last_unused_segment().begin(), last_unused_segment().end()) > 0` unless `full()`
+| `constexpr{wj}footnote:constexpr11[] segment last_unused_segment() noexcept`
+ +
+ +
+ `constexpr const_segment last_unused_segment() const noexcept` | Returns the last contiguous unused segment of the circular array.
+ +
+ +
+ The unused last segment covers the remaining unused elements in the underlying
+ storage not covered by the unused first segment.
+ +
+ +
+ _Expects:_ `capacity() > 0`
 |===

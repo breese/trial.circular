@@ -328,10 +328,21 @@ subspans. These types fulfill the _BidirectionalRange_ requirements, which means
 that they have `begin()` and `end()` functions returning a _BidirectionalIterator_.
 Beyond that, the types are unspecified.
 
-There are two member functions that returns a subspan: `first_segment()` returns
-a range of all contiguous elements starting from the front of the span, and
-`last_segment` returns a range of any left-over elements that have been wrapped
-around in the underlying storage.
+There are four member functions that returns a segment:
+
+ * `first_segment()` returns a range of all contiguous elements starting from the
+   front of the span,
+ * `last_segment` returns a range of any left-over elements that have been wrapped
+   around in the underlying storage,
+ * `first_unused_segment()` returns a range of all unused contiguous elements
+   starting from the end of the span, and
+ * `last_unused_segment()` returns a range of any left-over elements that have
+   been wrapped around in the underlying storage.
+
+Notice that `first_segment()` will be non-empty if the span is non-empty, and
+`first_unused_segment()` will be non-empty is the span is non-full. The remaining
+segments will be empty if their associated segment can contain all elements.
+
 This functionality is useful for use cases such as zero-copy network transmission
 of the circular span.
 
@@ -522,31 +533,6 @@ specified `Extent` template argument. Dynamic extent is used by default.
  +
  +
  _Expects:_ `size() > 0`
-| `constexpr{wj}footnote:constexpr11[] segment first_segment() noexcept`
- +
- +`constexpr const_segment first_segment() const noexcept` | Returns the first contiguous segment of the span.
- +
- +
- The first segment covers the longest contiguous sequence of used elements in the
- underlying storage from the beginning of the span.
- +
- +
- An empty segment is returned if the span is empty.
- +
- +
- _Expects:_ `capacity() > 0`
- +
- +
- _Ensures:_ `std::distance(first_segment().begin(), first_segment().end()) > 0` unless `empty()`
-| `constexpr{wj}footnote:constexpr11[] segment last_segment() noexcept`
- +
- +`constexpr const_segment last_segment() const noexcept` | Returns the last contiguous segment of the span.
- +
- +
- The last segment covers the remaining used elements not covered by the first segment.
- +
- +
- _Expects:_ `capacity() > 0`
 | `constexpr{wj}footnote:constexpr11[] reference operator[](size_type position) noexcept` | Returns a reference to the element at the given position in the span.
  +
  +
@@ -791,6 +777,61 @@ specified `Extent` template argument. Dynamic extent is used by default.
  +
  `constexpr const_reverse_iterator crend() const noexcept`
  | Returns a reverse interator to the end of the span.
+| `constexpr{wj}footnote:constexpr11[] segment first_segment() noexcept`
+ +
+ +
+ `constexpr const_segment first_segment() const noexcept` | Returns the first contiguous segment of the span.
+ +
+ +
+ The first segment covers the longest contiguous sequence of used elements in the
+ underlying storage from the beginning of the span.
+ +
+ +
+ An empty segment is returned if the span is empty.
+ +
+ +
+ _Expects:_ `capacity() > 0`
+ +
+ +
+ _Ensures:_ `std::distance(first_segment().begin(), first_segment().end()) > 0` unless `empty()`
+| `constexpr{wj}footnote:constexpr11[] segment last_segment() noexcept`
+ +
+ +
+ `constexpr const_segment last_segment() const noexcept` | Returns the last contiguous segment of the span.
+ +
+ +
+ The last segment covers the remaining used elements not covered by the first segment.
+ +
+ +
+ _Expects:_ `capacity() > 0`
+| `constexpr{wj}footnote:constexpr11[] segment first_unused_segment() noexcept`
+ +
+ +
+ `constexpr const_segment first_unused_segment() const noexcept` | Returns the first contiguous unused segment of the span.
+ +
+ +
+ The unused first segment covers the longest contiguous sequence of unused elements
+ from the end of the span.
+ +
+ +
+ An empty segment is returned if the span is full.
+ +
+ +
+ _Expects:_ `capacity() > 0`
+ +
+ +
+ _Ensures:_ `std::distance(last_unused_segment().begin(), last_unused_segment().end()) > 0` unless `full()`
+| `constexpr{wj}footnote:constexpr11[] segment last_unused_segment() noexcept`
+ +
+ +
+ `constexpr const_segment last_unused_segment() const noexcept` | Returns the last contiguous unused segment of the span.
+ +
+ +
+ The unused last segment covers the remaining unused elements in the underlying
+ storage not covered by the unused first segment.
+ +
+ +
+ _Expects:_ `capacity() > 0`
 |===
 
 === Non-member constants
