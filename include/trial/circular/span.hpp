@@ -119,8 +119,7 @@ private:
 public:
     //! @brief Bidirectional iterator.
     //!
-    //! Mutable iterators are not supported to avoid incorrect use in mutating
-    //! algorithms.
+    //! Type that models the BidirectionalIterator concept.
 
     using iterator = basic_iterator<element_type>;
     using const_iterator = basic_iterator<typename std::add_const<element_type>::type>;
@@ -131,6 +130,7 @@ public:
     //!
     //! Unspecified type that models the BidirectionalRange concept.
 
+    using segment = circular::detail::iterator_range<iterator>;
     using const_segment = circular::detail::iterator_range<const_iterator>;
 
     //! @brief Creates empty circular span.
@@ -273,7 +273,29 @@ public:
     //!
     //! @post std::distance(first_segment().begin(), first_segment().end()) > 0 unless empty()
 
+    TRIAL_CXX14_CONSTEXPR
+    segment first_segment() noexcept;
+
+    //! @brief Returns first contiguous segment of the span.
+    //!
+    //! The first segment covers the longest contiguous sequence of used
+    //! elements in the underlying storage from the beginning of the span.
+    //!
+    //! @pre capacity() > 0
+    //!
+    //! @post std::distance(first_segment().begin(), first_segment().end()) > 0 unless empty()
+
     constexpr const_segment first_segment() const noexcept;
+
+    //! @brief Returns last contiguous segment of the span.
+    //!
+    //! The last segment covers the remaining used elements not covered by the
+    //! first segment.
+    //!
+    //! @pre capacity() > 0
+
+    TRIAL_CXX14_CONSTEXPR
+    segment last_segment() noexcept;
 
     //! @brief Returns last contiguous segment of the span.
     //!

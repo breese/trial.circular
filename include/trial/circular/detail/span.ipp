@@ -141,6 +141,19 @@ constexpr auto span<T, E>::back() const noexcept -> const_reference
 }
 
 template <typename T, std::size_t E>
+TRIAL_CXX14_CONSTEXPR
+auto span<T, E>::first_segment() noexcept -> segment
+{
+    return (empty())
+        ? detail::make_iterator_range(end(), end())
+        : (wraparound()
+           ? detail::make_iterator_range(iterator(this, front_index()),
+                                         iterator(this, capacity()))
+           : detail::make_iterator_range(iterator(this, front_index()),
+                                         end()));
+}
+
+template <typename T, std::size_t E>
 constexpr auto span<T, E>::first_segment() const noexcept -> const_segment
 {
     return (empty())
@@ -159,6 +172,16 @@ constexpr auto span<T, E>::last_segment() const noexcept -> const_segment
         ? detail::make_iterator_range(const_iterator(this, 0),
                                       const_iterator(this, index(member.next)))
         : detail::make_iterator_range(cend(), cend());
+}
+
+template <typename T, std::size_t E>
+TRIAL_CXX14_CONSTEXPR
+auto span<T, E>::last_segment() noexcept -> segment
+{
+    return wraparound() && (index(member.next) < size())
+        ? detail::make_iterator_range(iterator(this, 0),
+                                      iterator(this, index(member.next)))
+        : detail::make_iterator_range(end(), end());
 }
 
 template <typename T, std::size_t E>

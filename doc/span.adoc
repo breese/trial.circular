@@ -323,10 +323,10 @@ range from `begin()` until `end()` is not guaranteed to be contiguous as it may
 wrap around the underlying storage. In other words, a circular span cannot be
 constructed from another circular span.
 
-Instead `span<T>::const_segment` is used to represent subspans. The type fulfills
-the _BidirectionalRange_ requirements, which means that it has `begin()` and
-`end()` functions returning a _BidirectionalIterator_. Beyond that, the type is
-unspecified.
+Instead `span<T>::segment` and `span<T>::const_segment` are used to represent
+subspans. These types fulfill the _BidirectionalRange_ requirements, which means
+that they have `begin()` and `end()` functions returning a _BidirectionalIterator_.
+Beyond that, the types are unspecified.
 
 There are two member functions that returns a subspan: `first_segment()` returns
 a range of all contiguous elements starting from the front of the span, and
@@ -334,13 +334,6 @@ a range of all contiguous elements starting from the front of the span, and
 around in the underlying storage.
 This functionality is useful for use cases such as zero-copy network transmission
 of the circular span.
-
-While `first_segment()` and `last_segment()` returns segments of contiguous storage
-and therefore could have returned a circular span, this is not necessarily the
-case for other kinds of subspans we may want to add. However, as the circular span
-itself fulfills the _BidirectionalRange_ we could choose to implement `const_segment`
-in terms of circular span, although a more lean span type, like `std::span` would
-be a more prudent choice.
 
 [#ref]
 == Reference
@@ -395,6 +388,7 @@ specified `Extent` template argument. Dynamic extent is used by default.
 | `const_iterator` | _BidirectionalIterator_ with `const value_type`
 | `reverse_iterator` | `std::reverse_iterator<iterator>`
 | `const_reverse_iterator` | `std::reverse_iterator<const_iterator>`
+| `segment` | _BidirectionalRange_ with `value_type`
 | `const_segment` | _BidirectionalRange_ with `const value_type`
 |===
 
@@ -528,7 +522,9 @@ specified `Extent` template argument. Dynamic extent is used by default.
  +
  +
  _Expects:_ `size() > 0`
-| `constexpr const_segment first_segment() const noexcept` | Returns the first contiguous segment of the span.
+| `constexpr{wj}footnote:constexpr11[] segment first_segment() noexcept`
+ +
+ +`constexpr const_segment first_segment() const noexcept` | Returns the first contiguous segment of the span.
  +
  +
  The first segment covers the longest contiguous sequence of used elements in the
@@ -539,7 +535,12 @@ specified `Extent` template argument. Dynamic extent is used by default.
  +
  +
  _Expects:_ `capacity() > 0`
-| `constexpr const_segment last_segment() const noexcept` | Returns the last contiguous segment of the span.
+ +
+ +
+ _Ensures:_ `std::distance(first_segment().begin(), first_segment().end()) > 0` unless `empty()`
+| `constexpr{wj}footnote:constexpr11[] segment last_segment() noexcept`
+ +
+ +`constexpr const_segment last_segment() const noexcept` | Returns the last contiguous segment of the span.
  +
  +
  The last segment covers the remaining used elements not covered by the first segment.

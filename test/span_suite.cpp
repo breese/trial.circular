@@ -504,8 +504,23 @@ void dynamic_first_segment()
     circular::span<int> span(array);
     span = { 11, 22 };
     auto segment = span.first_segment();
-    TRIAL_TEST(segment.begin() == span.begin());
-    TRIAL_TEST(segment.end() == span.end());
+    {
+        std::vector<int> expect = { 11, 22 };
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void dynamic_first_segment_const()
+{
+    std::array<int, 4> array = { 11, 22 };
+    const circular::span<int> span(array.begin(), array.end(), array.begin(), 2);
+    auto segment = span.first_segment();
+    {
+        std::vector<int> expect = { 11, 22 };
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
+                          expect.begin(), expect.end());
+    }
 }
 
 void dynamic_last_segment()
@@ -514,8 +529,23 @@ void dynamic_last_segment()
     circular::span<int> span(array);
     span = { 11, 22 };
     auto segment = span.last_segment();
-    TRIAL_TEST(segment.begin() == span.end());
-    TRIAL_TEST(segment.end() == span.end());
+    {
+        std::vector<int> expect = { };
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void dynamic_last_segment_const()
+{
+    std::array<int, 4> array = { 11, 22 };
+    const circular::span<int> span(array.begin(), array.end(), array.begin(), 2);
+    auto segment = span.last_segment();
+    {
+        std::vector<int> expect = { };
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
+                          expect.begin(), expect.end());
+    }
 }
 
 void run()
@@ -560,7 +590,9 @@ void run()
     dynamic_remove_back_n();
     dynamic_rotate_front();
     dynamic_first_segment();
+    dynamic_first_segment_const();
     dynamic_last_segment();
+    dynamic_last_segment_const();
 }
 
 } // namespace api_dynamic_suite
@@ -1069,8 +1101,23 @@ void fixed_first_segment()
     circular::span<int, 4> span(array);
     span = { 11, 22 };
     auto segment = span.first_segment();
-    TRIAL_TEST(segment.begin() == span.begin());
-    TRIAL_TEST(segment.end() == span.end());
+    {
+        std::vector<int> expect = { 11, 22 };
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void fixed_first_segment_const()
+{
+    std::array<int, 4> array = { 11, 22 };
+    const circular::span<int, 4> span(array.begin(), array.end(), array.begin(), 2);
+    auto segment = span.first_segment();
+    {
+        std::vector<int> expect = { 11, 22 };
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
+                          expect.begin(), expect.end());
+    }
 }
 
 void fixed_last_segment()
@@ -1079,8 +1126,23 @@ void fixed_last_segment()
     circular::span<int, 4> span(array);
     span = { 11, 22 };
     auto segment = span.last_segment();
-    TRIAL_TEST(segment.begin() == span.end());
-    TRIAL_TEST(segment.end() == span.end());
+    {
+        std::vector<int> expect = { };
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void fixed_last_segment_const()
+{
+    std::array<int, 4> array = { 11, 22 };
+    const circular::span<int, 4> span(array.begin(), array.end(), array.begin(), 2);
+    auto segment = span.last_segment();
+    {
+        std::vector<int> expect = { };
+        TRIAL_TEST_ALL_EQ(segment.begin(), segment.end(),
+                          expect.begin(), expect.end());
+    }
 }
 
 void run()
@@ -1126,7 +1188,9 @@ void run()
     fixed_remove_back_n();
     fixed_rotate_front();
     fixed_first_segment();
+    fixed_first_segment_const();
     fixed_last_segment();
+    fixed_last_segment_const();
 }
 
 } // namespace api_fixed_suite
