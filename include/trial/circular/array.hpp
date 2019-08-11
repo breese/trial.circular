@@ -137,10 +137,10 @@ public:
     using span::back;
 
     //! @brief Returns first contiguous segment of circular array.
-    using span::front_segment;
+    using span::first_segment;
 
     //! @brief Returns last contiguous segment of circular array.
-    using span::back_segment;
+    using span::last_segment;
 
     //! @brief Returns reference to element at position.
     using span::operator[];

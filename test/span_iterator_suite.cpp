@@ -781,12 +781,12 @@ void segment_empty()
     int array[4] = {};
     circular::span<int> span(array);
     int sum = 0;
-    for (auto&& element : span.front_segment())
+    for (auto&& element : span.first_segment())
     {
         sum += element;
     }
     TRIAL_TEST_EQ(sum, 0);
-    for (auto&& element : span.back_segment())
+    for (auto&& element : span.last_segment())
     {
         sum += element;
     }
@@ -799,12 +799,12 @@ void segment_full()
     circular::span<int> span(array);
     span = { 11, 22, 33, 44 };
     int sum = 0;
-    for (auto&& element : span.front_segment())
+    for (auto&& element : span.first_segment())
     {
         sum += element;
     }
     TRIAL_TEST_EQ(sum, 11 + 22 + 33 + 44);
-    for (auto&& element : span.back_segment())
+    for (auto&& element : span.last_segment())
     {
         sum += element;
     }
@@ -817,12 +817,12 @@ void segment_overfull()
     circular::span<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     int sum = 0;
-    for (auto&& element : span.front_segment())
+    for (auto&& element : span.first_segment())
     {
         sum += element;
     }
     TRIAL_TEST_EQ(sum, 22 + 33 + 44);
-    for (auto&& element : span.back_segment())
+    for (auto&& element : span.last_segment())
     {
         sum += element;
     }

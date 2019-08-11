@@ -141,21 +141,21 @@ constexpr auto span<T, E>::back() const noexcept -> const_reference
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::front_segment() const noexcept -> const_segment
+constexpr auto span<T, E>::first_segment() const noexcept -> const_segment
 {
     return (empty())
         ? detail::make_iterator_range(cend(), cend())
-        : ((index(front_index()) <= index(back_index()))
+        : (wraparound()
            ? detail::make_iterator_range(const_iterator(this, front_index()),
-                                         cend())
+                                         const_iterator(this, capacity()))
            : detail::make_iterator_range(const_iterator(this, front_index()),
-                                         const_iterator(this, capacity())));
+                                         cend()));
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::back_segment() const noexcept -> const_segment
+constexpr auto span<T, E>::last_segment() const noexcept -> const_segment
 {
-    return (index(front_index()) > index(back_index())) && (index(member.next) < size())
+    return wraparound() && (index(member.next) < size())
         ? detail::make_iterator_range(const_iterator(this, 0),
                                       const_iterator(this, index(member.next)))
         : detail::make_iterator_range(cend(), cend());
@@ -462,6 +462,12 @@ template <typename T, std::size_t E>
 constexpr auto span<T, E>::at(size_type position) const noexcept -> const_reference
 {
     return member.data[index(position)];
+}
+
+template <typename T, std::size_t E>
+constexpr bool span<T, E>::wraparound() const noexcept
+{
+    return index(front_index()) > index(back_index());
 }
 
 template <typename T, std::size_t E>

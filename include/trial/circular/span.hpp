@@ -266,26 +266,23 @@ public:
 
     //! @brief Returns first contiguous segment of the span.
     //!
-    //! The front segment covers all elements from the beginning of the span
-    //! until the end of the storage if the span crosses the end of the storage;
-    //! otherwise until the end of the span.
+    //! The first segment covers the longest contiguous sequence of used
+    //! elements in the underlying storage from the beginning of the span.
     //!
     //! @pre capacity() > 0
+    //!
+    //! @post std::distance(first_segment().begin(), first_segment().end()) > 0 unless empty()
 
-    constexpr const_segment front_segment() const noexcept;
+    constexpr const_segment first_segment() const noexcept;
 
     //! @brief Returns last contiguous segment of the span.
     //!
-    //! The back segment covers the remaining elements not covered by the front
-    //! segment.
-    //!
-    //! If the span does not cross the end of the storage, then a pair of end
-    //! iterators are returned. Otherwise, the segment starts at the beginning
-    //! of the storage and ends at the end of the span.
+    //! The last segment covers the remaining used elements not covered by the
+    //! first segment.
     //!
     //! @pre capacity() > 0
 
-    constexpr const_segment back_segment() const noexcept;
+    constexpr const_segment last_segment() const noexcept;
 
     //! @brief Returns reference to element at position.
     //!
@@ -522,6 +519,8 @@ private:
     TRIAL_CXX14_CONSTEXPR
     reference at(size_type) noexcept;
     constexpr const_reference at(size_type) const noexcept;
+
+    constexpr bool wraparound() const noexcept;
 
     TRIAL_CXX14_CONSTEXPR
     void rotate_range(size_type lower_length, size_type upper_length) noexcept(detail::is_nothrow_swappable<value_type>::value);

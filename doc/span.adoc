@@ -313,8 +313,8 @@ by another insertion.
 The removed elements are not replaced by some default element for performance
 reasons.
 
-[#rationale-subspans]
-=== Subspans
+[#rationale-segments]
+=== Segments
 
 Circular span supports subspans, but unlike `std::span` a subspans of a circular
 span is not another circular span. Creating a circular span must be done on
@@ -328,14 +328,14 @@ the _BidirectionalRange_ requirements, which means that it has `begin()` and
 `end()` functions returning a _BidirectionalIterator_. Beyond that, the type is
 unspecified.
 
-There are two member functions that returns a subspan: `front_segment()` returns
+There are two member functions that returns a subspan: `first_segment()` returns
 a range of all contiguous elements starting from the front of the span, and
-`back_segment` returns a range of any left-over elements that have been wrapped
+`last_segment` returns a range of any left-over elements that have been wrapped
 around in the underlying storage.
 This functionality is useful for use cases such as zero-copy network transmission
 of the circular span.
 
-While `front_segment()` and `back_segment()` returns segments of contiguous storage
+While `first_segment()` and `last_segment()` returns segments of contiguous storage
 and therefore could have returned a circular span, this is not necessarily the
 case for other kinds of subspans we may want to add. However, as the circular span
 itself fulfills the _BidirectionalRange_ we could choose to implement `const_segment`
@@ -528,27 +528,21 @@ specified `Extent` template argument. Dynamic extent is used by default.
  +
  +
  _Expects:_ `size() > 0`
-| `constexpr const_segment front_segment() const noexcept` | Returns a range of the first contiguous segment of the span.
+| `constexpr const_segment first_segment() const noexcept` | Returns the first contiguous segment of the span.
  +
  +
- The front segment covers all elements from the beginning of the span until the end of the
- underlying storage if the span crosses the end of the storage; otherwise until the end of
- the span.
+ The first segment covers the longest contiguous sequence of used elements in the
+ underlying storage from the beginning of the span.
  +
  +
  An empty segment is returned if the span is empty.
  +
  +
  _Expects:_ `capacity() > 0`
-| `constexpr const_segment back_segment() const noexcept` | Returns a range of the last contiguous segment of the span.
+| `constexpr const_segment last_segment() const noexcept` | Returns the last contiguous segment of the span.
  +
  +
- The back segment covers the remaining elements not covered by the front segment.
- +
- +
- An empty segment is returned if the span is empty or does not cross the end of the
- underlying storage. Otherwise, the back segment starts at the beginning of the underlying
- storage and ends at the end of the span.
+ The last segment covers the remaining used elements not covered by the first segment.
  +
  +
  _Expects:_ `capacity() > 0`
@@ -754,13 +748,13 @@ specified `Extent` template argument. Dynamic extent is used by default.
  Rotation does not alter the sequence of elements in the span. It only rearranges elements in
  the underlying storage such that first element in the span is located at the first position
  in the storage. This ensures that the elements are stored contiguously. Consequently the
- back segment will be empty.
+ last segment will be empty.
  +
  +
  Rotation invalidates pointers and references, but does not invalidate iterators.
  +
  +
- _Ensures:_ `std::distance(back_segment().begin(), back_segment.end()) == 0`
+ _Ensures:_ `std::distance(last_segment().begin(), last_segment.end()) == 0`
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _Swappable_.
