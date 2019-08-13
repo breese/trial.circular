@@ -2262,9 +2262,31 @@ namespace initialization_suite
 
 void init_zero()
 {
-    std::array<int, 4> array = {11, 22, 33, 44};
-    circular::span<int> span(array.begin(), array.end(), array.begin(), 0);
+    std::array<int, 4> array = { 11, 22, 33, 44 };
     {
+        circular::span<int> span(array.begin(), array.end(), array.begin(), 0);
+
+        std::vector<int> expect = {};
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    {
+        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 1), 0);
+
+        std::vector<int> expect = {};
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    {
+        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 2), 0);
+
+        std::vector<int> expect = {};
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    {
+        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 3), 0);
+
         std::vector<int> expect = {};
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
@@ -2273,10 +2295,32 @@ void init_zero()
 
 void init_one()
 {
-    std::array<int, 4> array = {11, 22, 33, 44};
-    circular::span<int> span(array.begin(), array.end(), array.begin(), 1);
+    std::array<int, 4> array = { 11, 22, 33, 44 };
     {
-        std::vector<int> expect = {11};
+        circular::span<int> span(array.begin(), array.end(), array.begin(), 1);
+
+        std::vector<int> expect = { 11 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    {
+        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 1), 1);
+
+        std::vector<int> expect = { 22 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    {
+        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 2), 1);
+
+        std::vector<int> expect = { 33 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    {
+        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 3), 1);
+
+        std::vector<int> expect = { 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
@@ -2284,10 +2328,25 @@ void init_one()
 
 void init_two()
 {
-    std::array<int, 4> array = {11, 22, 33, 44};
-    circular::span<int> span(array.begin(), array.end(), array.begin(), 2);
+    std::array<int, 4> array = { 11, 22, 33, 44 };
     {
-        std::vector<int> expect = {11, 22};
+        circular::span<int> span(array.begin(), array.end(), array.begin(), 2);
+
+        std::vector<int> expect = { 11, 22 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    {
+        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 1), 2);
+
+        std::vector<int> expect = { 22, 33 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    {
+        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 2), 2);
+
+        std::vector<int> expect = { 33, 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
@@ -2295,10 +2354,18 @@ void init_two()
 
 void init_three()
 {
-    std::array<int, 4> array = {11, 22, 33, 44};
-    circular::span<int> span(array.begin(), array.end(), array.begin(), 3);
+    std::array<int, 4> array = { 11, 22, 33, 44 };
     {
-        std::vector<int> expect = {11, 22, 33};
+        circular::span<int> span(array.begin(), array.end(), array.begin(), 3);
+
+        std::vector<int> expect = { 11, 22, 33 };
+        TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
+                          expect.begin(), expect.end());
+    }
+    {
+        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 1), 3);
+
+        std::vector<int> expect = { 22, 33, 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
@@ -2306,10 +2373,11 @@ void init_three()
 
 void init_four()
 {
-    std::array<int, 4> array = {11, 22, 33, 44};
-    circular::span<int> span(array.begin(), array.end(), array.begin(), array.size());
+    std::array<int, 4> array = { 11, 22, 33, 44 };
     {
-        std::vector<int> expect = {11, 22, 33, 44};
+        circular::span<int> span(array.begin(), array.end(), array.begin(), array.size());
+
+        std::vector<int> expect = { 11, 22, 33, 44 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
