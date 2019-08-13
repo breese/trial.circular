@@ -169,10 +169,10 @@ T average::mean() const noexcept
 === Finite Impulse Response
 
 This tutorial demonstrates how to use algorithms on the circular span. All we
-need are well-behaved iterators. The circular span iterators are bidirectional
-iterators that allows you to traverse all elements from the front to the back,
-or vice versa with reverse iterators. The iterators automatically handle that
-the elements may wrap around the underlying storage.
+need are well-behaved iterators. The circular span iterators allows you to
+traverse all elements from the front to the back, or vice versa with reverse
+iterators. The iterators automatically handle that the elements may wrap around
+the underlying storage.
 
 The Finite Impulse Response filter is one of the basic digital filters in the
 signal processing repertoire. A filtered value latexmath:[y[n\]] at time
@@ -324,8 +324,8 @@ wrap around the underlying storage. In other words, a circular span cannot be
 constructed from another circular span.
 
 Instead `span<T>::segment` and `span<T>::const_segment` are used to represent
-subspans. These types fulfill the _BidirectionalRange_ requirements, which means
-that they have `begin()` and `end()` functions returning a _BidirectionalIterator_.
+subspans. These types fulfill the _RandomAccessRange_ requirements, which means
+that they have `begin()` and `end()` functions returning a _RandomAccessIterator_.
 Beyond that, the types are unspecified.
 
 There are four member functions that returns a segment:
@@ -395,12 +395,12 @@ specified `Extent` template argument. Dynamic extent is used by default.
 | `pointer` | `element_type*`
 | `reference` | `element_type&`
 | `const_reference` | `const element_type&`
-| `iterator` | _BidirectionalIterator_ with `value_type`
-| `const_iterator` | _BidirectionalIterator_ with `const value_type`
+| `iterator` | _RandomAccessIterator_ with `value_type`
+| `const_iterator` | _RandomAccessIterator_ with `const value_type`
 | `reverse_iterator` | `std::reverse_iterator<iterator>`
 | `const_reverse_iterator` | `std::reverse_iterator<const_iterator>`
-| `segment` | _BidirectionalRange_ with `value_type`
-| `const_segment` | _BidirectionalRange_ with `const value_type`
+| `segment` | _RandomAccessRange_ with `value_type`
+| `const_segment` | _RandomAccessRange_ with `const value_type`
 |===
 
 === Member functions

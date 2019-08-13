@@ -857,6 +857,65 @@ auto span<T, E>::basic_iterator<U>::operator--(int) noexcept -> iterator_type
 template <typename T, std::size_t E>
 template <typename U>
 TRIAL_CXX14_CONSTEXPR
+auto span<T, E>::basic_iterator<U>::operator+=(difference_type amount) noexcept -> iterator_type&
+{
+    assert(parent);
+
+    current = parent->vindex(current + amount);
+    return *this;
+}
+
+template <typename T, std::size_t E>
+template <typename U>
+constexpr auto span<T, E>::basic_iterator<U>::operator+(difference_type amount) const noexcept -> iterator_type
+{
+    TRIAL_CIRCULAR_CXX14(assert(parent));
+
+    return iterator_type(parent, current + amount);
+}
+
+template <typename T, std::size_t E>
+template <typename U>
+TRIAL_CXX14_CONSTEXPR
+auto span<T, E>::basic_iterator<U>::operator-=(difference_type amount) noexcept -> iterator_type&
+{
+    assert(parent);
+
+    current = parent->vindex(current - amount);
+    return *this;
+}
+
+template <typename T, std::size_t E>
+template <typename U>
+constexpr auto span<T, E>::basic_iterator<U>::operator-(difference_type amount) const noexcept -> iterator_type
+{
+    TRIAL_CIRCULAR_CXX14(assert(parent));
+
+    return iterator_type(parent, current - amount);
+}
+
+template <typename T, std::size_t E>
+template <typename U>
+constexpr auto span<T, E>::basic_iterator<U>::operator-(const iterator_type& other) const noexcept -> difference_type
+{
+    TRIAL_CIRCULAR_CXX14(assert(parent));
+
+    return current - other.current;
+}
+
+template <typename T, std::size_t E>
+template <typename U>
+TRIAL_CXX14_CONSTEXPR
+auto span<T, E>::basic_iterator<U>::operator[](difference_type amount) noexcept -> reference
+{
+    assert(parent);
+
+    return parent->at(current + amount);
+}
+
+template <typename T, std::size_t E>
+template <typename U>
+TRIAL_CXX14_CONSTEXPR
 auto span<T, E>::basic_iterator<U>::operator-> () noexcept -> pointer
 {
     assert(parent);
@@ -898,6 +957,46 @@ template <typename U>
 constexpr bool span<T, E>::basic_iterator<U>::operator!=(const iterator_type& other) const noexcept
 {
     return !operator==(other);
+}
+
+template <typename T, std::size_t E>
+template <typename U>
+constexpr bool span<T, E>::basic_iterator<U>::operator<(const iterator_type& other) const noexcept
+{
+    TRIAL_CIRCULAR_CXX14(assert(parent));
+    TRIAL_CIRCULAR_CXX14(assert(parent == other.parent));
+
+    return current < other.current;
+}
+
+template <typename T, std::size_t E>
+template <typename U>
+constexpr bool span<T, E>::basic_iterator<U>::operator<=(const iterator_type& other) const noexcept
+{
+    TRIAL_CIRCULAR_CXX14(assert(parent));
+    TRIAL_CIRCULAR_CXX14(assert(parent == other.parent));
+
+    return current <= other.current;
+}
+
+template <typename T, std::size_t E>
+template <typename U>
+constexpr bool span<T, E>::basic_iterator<U>::operator>(const iterator_type& other) const noexcept
+{
+    TRIAL_CIRCULAR_CXX14(assert(parent));
+    TRIAL_CIRCULAR_CXX14(assert(parent == other.parent));
+
+    return current > other.current;
+}
+
+template <typename T, std::size_t E>
+template <typename U>
+constexpr bool span<T, E>::basic_iterator<U>::operator>=(const iterator_type& other) const noexcept
+{
+    TRIAL_CIRCULAR_CXX14(assert(parent));
+    TRIAL_CIRCULAR_CXX14(assert(parent == other.parent));
+
+    return current >= other.current;
 }
 
 } // namespace circular

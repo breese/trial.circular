@@ -168,6 +168,110 @@ void bidirectional_iterator_post_decrementable()
     TRIAL_TEST(b != span.begin());
 }
 
+void random_access_iterator_addition_assignment()
+{
+    // r += n
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::iterator a = span.begin();
+    a += 2;
+    TRIAL_TEST_EQ(std::distance(span.begin(), a), 2);
+}
+
+void random_access_iterator_addition()
+{
+    // a + n
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::iterator a = span.begin() + 2;
+    TRIAL_TEST_EQ(std::distance(span.begin(), a), 2);
+    // n + a
+    circular::span<int>::iterator b = 2 + span.begin();
+    TRIAL_TEST_EQ(std::distance(span.begin(), b), 2);
+}
+
+void random_access_iterator_subtraction_assignment()
+{
+    // r -= n
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::iterator a = span.end();
+    a -= 2;
+    TRIAL_TEST_EQ(std::distance(span.begin(), a), 2);
+}
+
+void random_access_iterator_subtraction()
+{
+    // a - n
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::iterator a = span.end() - 2;
+    TRIAL_TEST_EQ(std::distance(span.begin(), a), 2);
+}
+
+void random_access_iterator_difference()
+{
+    // b - a
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> alpha(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int> bravo(data.begin(), data.end(), std::next(data.begin()), data.size() - 1);
+    TRIAL_TEST_EQ(alpha.begin() - bravo.begin(), -1);
+    TRIAL_TEST_EQ(bravo.begin() - alpha.begin(), 1);
+}
+
+void random_access_iterator_index()
+{
+    // a[n]
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    TRIAL_TEST_EQ(span.begin()[2], 33);
+    TRIAL_TEST_EQ(span.cbegin()[2], 33);
+}
+
+void random_access_iterator_less()
+{
+    // a < b
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    TRIAL_TEST(!(span.begin() < span.begin()));
+    TRIAL_TEST(span.begin() < span.end());
+    TRIAL_TEST(!(span.end() < span.begin()));
+    TRIAL_TEST(!(span.end() < span.end()));
+}
+
+void random_access_iterator_less_equal()
+{
+    // a <= b
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    TRIAL_TEST(span.begin() <= span.begin());
+    TRIAL_TEST(span.begin() <= span.end());
+    TRIAL_TEST(!(span.end() <= span.begin()));
+    TRIAL_TEST(span.end() <= span.end());
+}
+
+void random_access_iterator_greater()
+{
+    // a > b
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    TRIAL_TEST(!(span.begin() > span.begin()));
+    TRIAL_TEST(!(span.begin() > span.end()));
+    TRIAL_TEST(span.end() > span.begin());
+    TRIAL_TEST(!(span.end() > span.end()));
+}
+
+void random_access_iterator_greater_equal()
+{
+    // a >= b
+    std::vector<int> data = { 11, 22, 33, 44 };
+    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    TRIAL_TEST(span.begin() >= span.begin());
+    TRIAL_TEST(!(span.begin() >= span.end()));
+    TRIAL_TEST(span.end() >= span.begin());
+    TRIAL_TEST(span.end() >= span.end());
+}
+
 void run()
 {
     // [iterator.iterators]
@@ -192,6 +296,18 @@ void run()
     // [bidirectional.iterators]
     bidirectional_iterator_decrementable();
     bidirectional_iterator_post_decrementable();
+
+    // [random.access.iterators]
+    random_access_iterator_addition_assignment();
+    random_access_iterator_addition();
+    random_access_iterator_subtraction_assignment();
+    random_access_iterator_subtraction();
+    random_access_iterator_difference();
+    random_access_iterator_index();
+    random_access_iterator_less();
+    random_access_iterator_less_equal();
+    random_access_iterator_greater();
+    random_access_iterator_greater_equal();
 }
 
 } // namespace concept_suite
@@ -347,6 +463,110 @@ void bidirectional_iterator_post_decrementable()
     TRIAL_TEST(b != span.begin());
 }
 
+void random_access_iterator_addition_assignment()
+{
+    // r += n
+    std::vector<int> data = { 11, 22, 33, 44 };
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::const_iterator a = span.begin();
+    a += 2;
+    TRIAL_TEST_EQ(std::distance(span.begin(), a), 2);
+}
+
+void random_access_iterator_addition()
+{
+    // a + n
+    std::vector<int> data = { 11, 22, 33, 44 };
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::const_iterator a = span.begin() + 2;
+    TRIAL_TEST_EQ(std::distance(span.begin(), a), 2);
+    // n + a
+    circular::span<int>::const_iterator b = 2 + span.begin();
+    TRIAL_TEST_EQ(std::distance(span.begin(), b), 2);
+}
+
+void random_access_iterator_subtraction_assignment()
+{
+    // r -= n
+    std::vector<int> data = { 11, 22, 33, 44 };
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::const_iterator a = span.end();
+    a -= 2;
+    TRIAL_TEST_EQ(std::distance(span.begin(), a), 2);
+}
+
+void random_access_iterator_subtraction()
+{
+    // a - n
+    std::vector<int> data = { 11, 22, 33, 44 };
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular::span<int>::const_iterator a = span.end() - 2;
+    TRIAL_TEST_EQ(std::distance(span.begin(), a), 2);
+}
+
+void random_access_iterator_difference()
+{
+    // b - a
+    std::vector<int> data = { 11, 22, 33, 44 };
+    const circular::span<int> alpha(data.begin(), data.end(), data.begin(), data.size());
+    const circular::span<int> bravo(data.begin(), data.end(), std::next(data.begin()), data.size() - 1);
+    TRIAL_TEST_EQ(alpha.begin() - bravo.begin(), -1);
+    TRIAL_TEST_EQ(bravo.begin() - alpha.begin(), 1);
+}
+
+void random_access_iterator_index()
+{
+    // a[n]
+    std::vector<int> data = { 11, 22, 33, 44 };
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    TRIAL_TEST_EQ(span.begin()[2], 33);
+    TRIAL_TEST_EQ(span.cbegin()[2], 33);
+}
+
+void random_access_iterator_less()
+{
+    // a < b
+    std::vector<int> data = { 11, 22, 33, 44 };
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    TRIAL_TEST(!(span.begin() < span.begin()));
+    TRIAL_TEST(span.begin() < span.end());
+    TRIAL_TEST(!(span.end() < span.begin()));
+    TRIAL_TEST(!(span.end() < span.end()));
+}
+
+void random_access_iterator_less_equal()
+{
+    // a <= b
+    std::vector<int> data = { 11, 22, 33, 44 };
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    TRIAL_TEST(span.begin() <= span.begin());
+    TRIAL_TEST(span.begin() <= span.end());
+    TRIAL_TEST(!(span.end() <= span.begin()));
+    TRIAL_TEST(span.end() <= span.end());
+}
+
+void random_access_iterator_greater()
+{
+    // a > b
+    std::vector<int> data = { 11, 22, 33, 44 };
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    TRIAL_TEST(!(span.begin() > span.begin()));
+    TRIAL_TEST(!(span.begin() > span.end()));
+    TRIAL_TEST(span.end() > span.begin());
+    TRIAL_TEST(!(span.end() > span.end()));
+}
+
+void random_access_iterator_greater_equal()
+{
+    // a >= b
+    std::vector<int> data = { 11, 22, 33, 44 };
+    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    TRIAL_TEST(span.begin() >= span.begin());
+    TRIAL_TEST(!(span.begin() >= span.end()));
+    TRIAL_TEST(span.end() >= span.begin());
+    TRIAL_TEST(span.end() >= span.end());
+}
+
 void run()
 {
     // [iterator.iterators]
@@ -371,6 +591,18 @@ void run()
     // [bidirectional.iterators]
     bidirectional_iterator_decrementable();
     bidirectional_iterator_post_decrementable();
+
+    // [random.access.iterators]
+    random_access_iterator_addition_assignment();
+    random_access_iterator_addition();
+    random_access_iterator_subtraction_assignment();
+    random_access_iterator_subtraction();
+    random_access_iterator_difference();
+    random_access_iterator_index();
+    random_access_iterator_less();
+    random_access_iterator_less_equal();
+    random_access_iterator_greater();
+    random_access_iterator_greater_equal();
 }
 
 } // namespace concept_suite
@@ -578,6 +810,803 @@ void run()
 }
 
 } // namespace iterator_suite
+
+//-----------------------------------------------------------------------------
+
+namespace operator_suite
+{
+
+void addition_assignment()
+{
+    int array[4] = {};
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44 };
+    {
+        auto where = span.begin();
+        where += 0;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 0);
+        where = span.begin();
+        where += 1;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 1);
+        where = span.begin();
+        where += 2;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 2);
+        where = span.begin();
+        where += 3;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 3);
+    }
+    span.push_back(55);
+    {
+        auto where = span.begin();
+        where += 0;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 0);
+        where = span.begin();
+        where += 1;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 1);
+        where = span.begin();
+        where += 2;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 2);
+        where = span.begin();
+        where += 3;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 3);
+    }
+    span.push_back(66);
+    {
+        auto where = span.begin();
+        where += 0;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 0);
+        where = span.begin();
+        where += 1;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 1);
+        where = span.begin();
+        where += 2;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 2);
+        where = span.begin();
+        where += 3;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 3);
+    }
+    span.push_back(77);
+    {
+        auto where = span.begin();
+        where += 0;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 0);
+        where = span.begin();
+        where += 1;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 1);
+        where = span.begin();
+        where += 2;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 2);
+        where = span.begin();
+        where += 3;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 3);
+    }
+    span.push_back(88);
+    {
+        auto where = span.begin();
+        where += 0;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 0);
+        where = span.begin();
+        where += 1;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 1);
+        where = span.begin();
+        where += 2;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 2);
+        where = span.begin();
+        where += 3;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 3);
+    }
+}
+
+void addition()
+{
+    int array[4] = {};
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44 };
+    {
+        auto where = span.begin();
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 0);
+        where = span.begin() + 1;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 1);
+        where = span.begin() + 2;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 2);
+        where = span.begin() + 3;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 3);
+    }
+    span.push_back(55);
+    {
+        auto where = span.begin();
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 0);
+        where = span.begin() + 1;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 1);
+        where = span.begin() + 2;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 2);
+        where = span.begin() + 3;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 3);
+    }
+    span.push_back(66);
+    {
+        auto where = span.begin();
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 0);
+        where = span.begin() + 1;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 1);
+        where = span.begin() + 2;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 2);
+        where = span.begin() + 3;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 3);
+    }
+    span.push_back(77);
+    {
+        auto where = span.begin();
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 0);
+        where = span.begin() + 1;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 1);
+        where = span.begin() + 2;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 2);
+        where = span.begin() + 3;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 3);
+    }
+    span.push_back(88);
+    {
+        auto where = span.begin();
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 0);
+        where = span.begin() + 1;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 1);
+        where = span.begin() + 2;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 2);
+        where = span.begin() + 3;
+        TRIAL_TEST_EQ(std::distance(span.begin(), where), 3);
+    }
+}
+
+void subtraction_assignment()
+{
+    int array[4] = {};
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44 };
+    {
+        auto where = span.end();
+        where -= 0;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 0);
+        where = span.end();
+        where -= 1;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 1);
+        where = span.end();
+        where -= 2;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 2);
+        where = span.end();
+        where -= 3;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 3);
+    }
+    span.push_back(55);
+    {
+        auto where = span.end();
+        where -= 0;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 0);
+        where = span.end();
+        where -= 1;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 1);
+        where = span.end();
+        where -= 2;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 2);
+        where = span.end();
+        where -= 3;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 3);
+    }
+    span.push_back(66);
+    {
+        auto where = span.end();
+        where -= 0;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 0);
+        where = span.end();
+        where -= 1;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 1);
+        where = span.end();
+        where -= 2;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 2);
+        where = span.end();
+        where -= 3;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 3);
+    }
+    span.push_back(77);
+    {
+        auto where = span.end();
+        where -= 0;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 0);
+        where = span.end();
+        where -= 1;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 1);
+        where = span.end();
+        where -= 2;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 2);
+        where = span.end();
+        where -= 3;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 3);
+    }
+    span.push_back(88);
+    {
+        auto where = span.end();
+        where -= 0;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 0);
+        where = span.end();
+        where -= 1;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 1);
+        where = span.end();
+        where -= 2;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 2);
+        where = span.end();
+        where -= 3;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 3);
+    }
+}
+
+void subtraction()
+{
+    int array[4] = {};
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44 };
+    {
+        auto where = span.end();
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 0);
+        where = span.end() - 1;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 1);
+        where = span.end() - 2;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 2);
+        where = span.end() - 3;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 3);
+    }
+    span.push_back(55);
+    {
+        auto where = span.end();
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 0);
+        where = span.end() - 1;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 1);
+        where = span.end() - 2;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 2);
+        where = span.end() - 3;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 3);
+    }
+    span.push_back(66);
+    {
+        auto where = span.end();
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 0);
+        where = span.end() - 1;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 1);
+        where = span.end() - 2;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 2);
+        where = span.end() - 3;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 3);
+    }
+    span.push_back(77);
+    {
+        auto where = span.end();
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 0);
+        where = span.end() - 1;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 1);
+        where = span.end() - 2;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 2);
+        where = span.end() - 3;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 3);
+    }
+    span.push_back(88);
+    {
+        auto where = span.end();
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 0);
+        where = span.end() - 1;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 1);
+        where = span.end() - 2;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 2);
+        where = span.end() - 3;
+        TRIAL_TEST_EQ(std::distance(where, span.end()), 3);
+    }
+}
+
+void difference_partial()
+{
+    int array[4] = {};
+    circular::span<int> span(array);
+    // X X X X
+    TRIAL_TEST_EQ(span.end() - span.begin(), 0);
+    // 11 X X X
+    span.push_back(11);
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // 11 22 X X
+    span.push_back(22);
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(std::next(span.begin(), 1) - span.begin(), 1);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // 11 22 33 X
+    span.push_back(33);
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(std::next(span.begin(), 1) - span.begin(), 1);
+    TRIAL_TEST_EQ(std::next(span.begin(), 2) - span.begin(), 2);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // 11 22 33 44
+    span.push_back(44);
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(std::next(span.begin(), 1) - span.begin(), 1);
+    TRIAL_TEST_EQ(std::next(span.begin(), 2) - span.begin(), 2);
+    TRIAL_TEST_EQ(std::next(span.begin(), 3) - span.begin(), 3);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+}
+
+void difference_0()
+{
+    int array[4] = {};
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44, 55 };
+    // 55 22 33 44
+    span.push_back(55);
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(std::next(span.begin(), 1) - span.begin(), 1);
+    TRIAL_TEST_EQ(std::next(span.begin(), 2) - span.begin(), 2);
+    TRIAL_TEST_EQ(std::next(span.begin(), 3) - span.begin(), 3);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // 55 66 33 44
+    span.push_back(66);
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(std::next(span.begin(), 1) - span.begin(), 1);
+    TRIAL_TEST_EQ(std::next(span.begin(), 2) - span.begin(), 2);
+    TRIAL_TEST_EQ(std::next(span.begin(), 3) - span.begin(), 3);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // 55 66 77 44
+    span.push_back(77);
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(std::next(span.begin(), 1) - span.begin(), 1);
+    TRIAL_TEST_EQ(std::next(span.begin(), 2) - span.begin(), 2);
+    TRIAL_TEST_EQ(std::next(span.begin(), 3) - span.begin(), 3);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // 55 66 77 88
+    span.push_back(88);
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(std::next(span.begin(), 1) - span.begin(), 1);
+    TRIAL_TEST_EQ(std::next(span.begin(), 2) - span.begin(), 2);
+    TRIAL_TEST_EQ(std::next(span.begin(), 3) - span.begin(), 3);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+}
+
+void difference_1()
+{
+    int array[4] = {};
+    circular::span<int> span(array);
+    // X 22 33 44
+    span = { 11, 22, 33, 44 };
+    span.remove_front();
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(std::next(span.begin(), 1) - span.begin(), 1);
+    TRIAL_TEST_EQ(std::next(span.begin(), 2) - span.begin(), 2);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // 55 X 33 44
+    span.push_back(55);
+    span.remove_front();
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(std::next(span.begin(), 1) - span.begin(), 1);
+    TRIAL_TEST_EQ(std::next(span.begin(), 2) - span.begin(), 2);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // 55 66 X 44
+    span.push_back(66);
+    span.remove_front();
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(std::next(span.begin(), 1) - span.begin(), 1);
+    TRIAL_TEST_EQ(std::next(span.begin(), 2) - span.begin(), 2);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // 55 66 77 X
+    span.push_back(77);
+    span.remove_front();
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(std::next(span.begin(), 1) - span.begin(), 1);
+    TRIAL_TEST_EQ(std::next(span.begin(), 2) - span.begin(), 2);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // X 66 77 88
+    span.push_back(88);
+    span.remove_front();
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(std::next(span.begin(), 1) - span.begin(), 1);
+    TRIAL_TEST_EQ(std::next(span.begin(), 2) - span.begin(), 2);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+}
+
+void difference_2()
+{
+    int array[4] = {};
+    circular::span<int> span(array);
+    // X X 33 44
+    span = { 11, 22, 33, 44 };
+    span.remove_front(2);
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(std::next(span.begin(), 1) - span.begin(), 1);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // 55 X X 44
+    span.push_back(55);
+    span.remove_front();
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(std::next(span.begin(), 1) - span.begin(), 1);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // 55 66 X X
+    span.push_back(66);
+    span.remove_front();
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(std::next(span.begin(), 1) - span.begin(), 1);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // X 66 77 X
+    span.push_back(77);
+    span.remove_front();
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(std::next(span.begin(), 1) - span.begin(), 1);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // X X 77 88
+    span.push_back(88);
+    span.remove_front();
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(std::next(span.begin(), 1) - span.begin(), 1);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+}
+
+void difference_3()
+{
+    int array[4] = {};
+    circular::span<int> span(array);
+    // X X X 44
+    span = { 11, 22, 33, 44 };
+    span.remove_front(3);
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // 55 X X X
+    span.push_back(55);
+    span.remove_front();
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // X 66 X X
+    span.push_back(66);
+    span.remove_front();
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // X X 77 X
+    span.push_back(77);
+    span.remove_front();
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+    // X X X 88
+    span.push_back(88);
+    span.remove_front();
+    TRIAL_TEST_EQ(span.begin() - span.begin(), 0);
+    TRIAL_TEST_EQ(span.end() - span.begin(), span.size());
+}
+
+void index()
+{
+    int array[4] = {};
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44 };
+    TRIAL_TEST_EQ(span.begin()[0], 11);
+    TRIAL_TEST_EQ(span.begin()[1], 22);
+    TRIAL_TEST_EQ(span.begin()[2], 33);
+    TRIAL_TEST_EQ(span.begin()[3], 44);
+
+    span.push_back(55);
+    TRIAL_TEST_EQ(span.begin()[0], 22);
+    TRIAL_TEST_EQ(span.begin()[1], 33);
+    TRIAL_TEST_EQ(span.begin()[2], 44);
+    TRIAL_TEST_EQ(span.begin()[3], 55);
+
+    span.push_back(66);
+    TRIAL_TEST_EQ(span.begin()[0], 33);
+    TRIAL_TEST_EQ(span.begin()[1], 44);
+    TRIAL_TEST_EQ(span.begin()[2], 55);
+    TRIAL_TEST_EQ(span.begin()[3], 66);
+
+    span.push_back(77);
+    TRIAL_TEST_EQ(span.begin()[0], 44);
+    TRIAL_TEST_EQ(span.begin()[1], 55);
+    TRIAL_TEST_EQ(span.begin()[2], 66);
+    TRIAL_TEST_EQ(span.begin()[3], 77);
+
+    span.push_back(88);
+    TRIAL_TEST_EQ(span.begin()[0], 55);
+    TRIAL_TEST_EQ(span.begin()[1], 66);
+    TRIAL_TEST_EQ(span.begin()[2], 77);
+    TRIAL_TEST_EQ(span.begin()[3], 88);
+}
+
+void less()
+{
+    int array[4] = {};
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44 };
+    TRIAL_TEST(!(span.begin() < span.begin()));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 1));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 2));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 3));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 4));
+
+    TRIAL_TEST(!(span.end() < span.begin()));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 3)));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 4)));
+
+    span.push_back(55);
+    TRIAL_TEST(!(span.begin() < span.begin()));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 1));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 2));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 3));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 4));
+
+    TRIAL_TEST(!(span.end() < span.begin()));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 3)));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 4)));
+
+    span.push_back(66);
+    TRIAL_TEST(!(span.begin() < span.begin()));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 1));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 2));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 3));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 4));
+
+    TRIAL_TEST(!(span.end() < span.begin()));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 3)));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 4)));
+
+    span.push_back(77);
+    TRIAL_TEST(!(span.begin() < span.begin()));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 1));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 2));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 3));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 4));
+
+    TRIAL_TEST(!(span.end() < span.begin()));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 3)));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 4)));
+
+    span.push_back(88);
+    TRIAL_TEST(!(span.begin() < span.begin()));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 1));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 2));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 3));
+    TRIAL_TEST(span.begin() < std::next(span.begin(), 4));
+
+    TRIAL_TEST(!(span.end() < span.begin()));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 3)));
+    TRIAL_TEST(!(span.end() < std::next(span.begin(), 4)));
+}
+
+void less_equal()
+{
+    int array[4] = {};
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44 };
+    TRIAL_TEST(span.begin() <= span.begin());
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 1));
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 2));
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 3));
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 4));
+
+    TRIAL_TEST(!(span.end() <= span.begin()));
+    TRIAL_TEST(!(span.end() <= std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.end() <= std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.end() <= std::next(span.begin(), 3)));
+    TRIAL_TEST(span.end() <= std::next(span.begin(), 4));
+
+    span.push_back(55);
+    TRIAL_TEST(span.begin() <= span.begin());
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 1));
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 2));
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 3));
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 4));
+
+    TRIAL_TEST(!(span.end() <= span.begin()));
+    TRIAL_TEST(!(span.end() <= std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.end() <= std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.end() <= std::next(span.begin(), 3)));
+    TRIAL_TEST(span.end() <= std::next(span.begin(), 4));
+
+    span.push_back(66);
+    TRIAL_TEST(span.begin() <= span.begin());
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 1));
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 2));
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 3));
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 4));
+
+    TRIAL_TEST(!(span.end() <= span.begin()));
+    TRIAL_TEST(!(span.end() <= std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.end() <= std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.end() <= std::next(span.begin(), 3)));
+    TRIAL_TEST(span.end() <= std::next(span.begin(), 4));
+
+    span.push_back(77);
+    TRIAL_TEST(span.begin() <= span.begin());
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 1));
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 2));
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 3));
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 4));
+
+    TRIAL_TEST(!(span.end() <= span.begin()));
+    TRIAL_TEST(!(span.end() <= std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.end() <= std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.end() <= std::next(span.begin(), 3)));
+    TRIAL_TEST(span.end() <= std::next(span.begin(), 4));
+
+    span.push_back(88);
+    TRIAL_TEST(span.begin() <= span.begin());
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 1));
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 2));
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 3));
+    TRIAL_TEST(span.begin() <= std::next(span.begin(), 4));
+
+    TRIAL_TEST(!(span.end() <= span.begin()));
+    TRIAL_TEST(!(span.end() <= std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.end() <= std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.end() <= std::next(span.begin(), 3)));
+    TRIAL_TEST(span.end() <= std::next(span.begin(), 4));
+}
+
+void greater()
+{
+    int array[4] = {};
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44 };
+    TRIAL_TEST(!(span.begin() > span.begin()));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 3)));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 4)));
+
+    TRIAL_TEST(span.end() > span.begin());
+    TRIAL_TEST(span.end() > std::next(span.begin(), 1));
+    TRIAL_TEST(span.end() > std::next(span.begin(), 2));
+    TRIAL_TEST(span.end() > std::next(span.begin(), 3));
+    TRIAL_TEST(!(span.end() > std::next(span.begin(), 4)));
+
+    span.push_back(55);
+    TRIAL_TEST(!(span.begin() > span.begin()));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 3)));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 4)));
+
+    TRIAL_TEST(span.end() > span.begin());
+    TRIAL_TEST(span.end() > std::next(span.begin(), 1));
+    TRIAL_TEST(span.end() > std::next(span.begin(), 2));
+    TRIAL_TEST(span.end() > std::next(span.begin(), 3));
+    TRIAL_TEST(!(span.end() > std::next(span.begin(), 4)));
+
+    span.push_back(66);
+    TRIAL_TEST(!(span.begin() > span.begin()));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 3)));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 4)));
+
+    TRIAL_TEST(span.end() > span.begin());
+    TRIAL_TEST(span.end() > std::next(span.begin(), 1));
+    TRIAL_TEST(span.end() > std::next(span.begin(), 2));
+    TRIAL_TEST(span.end() > std::next(span.begin(), 3));
+    TRIAL_TEST(!(span.end() > std::next(span.begin(), 4)));
+
+    span.push_back(77);
+    TRIAL_TEST(!(span.begin() > span.begin()));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 3)));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 4)));
+
+    TRIAL_TEST(span.end() > span.begin());
+    TRIAL_TEST(span.end() > std::next(span.begin(), 1));
+    TRIAL_TEST(span.end() > std::next(span.begin(), 2));
+    TRIAL_TEST(span.end() > std::next(span.begin(), 3));
+    TRIAL_TEST(!(span.end() > std::next(span.begin(), 4)));
+
+    span.push_back(88);
+    TRIAL_TEST(!(span.begin() > span.begin()));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 3)));
+    TRIAL_TEST(!(span.begin() > std::next(span.begin(), 4)));
+
+    TRIAL_TEST(span.end() > span.begin());
+    TRIAL_TEST(span.end() > std::next(span.begin(), 1));
+    TRIAL_TEST(span.end() > std::next(span.begin(), 2));
+    TRIAL_TEST(span.end() > std::next(span.begin(), 3));
+    TRIAL_TEST(!(span.end() > std::next(span.begin(), 4)));
+}
+
+void greater_equal()
+{
+    int array[4] = {};
+    circular::span<int> span(array);
+    span = { 11, 22, 33, 44 };
+    TRIAL_TEST(span.begin() >= span.begin());
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 3)));
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 4)));
+
+    TRIAL_TEST(span.end() >= span.begin());
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 1));
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 2));
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 3));
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 4));
+
+    span.push_back(55);
+    TRIAL_TEST(span.begin() >= span.begin());
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 3)));
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 4)));
+
+    TRIAL_TEST(span.end() >= span.begin());
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 1));
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 2));
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 3));
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 4));
+
+    span.push_back(66);
+    TRIAL_TEST(span.begin() >= span.begin());
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 3)));
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 4)));
+
+    TRIAL_TEST(span.end() >= span.begin());
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 1));
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 2));
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 3));
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 4));
+
+    span.push_back(77);
+    TRIAL_TEST(span.begin() >= span.begin());
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 3)));
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 4)));
+
+    TRIAL_TEST(span.end() >= span.begin());
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 1));
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 2));
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 3));
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 4));
+
+    span.push_back(88);
+    TRIAL_TEST(span.begin() >= span.begin());
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 1)));
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 2)));
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 3)));
+    TRIAL_TEST(!(span.begin() >= std::next(span.begin(), 4)));
+
+    TRIAL_TEST(span.end() >= span.begin());
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 1));
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 2));
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 3));
+    TRIAL_TEST(span.end() >= std::next(span.begin(), 4));
+}
+
+void run()
+{
+    addition_assignment();
+    addition();
+    subtraction_assignment();
+    subtraction();
+    difference_partial();
+    difference_0();
+    difference_1();
+    difference_2();
+    difference_3();
+    index();
+    less();
+    less_equal();
+    greater();
+    greater_equal();
+}
+
+} // namespace operator_suite
 
 //-----------------------------------------------------------------------------
 
@@ -850,6 +1879,7 @@ int main()
     concept_suite::run();
     concept_const_suite::run();
     iterator_suite::run();
+    operator_suite::run();
     reverse_suite::run();
     inserter_suite::run();
     range_for_suite::run();

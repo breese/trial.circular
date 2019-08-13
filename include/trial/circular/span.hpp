@@ -59,7 +59,7 @@ private:
     template <typename U>
     struct basic_iterator
     {
-        using iterator_category = std::bidirectional_iterator_tag;
+        using iterator_category = std::random_access_iterator_tag;
         using element_type = U;
         using value_type = typename std::remove_cv<element_type>::type;
         using difference_type = std::ptrdiff_t;
@@ -94,6 +94,27 @@ private:
         iterator_type operator--(int) noexcept;
 
         TRIAL_CXX14_CONSTEXPR
+        iterator_type& operator+=(difference_type) noexcept;
+
+        constexpr iterator_type operator+(difference_type) const noexcept;
+
+        friend constexpr iterator_type operator+(difference_type amount,
+                                                 const iterator_type& other) noexcept
+        {
+            return other + amount;
+        }
+
+        TRIAL_CXX14_CONSTEXPR
+        iterator_type& operator-=(difference_type) noexcept;
+
+        constexpr iterator_type operator-(difference_type) const noexcept;
+
+        constexpr difference_type operator-(const iterator_type&) const noexcept;
+
+        TRIAL_CXX14_CONSTEXPR
+        reference operator[](difference_type) noexcept;
+
+        TRIAL_CXX14_CONSTEXPR
         pointer operator->() noexcept;
         TRIAL_CXX14_CONSTEXPR
         reference operator*() noexcept;
@@ -101,6 +122,10 @@ private:
 
         constexpr bool operator==(const iterator_type&) const noexcept;
         constexpr bool operator!=(const iterator_type&) const noexcept;
+        constexpr bool operator<(const iterator_type&) const noexcept;
+        constexpr bool operator<=(const iterator_type&) const noexcept;
+        constexpr bool operator>(const iterator_type&) const noexcept;
+        constexpr bool operator>=(const iterator_type&) const noexcept;
 
     private:
         friend class span<T, Extent>;
@@ -117,9 +142,9 @@ private:
     };
 
 public:
-    //! @brief Bidirectional iterator.
+    //! @brief Random Access iterator.
     //!
-    //! Type that models the BidirectionalIterator concept.
+    //! Type that models the RandomAccessIterator concept.
 
     using iterator = basic_iterator<element_type>;
     using const_iterator = basic_iterator<typename std::add_const<element_type>::type>;
