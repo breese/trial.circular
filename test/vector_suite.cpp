@@ -444,6 +444,46 @@ void api_remove_back_n()
     TRIAL_TEST_EQ(data.size(), 0);
 }
 
+void api_begin_end()
+{
+    circular::vector<int> data = { 11, 22, 33 };
+    {
+        std::vector<int> expect = { 11, 22, 33 };
+        TRIAL_TEST_ALL_EQ(data.begin(), data.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void api_cbegin_cend()
+{
+    circular::vector<int> data = { 11, 22, 33 };
+    {
+        std::vector<int> expect = { 11, 22, 33 };
+        TRIAL_TEST_ALL_EQ(data.cbegin(), data.cend(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void api_rbegin_rend()
+{
+    circular::vector<int> data = { 11, 22, 33 };
+    {
+        std::vector<int> expect = { 33, 22, 11 };
+        TRIAL_TEST_ALL_EQ(data.rbegin(), data.rend(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void api_crbegin_crend()
+{
+    circular::vector<int> data = { 11, 22, 33 };
+    {
+        std::vector<int> expect = { 33, 22, 11 };
+        TRIAL_TEST_ALL_EQ(data.crbegin(), data.crend(),
+                          expect.begin(), expect.end());
+    }
+}
+
 void run()
 {
     api_ctor_default();
@@ -489,6 +529,10 @@ void run()
     api_append_back_n();
     api_remove_back();
     api_remove_back_n();
+    api_begin_end();
+    api_cbegin_cend();
+    api_rbegin_rend();
+    api_crbegin_crend();
 }
 
 } // namespace api_suite

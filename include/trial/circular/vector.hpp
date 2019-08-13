@@ -39,12 +39,15 @@ class vector
     using span = circular::template span<T>;
 
 public:
+    using element_type = typename span::element_type;
     using value_type = typename span::value_type;
     using size_type = typename span::size_type;
     using reference = typename span::reference;
     using const_reference = typename span::const_reference;
     using iterator = typename span::iterator;
     using const_iterator = typename span::const_iterator;
+    using reverse_iterator = typename span::reverse_iterator;
+    using const_reverse_iterator = typename span::const_reverse_iterator;
     using allocator_type = Allocator;
 
     //! @brief Creates an empty circular vector with no capacity.
@@ -295,6 +298,22 @@ public:
     //! @brief Returns const iterator to ending of circular vector.
 
     using span::cend;
+
+    //! @brief Returns reverse iterator to beginning of circular array.
+
+    using span::rbegin;
+
+    //! @brief Returns reverse iterator to ending of circular array.
+
+    using span::rend;
+
+    //! @brief Returns const reverse iterator to beginning of circular array.
+
+    using span::crbegin;
+
+    //! @brief Returns const reverse iterator to ending of circular array.
+
+    using span::crend;
 };
 
 } // namespace circular
