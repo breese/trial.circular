@@ -629,7 +629,7 @@ template <typename ContiguousIterator>
 TRIAL_CXX14_CONSTEXPR
 span<T, E>::member_storage<T1, E1>::member_storage(ContiguousIterator begin,
                                                    ContiguousIterator end) noexcept
-    : data(&*begin),
+    : data(begin == end ? nullptr : &*begin),
       size(0),
       next(size_type(end - begin))
 {
@@ -644,7 +644,7 @@ span<T, E>::member_storage<T1, E1>::member_storage(ContiguousIterator begin,
                                                    ContiguousIterator end,
                                                    ContiguousIterator first,
                                                    size_type length) noexcept
-    : data(&*begin),
+    : data(begin == end ? nullptr : &*begin),
       size(length),
       next(size_type(first - begin) + length)
 {
@@ -739,7 +739,7 @@ template <typename T1>
 template <typename ContiguousIterator>
 constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(ContiguousIterator begin,
                                                                          ContiguousIterator end) noexcept
-    : data(&*begin),
+    : data(begin == end ? nullptr : &*begin),
       cap(size_type(end - begin)),
       size(0),
       next(size_type(end - begin))
@@ -753,7 +753,7 @@ constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(Contigu
                                                                          ContiguousIterator end,
                                                                          ContiguousIterator first,
                                                                          size_type length) noexcept
-    : data(&*begin),
+    : data(begin == end ? nullptr : &*begin),
       cap(size_type(end - begin)),
       size(length),
       next(size_type(first - begin) + length)
