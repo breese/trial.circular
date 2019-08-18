@@ -26,6 +26,15 @@ struct allocator
     using size_type = std::size_t;
     using pointer = T*;
 
+    allocator() noexcept = default;
+
+    template <typename U>
+    allocator(const allocator<U>& other)
+    {
+        count.allocate = other.count.allocate;
+        count.deallocate = other.count.deallocate;
+    }
+
     pointer allocate(size_type size)
     {
         count.allocate += size;
