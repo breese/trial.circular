@@ -2187,11 +2187,34 @@ namespace std_vector_suite
 void test_ctor_empty()
 {
     std::vector<int> array;
-    circular::span<int> span(array.begin(), array.end());
-    TRIAL_TEST(span.empty());
-    TRIAL_TEST(span.full());
-    TRIAL_TEST_EQ(span.size(), 0);
-    TRIAL_TEST_EQ(span.capacity(), 0);
+    {
+        circular::span<int> span(array.begin(), array.end());
+        TRIAL_TEST(span.empty());
+        TRIAL_TEST(span.full());
+        TRIAL_TEST_EQ(span.size(), 0);
+        TRIAL_TEST_EQ(span.capacity(), 0);
+    }
+    {
+        circular::span<int> span(array.begin(), array.end(), array.begin(), 0);
+        TRIAL_TEST(span.empty());
+        TRIAL_TEST(span.full());
+        TRIAL_TEST_EQ(span.size(), 0);
+        TRIAL_TEST_EQ(span.capacity(), 0);
+    }
+    {
+        circular::span<int, 0> span(array.begin(), array.end());
+        TRIAL_TEST(span.empty());
+        TRIAL_TEST(span.full());
+        TRIAL_TEST_EQ(span.size(), 0);
+        TRIAL_TEST_EQ(span.capacity(), 0);
+    }
+    {
+        circular::span<int, 0> span(array.begin(), array.end(), array.begin(), 0);
+        TRIAL_TEST(span.empty());
+        TRIAL_TEST(span.full());
+        TRIAL_TEST_EQ(span.size(), 0);
+        TRIAL_TEST_EQ(span.capacity(), 0);
+    }
 }
 
 void test_ctor()
