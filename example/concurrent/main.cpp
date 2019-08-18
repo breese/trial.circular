@@ -10,6 +10,7 @@
 
 #include <thread>
 #include <functional>
+#include <string> // std::stoul
 #include <iostream>
 #include "queue.hpp"
 
