@@ -631,7 +631,7 @@ span<T, E>::member_storage<T1, E1>::member_storage(ContiguousIterator begin,
                                                    ContiguousIterator end) noexcept
     : data(begin == end ? nullptr : &*begin),
       size(0),
-      next(size_type(end - begin))
+      next(0)
 {
     assert(size_type(end - begin) == capacity());
 }
@@ -742,7 +742,7 @@ constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(Contigu
     : data(begin == end ? nullptr : &*begin),
       cap(size_type(end - begin)),
       size(0),
-      next(size_type(end - begin))
+      next(0)
 {
 }
 
