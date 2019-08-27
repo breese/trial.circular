@@ -43,3 +43,4 @@ install(DIRECTORY ${TRIAL_CIRCULAR_ROOT}/include
 
 set_target_properties(trial-circular PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "${TRIAL_CIRCULAR_ROOT}/include")
+target_compile_features(trial-circular INTERFACE ${TRIAL_CIRCULAR_FEATURES})

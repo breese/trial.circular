@@ -17,7 +17,6 @@ function(trial_circular_add_test name)
   target_link_libraries(${name} trial-circular)
   add_test(${name} ${EXECUTABLE_OUTPUT_PATH}/${name})
   target_compile_options(${name} PRIVATE ${TRIAL_CIRCULAR_WARNING_FLAGS})
-  target_compile_features(${name} PRIVATE ${TRIAL_CIRCULAR_FEATURES})
 endfunction()
 
 trial_circular_add_test(span_suite span_suite.cpp)
