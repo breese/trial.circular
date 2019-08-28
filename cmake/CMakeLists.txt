@@ -19,9 +19,9 @@ set(LIBRARY_OUTPUT_PATH ${TRIAL_CIRCULAR_BUILD_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${TRIAL_CIRCULAR_BUILD_DIR}/bin)
 
 if (${CMAKE_VERSION} VERSION_LESS 3.8)
-  set(TRIAL_CIRCULAR_FEATURES cxx_auto_type PARENT_SCOPE)
+  set(TRIAL_CIRCULAR_FEATURES cxx_auto_type)
 else()
-  set(TRIAL_CIRCULAR_FEATURES cxx_std_11 PARENT_SCOPE)
+  set(TRIAL_CIRCULAR_FEATURES cxx_std_11)
 endif()
 
 if (MSVC)
@@ -36,11 +36,11 @@ endif()
 
 add_library(trial-circular INTERFACE)
 
+set_target_properties(trial-circular PROPERTIES
+  INTERFACE_INCLUDE_DIRECTORIES "${TRIAL_CIRCULAR_ROOT}/include"
+  INTERFACE_COMPILE_FEATURES "${TRIAL_CIRCULAR_FEATURES}")
+
 install(DIRECTORY ${TRIAL_CIRCULAR_ROOT}/include
   DESTINATION .
   FILES_MATCHING PATTERN "*.[hi]pp"
   )
-
-set_target_properties(trial-circular PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "${TRIAL_CIRCULAR_ROOT}/include")
-target_compile_features(trial-circular INTERFACE ${TRIAL_CIRCULAR_FEATURES})
