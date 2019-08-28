@@ -16,6 +16,13 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
 add_subdirectory(cmake)
+
+if (MSVC)
+  target_compile_options(trial-circular INTERFACE /W3)
+else()
+  target_compile_options(trial-circular INTERFACE -Wall -Wextra -pedantic -Werror=return-type)
+endif()
+
 add_subdirectory(example)
 add_subdirectory(doc EXCLUDE_FROM_ALL)
 

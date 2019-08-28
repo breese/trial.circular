@@ -18,16 +18,11 @@ endif()
 set(LIBRARY_OUTPUT_PATH ${TRIAL_CIRCULAR_BUILD_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${TRIAL_CIRCULAR_BUILD_DIR}/bin)
 
+# Require at least C++11
 if (${CMAKE_VERSION} VERSION_LESS 3.8)
   set(TRIAL_CIRCULAR_FEATURES cxx_auto_type)
 else()
   set(TRIAL_CIRCULAR_FEATURES cxx_std_11)
-endif()
-
-if (MSVC)
-  set(TRIAL_CIRCULAR_WARNING_FLAGS /W3 PARENT_SCOPE)
-else()
-  set(TRIAL_CIRCULAR_WARNING_FLAGS -Wall -Wextra -pedantic -Werror=return-type PARENT_SCOPE)
 endif()
 
 ###############################################################################
