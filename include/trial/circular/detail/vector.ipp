@@ -61,7 +61,7 @@ vector<T, A>::vector(size_type capacity)
 template <typename T, typename A>
 vector<T, A>::vector(size_type capacity,
                      const allocator_type& allocator)
-    : storage(capacity, allocator),
+    : storage(capacity, T{}, allocator),
       span(storage::begin(), storage::end())
 {
 }
@@ -77,7 +77,7 @@ vector<T, A>::vector(std::initializer_list<value_type> input) noexcept(std::is_n
 template <typename T, typename A>
 vector<T, A>::vector(std::initializer_list<value_type> input,
                      const allocator_type& allocator) noexcept(std::is_nothrow_move_assignable<value_type>::value)
-    : storage(input.size(), allocator),
+    : storage(input.size(), T{}, allocator),
       span(storage::begin(), storage::end())
 {
     span::operator=(std::move(input));
