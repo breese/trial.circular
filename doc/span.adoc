@@ -324,8 +324,11 @@ wrap around the underlying storage. Thus, a circular span cannot be constructed
 from another circular span.
 
 Instead `span<T>::segment` and `span<T>::const_segment` are used to represent
-subspans. These types have `data()` and `size()` member functions. Beyond that,
-the types are unspecified.
+subspans. These types models the _ContiguousRange_ and _SizedRange_ requirements.
+This means that they have both `begin()` and `end()` returning _ContiguousIterator_
+and `data()` and `size()` to access the elements in the subspan.
+
+The storage is not owned by the segment.
 
 There are four member functions that returns a segment:
 
@@ -398,8 +401,8 @@ specified `Extent` template argument. Dynamic extent is used by default.
 | `const_iterator` | _RandomAccessIterator_ with `const value_type`
 | `reverse_iterator` | `std::reverse_iterator<iterator>`
 | `const_reverse_iterator` | `std::reverse_iterator<const_iterator>`
-| `segment` | Contiguous view of `value_type`
-| `const_segment` | Contiguous view of `const value_type`
+| `segment` | _ContiugousRange_ and _SizedRange_ with `value_type`
+| `const_segment` | _ContiguousRange_ and _SizedRange_ with `const value_type`
 |===
 
 === Member functions

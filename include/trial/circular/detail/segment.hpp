@@ -28,6 +28,8 @@ public:
     using size_type = std::size_t;
     using pointer = T*;
     using const_pointer = const T*;
+    using iterator = pointer;
+    using const_iterator = const_pointer;
 
     constexpr segment()
         : member{ nullptr, size_type(0) }
@@ -44,7 +46,8 @@ public:
     {
     }
 
-    TRIAL_CXX14_CONSTEXPR pointer data() noexcept
+    TRIAL_CXX14_CONSTEXPR
+    pointer data() noexcept
     {
         return member.data;
     }
@@ -57,6 +60,38 @@ public:
     constexpr size_type size() const noexcept
     {
         return member.size;
+    }
+
+    TRIAL_CXX14_CONSTEXPR
+    iterator begin() noexcept
+    {
+        return member.data;
+    }
+
+    constexpr const_iterator begin() const noexcept
+    {
+        return member.data;
+    }
+
+    constexpr const_iterator cbegin() const noexcept
+    {
+        return member.data;
+    }
+
+    TRIAL_CXX14_CONSTEXPR
+    iterator end() noexcept
+    {
+        return member.data + member.size;
+    }
+
+    constexpr const_iterator end() const noexcept
+    {
+        return member.data + member.size;
+    }
+
+    constexpr const_iterator cend() const noexcept
+    {
+        return member.data + member.size;
     }
 
 private:
