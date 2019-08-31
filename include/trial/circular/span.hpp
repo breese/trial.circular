@@ -142,18 +142,18 @@ private:
     };
 
 public:
-    //! @brief Random Access iterator.
+    //! @brief Random access iterator.
     //!
-    //! Type that models the RandomAccessIterator concept.
+    //! Type that models the RandomAccessIterator requirements.
 
     using iterator = basic_iterator<element_type>;
     using const_iterator = basic_iterator<typename std::add_const<element_type>::type>;
     using reverse_iterator = std::reverse_iterator<iterator>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
-    //! @brief Bidirectional segment.
+    //! @brief Contiguous segment.
     //!
-    //! Unspecified type that models the BidirectionalRange concept.
+    //! Unspecified type that models the ContiguousRange and SizedRange requirements.
 
     using segment = circular::detail::segment<value_type>;
     using const_segment = circular::detail::segment<const value_type>;
