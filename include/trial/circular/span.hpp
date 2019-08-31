@@ -44,6 +44,9 @@ enum : std::size_t { dynamic_extent = std::numeric_limits<std::size_t>::max() };
 template <typename T, std::size_t Extent = dynamic_extent>
 class span
 {
+    static_assert(Extent == dynamic_extent || Extent < std::numeric_limits<std::size_t>::max() / 2,
+                  "Extent is too large");
+
 public:
     using element_type = T;
     using value_type = typename std::remove_cv<element_type>::type;
