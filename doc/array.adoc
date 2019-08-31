@@ -160,8 +160,8 @@ are inserted or destroyed when the circular array is destroyed.
 | `const_iterator` | _RandomAccessIterator_ with `const value_type`
 | `reverse_iterator` | `std::reverse_iterator<iterator>`
 | `const_reverse_iterator` | `std::reverse_iterator<const_iterator>`
-| `segment` | _RandomAccessRange_ with `value_type`
-| `const_segment` | _RandomAccessRange_ with `const value_type`
+| `segment` | Contiguous view of `value_type`
+| `const_segment` | Contiguous view of `const value_type`
 |===
 
 === Member functions
@@ -506,6 +506,7 @@ are inserted or destroyed when the circular array is destroyed.
  +
  +
  An empty segment is returned if the circular array is empty.
+ An empty segment has `data() == nullptr` and `size() == 0`.
  +
  +
  _Expects:_ `capacity() > 0`
@@ -540,6 +541,7 @@ are inserted or destroyed when the circular array is destroyed.
  +
  +
  An empty segment is returned if the circular array is full.
+ An empty segment has `data() == nullptr` and `size() == 0`.
  +
  +
  _Expects:_ `capacity() > 0`

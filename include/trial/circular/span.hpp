@@ -17,7 +17,7 @@
 #include <limits>
 #include <trial/circular/detail/config.hpp>
 #include <trial/circular/detail/type_traits.hpp>
-#include <trial/circular/detail/iterator_range.hpp>
+#include <trial/circular/detail/segment.hpp>
 
 namespace trial
 {
@@ -155,8 +155,8 @@ public:
     //!
     //! Unspecified type that models the BidirectionalRange concept.
 
-    using segment = circular::detail::iterator_range<iterator>;
-    using const_segment = circular::detail::iterator_range<const_iterator>;
+    using segment = circular::detail::segment<value_type>;
+    using const_segment = circular::detail::segment<const value_type>;
 
     //! @brief Creates empty circular span.
     //!

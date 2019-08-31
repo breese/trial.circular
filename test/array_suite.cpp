@@ -144,16 +144,14 @@ void api_first_segment()
 {
     circular::array<int, 4> data = { 11, 22, 33 };
     auto segment = data.first_segment();
-    TRIAL_TEST(segment.begin() == data.begin());
-    TRIAL_TEST(segment.end() == data.end());
+    TRIAL_TEST_EQ(segment.size(), 3);
 }
 
 void api_last_segment()
 {
     circular::array<int, 4> data = { 11, 22, 33 };
     auto segment = data.last_segment();
-    TRIAL_TEST(segment.begin() == data.end());
-    TRIAL_TEST(segment.end() == data.end());
+    TRIAL_TEST_EQ(segment.size(), 0);
 }
 
 void api_operator_index()

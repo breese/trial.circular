@@ -409,24 +409,24 @@ TRIAL_CXX14_CONSTEXPR
 auto span<T, E>::first_segment() noexcept -> segment
 {
     return (empty())
-        ? detail::make_iterator_range(end(), end())
+        ? segment()
         : (wraparound()
-           ? detail::make_iterator_range(iterator(this, front_index()),
-                                         iterator(this, capacity()))
-           : detail::make_iterator_range(iterator(this, front_index()),
-                                         end()));
+           ? segment(member.data + front_index(),
+                     member.data + capacity())
+           : segment(member.data + index(front_index()),
+                     member.data + index(back_index()) + 1));
 }
 
 template <typename T, std::size_t E>
 constexpr auto span<T, E>::first_segment() const noexcept -> const_segment
 {
     return (empty())
-        ? detail::make_iterator_range(cend(), cend())
+        ? const_segment()
         : (wraparound()
-           ? detail::make_iterator_range(const_iterator(this, front_index()),
-                                         const_iterator(this, capacity()))
-           : detail::make_iterator_range(const_iterator(this, front_index()),
-                                         cend()));
+           ? const_segment(member.data + front_index(),
+                           member.data + capacity())
+           : const_segment(member.data + index(front_index()),
+                           member.data + index(back_index()) + 1));
 }
 
 template <typename T, std::size_t E>
@@ -434,18 +434,18 @@ TRIAL_CXX14_CONSTEXPR
 auto span<T, E>::last_segment() noexcept -> segment
 {
     return wraparound() && (index(member.next) < size())
-        ? detail::make_iterator_range(iterator(this, 0),
-                                      iterator(this, index(member.next)))
-        : detail::make_iterator_range(end(), end());
+        ? segment(member.data,
+                  member.data + index(back_index()) + 1)
+        : segment();
 }
 
 template <typename T, std::size_t E>
 constexpr auto span<T, E>::last_segment() const noexcept -> const_segment
 {
     return wraparound() && (index(member.next) < size())
-        ? detail::make_iterator_range(const_iterator(this, 0),
-                                      const_iterator(this, index(member.next)))
-        : detail::make_iterator_range(cend(), cend());
+        ? const_segment(member.data,
+                        member.data + index(back_index()) + 1)
+        : const_segment();
 }
 
 template <typename T, std::size_t E>
@@ -453,18 +453,21 @@ TRIAL_CXX14_CONSTEXPR
 auto span<T, E>::first_unused_segment() noexcept -> segment
 {
     return (full())
-        ? detail::make_iterator_range(end(), end())
-        : detail::make_iterator_range(iterator(this, member.next - capacity()),
-                                      iterator(this, std::min(front_index(), capacity())));
+        ? segment()
+        : segment(member.data + member.next - capacity(),
+                  member.data + std::min(front_index(), capacity()));
 }
 
 template <typename T, std::size_t E>
 constexpr auto span<T, E>::first_unused_segment() const noexcept -> const_segment
 {
     return (full())
-        ? detail::make_iterator_range(cend(), cend())
-        : detail::make_iterator_range(const_iterator(this, member.next - capacity()),
-                                      const_iterator(this, std::min(front_index(), capacity())));
+        ? const_segment()
+        : (wraparound()
+           ? const_segment(member.data + back_index() + 1,
+                           member.data + capacity())
+           : const_segment(member.data + back_index() + 1,
+                           member.data + capacity()));
 }
 
 template <typename T, std::size_t E>
@@ -472,18 +475,18 @@ TRIAL_CXX14_CONSTEXPR
 auto span<T, E>::last_unused_segment() noexcept -> segment
 {
     return (full() || !unused_wraparound())
-        ? detail::make_iterator_range(end(), end())
-        : detail::make_iterator_range(iterator(this, 0),
-                                      iterator(this, index(front_index())));
+        ? segment()
+        : segment(member.data,
+                  member.data + index(front_index()));
 }
 
 template <typename T, std::size_t E>
 constexpr auto span<T, E>::last_unused_segment() const noexcept -> const_segment
 {
     return (full() || !unused_wraparound())
-        ? detail::make_iterator_range(cend(), cend())
-        : detail::make_iterator_range(const_iterator(this, 0),
-                                      const_iterator(this, index(front_index())));
+        ? const_segment()
+        : const_segment(member.data,
+                        member.data + index(front_index()));
 }
 
 //-----------------------------------------------------------------------------

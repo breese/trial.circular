@@ -1805,67 +1805,11 @@ void overfull()
     TRIAL_TEST_EQ(sum, 22 + 33 + 44 + 55);
 }
 
-void segment_empty()
-{
-    int array[4] = {};
-    circular::span<int> span(array);
-    int sum = 0;
-    for (auto&& element : span.first_segment())
-    {
-        sum += element;
-    }
-    TRIAL_TEST_EQ(sum, 0);
-    for (auto&& element : span.last_segment())
-    {
-        sum += element;
-    }
-    TRIAL_TEST_EQ(sum, 0);
-}
-
-void segment_full()
-{
-    int array[4] = {};
-    circular::span<int> span(array);
-    span = { 11, 22, 33, 44 };
-    int sum = 0;
-    for (auto&& element : span.first_segment())
-    {
-        sum += element;
-    }
-    TRIAL_TEST_EQ(sum, 11 + 22 + 33 + 44);
-    for (auto&& element : span.last_segment())
-    {
-        sum += element;
-    }
-    TRIAL_TEST_EQ(sum, 11 + 22 + 33 + 44);
-}
-
-void segment_overfull()
-{
-    int array[4] = {};
-    circular::span<int> span(array);
-    span = { 11, 22, 33, 44, 55 };
-    int sum = 0;
-    for (auto&& element : span.first_segment())
-    {
-        sum += element;
-    }
-    TRIAL_TEST_EQ(sum, 22 + 33 + 44);
-    for (auto&& element : span.last_segment())
-    {
-        sum += element;
-    }
-    TRIAL_TEST_EQ(sum, 22 + 33 + 44 + 55);
-}
-
 void run()
 {
     empty();
     full();
     overfull();
-    segment_empty();
-    segment_full();
-    segment_overfull();
 }
 
 } // namespace range_for_suite

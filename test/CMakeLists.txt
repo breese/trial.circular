@@ -22,6 +22,7 @@ trial_circular_add_test(span_suite span_suite.cpp)
 trial_circular_add_test(span_algorithm_suite span_algorithm_suite.cpp)
 trial_circular_add_test(span_iterator_suite span_iterator_suite.cpp)
 trial_circular_add_test(span_numeric_suite span_numeric_suite.cpp)
+trial_circular_add_test(span_segment_suite span_segment_suite.cpp)
 
 trial_circular_add_test(array_suite array_suite.cpp)
 trial_circular_add_test(array_numeric_suite array_numeric_suite.cpp)
