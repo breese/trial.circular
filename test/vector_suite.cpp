@@ -389,19 +389,19 @@ void api_pop_back()
     TRIAL_TEST_EQ(data.size(), 1);
 }
 
-void api_append_front()
+void api_expand_front()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
-    data.append_front();
+    data.expand_front();
     TRIAL_TEST_EQ(data.size(), 2); // capacity
 }
 
-void api_append_front_n()
+void api_expand_front_n()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
-    data.append_front(2);
+    data.expand_front(2);
     TRIAL_TEST_EQ(data.size(), 2); // capacity
 }
 
@@ -421,19 +421,19 @@ void api_remove_front_n()
     TRIAL_TEST_EQ(data.size(), 0);
 }
 
-void api_append_back()
+void api_expand_back()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
-    data.append_back();
+    data.expand_back();
     TRIAL_TEST_EQ(data.size(), 2); // capacity
 }
 
-void api_append_back_n()
+void api_expand_back_n()
 {
     circular::vector<int> data = { 11, 22 };
     TRIAL_TEST_EQ(data.size(), 2);
-    data.append_back(2);
+    data.expand_back(2);
     TRIAL_TEST_EQ(data.size(), 2); // capacity
 }
 
@@ -530,12 +530,12 @@ void run()
     api_push_back();
     api_pop_front();
     api_pop_back();
-    api_append_front();
-    api_append_front_n();
+    api_expand_front();
+    api_expand_front_n();
     api_remove_front();
     api_remove_front_n();
-    api_append_back();
-    api_append_back_n();
+    api_expand_back();
+    api_expand_back_n();
     api_remove_back();
     api_remove_back_n();
     api_begin_end();

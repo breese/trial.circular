@@ -24,12 +24,12 @@ using namespace trial;
 namespace copy_suite
 {
 
-void append_copy()
+void expand_copy()
 {
     int array[4] = {};
     circular::span<int> span(array);
     std::vector<int> input = { 11, 22, 33, 44 };
-    span.append_back(span.capacity());
+    span.expand_back(span.capacity());
     {
         std::vector<int> expect = { 0, 0, 0, 0 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -43,12 +43,12 @@ void append_copy()
     }
 }
 
-void append_copy_if()
+void expand_copy_if()
 {
     int array[4] = {};
     circular::span<int> span(array);
     std::vector<int> input = { 11, 22, 33, 44 };
-    span.append_back(span.capacity());
+    span.expand_back(span.capacity());
     {
         std::vector<int> expect = { 0, 0, 0, 0 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -62,12 +62,12 @@ void append_copy_if()
     }
 }
 
-void append_copy_n()
+void expand_copy_n()
 {
     int array[4] = {};
     circular::span<int> span(array);
     std::vector<int> input = { 11, 22, 33, 44, 55 };
-    span.append_back(span.capacity());
+    span.expand_back(span.capacity());
     {
         std::vector<int> expect = { 0, 0, 0, 0 };
         TRIAL_TEST_ALL_EQ(span.begin(), span.end(),
@@ -204,9 +204,9 @@ void unique_copy()
 
 void run()
 {
-    append_copy();
-    append_copy_if();
-    append_copy_n();
+    expand_copy();
+    expand_copy_if();
+    expand_copy_n();
     back_inserter_copy();
     back_inserter_copy_if();
     back_inserter_copy_n();
@@ -254,11 +254,11 @@ void run()
 namespace fill_suite
 {
 
-void append_fill_n_full()
+void expand_fill_n_full()
 {
     int array[4] = {};
     circular::span<int> span(array);
-    span.append_back(span.capacity());
+    span.expand_back(span.capacity());
     std::fill_n(span.begin(), span.capacity(), 55);
     {
         std::vector<int> expect = { 55, 55, 55, 55 };
@@ -282,7 +282,7 @@ void back_inserter_fill_n_full()
 
 void run()
 {
-    append_fill_n_full();
+    expand_fill_n_full();
     back_inserter_fill_n_full();
 }
 

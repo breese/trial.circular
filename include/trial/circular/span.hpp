@@ -394,7 +394,7 @@ public:
     //! @pre count <= capacity()
 
     TRIAL_CXX14_CONSTEXPR
-    void append_front(size_type count = 1U) noexcept;
+    void expand_front(size_type count = 1U) noexcept;
 
     //! @brief Inserts unspecified elements at the end of the span.
     //!
@@ -404,7 +404,7 @@ public:
     //! @sa increment_front
 
     TRIAL_CXX14_CONSTEXPR
-    void append_back(size_type count = 1U) noexcept;
+    void expand_back(size_type count = 1U) noexcept;
 
     //! @brief Removes elements from beginning of span.
     //!

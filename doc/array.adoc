@@ -382,10 +382,10 @@ are inserted or destroyed when the circular array is destroyed.
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveConstructible_.
-| `constexpr{wj}footnote:constexpr11[] void append_front() noexcept`
+| `constexpr{wj}footnote:constexpr11[] void expand_front() noexcept`
  +
  +
- `constexpr{wj}footnote:constexpr11[] void append_front(size_type count) noexcept`
+ `constexpr{wj}footnote:constexpr11[] void expand_front(size_type count) noexcept`
  | Inserts the given number of unspecified elements at the beginning of the circular array.
  +
  +
@@ -404,10 +404,10 @@ are inserted or destroyed when the circular array is destroyed.
  +
  +
  _Ensures:_ `size() >= count`
-|  `constexpr{wj}footnote:constexpr11[] void append_back() noexcept`
+|  `constexpr{wj}footnote:constexpr11[] void expand_back() noexcept`
  +
  +
- `constexpr{wj}footnote:constexpr11[] void append_back(size_type count) noexcept`
+ `constexpr{wj}footnote:constexpr11[] void expand_back(size_type count) noexcept`
  | Inserts the given number of unspecified elements at the end of the circular array.
  +
  +

@@ -269,11 +269,11 @@ public:
 
     //! @brief Inserts uninitialized element at beginning of circular vector.
 
-    using span::append_front;
+    using span::expand_front;
 
     //! @brief Inserts uninitialized element at end of circular vector.
 
-    using span::append_back;
+    using span::expand_back;
 
     //! @brief Erases element from beginning of circular vector.
 

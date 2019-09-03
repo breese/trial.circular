@@ -159,10 +159,10 @@ public:
     using span::pop_back;
 
     //! @brief Inserts unspecified elements at beginning of circular array.
-    using span::append_front;
+    using span::expand_front;
 
     //! @brief Inserts unspecified elements at end of circular array.
-    using span::append_back;
+    using span::expand_back;
 
     //! @brief Removes elements from beginning of circular array.
     using span::remove_front;
