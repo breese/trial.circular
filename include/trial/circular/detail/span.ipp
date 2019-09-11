@@ -177,7 +177,7 @@ void span<T, E>::assign(std::initializer_list<value_type> input) noexcept(std::i
     static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
 
     clear();
-    for (const auto& value : input)
+    for (auto&& value : input)
     {
         push_back(std::move(value));
     }
