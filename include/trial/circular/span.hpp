@@ -188,7 +188,7 @@ public:
 
     //! @brief Creates circular span by moving.
     //!
-    //! State of moved-from span is valid but undefined.
+    //! State of moved-from span is valid but unspecified.
 
     constexpr span(span&&) noexcept = default;
 
@@ -199,7 +199,7 @@ public:
 
     //! @brief Recreates circular span by moving.
     //!
-    //! State of moved-from span is valid but undefined.
+    //! State of moved-from span is valid but unspecified.
 
     TRIAL_CXX14_CONSTEXPR
     span& operator=(span&&) noexcept = default;

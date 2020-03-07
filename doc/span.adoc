@@ -428,7 +428,7 @@ specified `Extent` template argument. Dynamic extent is used by default.
 | `constexpr span(span&& other) noexcept` | Creates span by moving.
  +
  +
- The state of the moved-from span is valid but undefined.
+ The state of the moved-from span is valid but unspecified.
  +
  +
  _Ensures:_ `capacity() == other.capacity()`
@@ -496,7 +496,7 @@ specified `Extent` template argument. Dynamic extent is used by default.
 | `constexpr{wj}footnote:constexpr11[] span& operator=(span&&) noexcept` | Recreates span by moving.
  +
  +
- The state of the moved-from span is valid but undefined.
+ The state of the moved-from span is valid but unspecified.
  +
  +
  _Ensures:_ `capacity() == other.capacity()`
