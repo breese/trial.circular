@@ -29,3 +29,5 @@ trial_circular_add_test(array_numeric_suite array_numeric_suite.cpp)
 
 trial_circular_add_test(vector_suite vector_suite.cpp)
 trial_circular_add_test(vector_algorithm_suite vector_algorithm_suite.cpp)
+
+trial_circular_add_test(deque_suite deque_suite.cpp)

@@ -9,6 +9,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <array>
+#include <string>
 #include <vector>
 #include <trial/detail/lightweight_test.hpp>
 #include <trial/circular/span.hpp>
@@ -3867,6 +3868,60 @@ void run()
 } // namespace normalize_suite
 
 //-----------------------------------------------------------------------------
+
+namespace string_suite
+{
+
+void string_ctor_default()
+{
+    circular::span<std::string> span;
+    TRIAL_TEST(span.empty());
+    TRIAL_TEST(span.full());
+    TRIAL_TEST_EQ(span.size(), 0);
+    TRIAL_TEST_EQ(span.capacity(), 0);
+}
+
+void string_ctor_copy()
+{
+    std::string array[4] = {};
+    circular::span<std::string> span(array);
+    TRIAL_TEST(span.empty());
+    TRIAL_TEST(!span.full());
+    TRIAL_TEST_EQ(span.size(), 0);
+    TRIAL_TEST_EQ(span.capacity(), 4);
+    circular::span<std::string> clone(span);
+    TRIAL_TEST(clone.empty());
+    TRIAL_TEST(!clone.full());
+    TRIAL_TEST_EQ(clone.size(), 0);
+    TRIAL_TEST_EQ(clone.capacity(), 4);
+}
+
+void string_ctor_copy_convertible()
+{
+    std::string array[4] = {};
+    circular::span<std::string> span(array);
+    TRIAL_TEST(span.empty());
+    TRIAL_TEST(!span.full());
+    TRIAL_TEST_EQ(span.size(), 0);
+    TRIAL_TEST_EQ(span.capacity(), 4);
+    circular::span<const std::string> clone(span);
+    TRIAL_TEST(clone.empty());
+    TRIAL_TEST(!clone.full());
+    TRIAL_TEST_EQ(clone.size(), 0);
+    TRIAL_TEST_EQ(clone.capacity(), 4);
+}
+
+void run()
+{
+    // Non-trivial T
+    string_ctor_default();
+    string_ctor_copy();
+    string_ctor_copy_convertible();
+}
+
+} // namespace string_suite
+
+//-----------------------------------------------------------------------------
 // main
 //-----------------------------------------------------------------------------
 
@@ -3883,6 +3938,7 @@ int main()
     window_size_suite::run();
     expand_suite::run();
     normalize_suite::run();
+    string_suite::run();
  
     return boost::report_errors();
 }

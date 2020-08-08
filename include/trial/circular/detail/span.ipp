@@ -66,6 +66,12 @@ constexpr span<T, E>::span(const span& other, pointer data) noexcept
 }
 
 template <typename T, std::size_t E>
+constexpr span<T, E>::span(pointer data, size_type capacity) noexcept
+: member(data, capacity, 0, 0)
+{
+}
+
+template <typename T, std::size_t E>
 TRIAL_CXX14_CONSTEXPR
 void span<T, E>::assign(const span& other, pointer data) noexcept
 {
@@ -151,6 +157,13 @@ template <typename T, std::size_t E>
 constexpr auto span<T, E>::operator[](size_type position) const noexcept -> const_reference
 {
     return at(front_index() + position);
+}
+
+template <typename T, std::size_t E>
+TRIAL_CXX14_CONSTEXPR
+auto span<T, E>::data() noexcept -> pointer
+{
+    return member.data;
 }
 
 template <typename T, std::size_t E>
@@ -929,18 +942,9 @@ auto span<T, E>::basic_iterator<U>::operator-> () noexcept -> pointer
 template <typename T, std::size_t E>
 template <typename U>
 TRIAL_CXX14_CONSTEXPR
-auto span<T, E>::basic_iterator<U>::operator*() noexcept -> reference
+auto span<T, E>::basic_iterator<U>::operator*() const noexcept -> reference
 {
     assert(parent);
-
-    return parent->at(current);
-}
-
-template <typename T, std::size_t E>
-template <typename U>
-constexpr auto span<T, E>::basic_iterator<U>::operator*() const noexcept -> const_reference
-{
-    TRIAL_CIRCULAR_CXX14(assert(parent));
 
     return parent->at(current);
 }

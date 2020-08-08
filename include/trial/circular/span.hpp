@@ -120,8 +120,7 @@ private:
         TRIAL_CXX14_CONSTEXPR
         pointer operator->() noexcept;
         TRIAL_CXX14_CONSTEXPR
-        reference operator*() noexcept;
-        constexpr const_reference operator*() const noexcept;
+        reference operator*() const noexcept;
 
         constexpr bool operator==(const iterator_type&) const noexcept;
         constexpr bool operator!=(const iterator_type&) const noexcept;
@@ -304,6 +303,11 @@ public:
     //! @pre size() > position
 
     constexpr const_reference operator[](size_type position) const noexcept;
+
+    //! @brief Returns beginning of underlying storage.
+
+    TRIAL_CXX14_CONSTEXPR
+    pointer data() noexcept;
 
     //! @brief Clears the span.
     //!
@@ -574,6 +578,10 @@ protected:
     //! The pointer parameter overrides the pointer of the input span.
 
     constexpr span(const span&, pointer) noexcept;
+
+    //! @brief Creates circular span from pointer and size.
+
+    constexpr span(pointer, size_type capacity) noexcept;
 
     //! @brief Recreates circular span by copying.
     //!
