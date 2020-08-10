@@ -19,7 +19,7 @@ namespace circular
 template <typename T, typename A>
 deque<T, A>::deque(size_type replacement_capacity,
                    const A& alloc)
-    : allocator_type(alloc),
+    : allocator_base(detail::empty_init_t{}, alloc),
       span{ allocate(get_allocator(), replacement_capacity), replacement_capacity }
 {
     member.threshold = replacement_capacity;
@@ -27,7 +27,7 @@ deque<T, A>::deque(size_type replacement_capacity,
 
 template <typename T, typename A>
 deque<T, A>::deque(const A& alloc) noexcept(std::is_nothrow_copy_constructible<A>::value)
-    : allocator_type(alloc),
+    : allocator_base(detail::empty_init_t{}, alloc),
       span { nullptr, 0 }
 {
 }
@@ -120,7 +120,7 @@ void deque<T, A>::reserve(size_type replacement_capacity)
 template <typename T, typename A>
 auto deque<T, A>::get_allocator() noexcept -> allocator_type&
 {
-    return static_cast<allocator_type&>(*this);
+    return allocator_base::get();
 }
 
 template <typename T, typename A>

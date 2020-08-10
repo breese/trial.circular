@@ -20,6 +20,25 @@ namespace circular
 namespace detail
 {
 
+//-----------------------------------------------------------------------------
+// is_final
+//-----------------------------------------------------------------------------
+
+#if __cpp_lib_is_final >= 201402L
+
+using std::is_final;
+
+#else
+
+template <typename T>
+struct is_final : std::false_type {};
+
+#endif
+
+//-----------------------------------------------------------------------------
+// is_nothrow_swappable
+//-----------------------------------------------------------------------------
+
 #if __cpp_lib_is_swappable >= 201603L
 
 template <typename T>

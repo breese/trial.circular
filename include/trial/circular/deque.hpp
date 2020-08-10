@@ -13,6 +13,7 @@
 
 #include <memory>
 #include <type_traits>
+#include <trial/circular/detail/empty_value.hpp>
 #include <trial/circular/span.hpp>
 
 namespace trial
@@ -29,10 +30,11 @@ namespace circular
 
 template <typename T, typename Allocator = std::allocator<T>>
 class deque
-    : private Allocator, // FIXME: empty_value<Allocator>
+    : private detail::empty_value<Allocator>,
       private circular::span<T>
 {
     using span = circular::template span<T>;
+    using allocator_base = detail::empty_value<Allocator>;
 
 public:
     using element_type = typename span::element_type;
