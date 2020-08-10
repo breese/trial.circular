@@ -34,6 +34,29 @@ void api_ctor_capacity()
     TRIAL_TEST_EQ(data.capacity(), 64);
 }
 
+void api_ctor_move()
+{
+    circular::deque<int> data(64);
+    TRIAL_TEST_EQ(data.size(), 0);
+    TRIAL_TEST_EQ(data.capacity(), 64);
+    circular::deque<int> clone(std::move(data));
+    TRIAL_TEST_EQ(clone.size(), 0);
+    TRIAL_TEST_EQ(clone.capacity(), 64);
+}
+
+void api_ctor_move_assign()
+{
+    circular::deque<int> data(64);
+    TRIAL_TEST_EQ(data.size(), 0);
+    TRIAL_TEST_EQ(data.capacity(), 64);
+    circular::deque<int> clone;
+    TRIAL_TEST_EQ(clone.size(), 0);
+    TRIAL_TEST_EQ(clone.capacity(), 0);
+    clone = std::move(data);
+    TRIAL_TEST_EQ(clone.size(), 0);
+    TRIAL_TEST_EQ(clone.capacity(), 64);
+}
+
 void api_clear()
 {
     circular::deque<int> data(64);
@@ -117,6 +140,8 @@ void run()
 {
     api_ctor_default();
     api_ctor_capacity();
+    api_ctor_move();
+    api_ctor_move_assign();
     api_clear();
     api_emplace_front();
     api_emplace_back();

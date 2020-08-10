@@ -39,6 +39,8 @@ public:
     using value_type = typename span::value_type;
     using size_type = typename span::size_type;
     using allocator_type = typename std::allocator_traits<Allocator>::template rebind_alloc<element_type>;
+    using iterator = typename span::iterator;
+    using const_iterator = typename span::const_iterator;
 
     //! @brief Creates an empty circular queue.
     //!
@@ -54,11 +56,17 @@ public:
 
     explicit deque(size_type capacity);
 
-    // FIXME: const allocator_type& argument
-    // FIXME: copy/move etc.
-    // FIXME: assign, operator=
+    //! @brief Creates circular queue by moving.
+
+    deque(deque&&) noexcept(std::is_nothrow_move_constructible<allocator_type>::value) = default;
+
+    //! @brief Destroys circular queue.
 
     ~deque();
+
+    //! @brief Recreates circular queue by moving.
+
+    deque& operator=(deque&&) noexcept(std::is_nothrow_move_assignable<allocator_type>::value) = default;
 
     //! @brief Checks if circular queue is empty.
 
