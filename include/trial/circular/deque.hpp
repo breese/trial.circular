@@ -42,19 +42,29 @@ public:
     using iterator = typename span::iterator;
     using const_iterator = typename span::const_iterator;
 
-    //! @brief Creates an empty circular queue.
+    //! @brief Creates an empty circular queue with default allocator.
     //!
     //! @post capacity() == 0
     //! @post size() == 0
 
     deque() noexcept = default;
 
+    //! @brief Creates an empty circular queue with given allocator.
+    //!
+    //! @post capacity() == 0
+    //! @post size() == 0
+
+    explicit deque(const Allocator&) noexcept(std::is_nothrow_copy_constructible<Allocator>::value);
+
     //! @brief Creates an empty circular queue with capacity.
+    //!
+    //! Notice that this constructor only sets the capacity and thus deviates
+    //! from std::deque<T>.
     //!
     //! @post capacity() == capacity
     //! @post size() == 0
 
-    explicit deque(size_type capacity);
+    explicit deque(size_type capacity, const Allocator& alloc = Allocator{});
 
     //! @brief Creates circular queue by moving.
 
@@ -154,11 +164,11 @@ public:
 private:
     using pointer = typename span::pointer;
 
-    static pointer allocate(allocator_type, size_type);
-    static void deallocate(allocator_type, pointer, size_type);
+    static pointer allocate(allocator_type&, size_type);
+    static void deallocate(allocator_type&, pointer, size_type);
     template <typename... Args>
-    static void construct(allocator_type, pointer, Args&&...);
-    static void destroy(allocator_type, pointer);
+    static void construct(allocator_type&, pointer, Args&&...);
+    static void destroy(allocator_type&, pointer);
 
     bool half() const;
     void grow();

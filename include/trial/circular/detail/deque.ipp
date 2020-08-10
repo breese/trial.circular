@@ -17,11 +17,19 @@ namespace circular
 {
 
 template <typename T, typename A>
-deque<T, A>::deque(size_type replacement_capacity)
-    : allocator_type(A{}),
+deque<T, A>::deque(size_type replacement_capacity,
+                   const A& alloc)
+    : allocator_type(alloc),
       span{ allocate(get_allocator(), replacement_capacity), replacement_capacity }
 {
     member.threshold = replacement_capacity;
+}
+
+template <typename T, typename A>
+deque<T, A>::deque(const A& alloc) noexcept(std::is_nothrow_copy_constructible<A>::value)
+    : allocator_type(alloc),
+      span { nullptr, 0 }
+{
 }
 
 template <typename T, typename A>
@@ -116,20 +124,20 @@ auto deque<T, A>::get_allocator() noexcept -> allocator_type&
 }
 
 template <typename T, typename A>
-auto deque<T, A>::allocate(allocator_type allocator, size_type length) -> pointer
+auto deque<T, A>::allocate(allocator_type& allocator, size_type length) -> pointer
 {
     return std::allocator_traits<allocator_type>::allocate(allocator, length);
 }
 
 template <typename T, typename A>
-void deque<T, A>::deallocate(allocator_type allocator, pointer ptr, size_type length)
+void deque<T, A>::deallocate(allocator_type& allocator, pointer ptr, size_type length)
 {
     return std::allocator_traits<allocator_type>::deallocate(allocator, ptr, length);
 }
 
 template <typename T, typename A>
 template <typename... Args>
-void deque<T, A>::construct(allocator_type allocator, pointer ptr, Args&&... args)
+void deque<T, A>::construct(allocator_type& allocator, pointer ptr, Args&&... args)
 {
     std::allocator_traits<allocator_type>::construct(allocator,
                                                      ptr,
@@ -137,7 +145,7 @@ void deque<T, A>::construct(allocator_type allocator, pointer ptr, Args&&... arg
 }
 
 template <typename T, typename A>
-void deque<T, A>::destroy(allocator_type allocator, pointer ptr)
+void deque<T, A>::destroy(allocator_type& allocator, pointer ptr)
 {
     std::allocator_traits<allocator_type>::destroy(allocator, ptr);
 }
