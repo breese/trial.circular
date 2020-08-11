@@ -33,19 +33,19 @@ struct allocator
     template <typename U>
     allocator(const allocator<U>& other)
     {
-        count.allocate = other.count.allocate;
-        count.deallocate = other.count.deallocate;
+        count.allocated = other.count.allocated;
+        count.deallocated = other.count.deallocated;
     }
 
     pointer allocate(size_type size)
     {
-        count.allocate += size;
+        count.allocated += size;
         return static_cast<pointer>(::operator new(size * sizeof(value_type)));
     }
 
     void deallocate(pointer p, size_type size)
     {
-        count.deallocate += size;
+        count.deallocated += size;
         ::operator delete(p);
     }
 
@@ -61,8 +61,8 @@ struct allocator
 
     struct
     {
-        size_type allocate = 0;
-        size_type deallocate = 0;
+        size_type allocated = 0;
+        size_type deallocated = 0;
     } count;
 };
 
@@ -419,8 +419,8 @@ void ctor_default()
 {
     circular::deque<int, test::allocator<int>> data;
     TRIAL_TEST_EQ(data.capacity(), 0);
-    TRIAL_TEST_EQ(data.get_allocator().count.allocate, 0);
-    TRIAL_TEST_EQ(data.get_allocator().count.deallocate, 0);
+    TRIAL_TEST_EQ(data.get_allocator().count.allocated, 0);
+    TRIAL_TEST_EQ(data.get_allocator().count.deallocated, 0);
 }
 
 void ctor_default_alloc()
@@ -428,20 +428,20 @@ void ctor_default_alloc()
     test::allocator<int> alloc;
     circular::deque<int, decltype(alloc)> data(alloc);
     TRIAL_TEST_EQ(data.capacity(), 0);
-    TRIAL_TEST_EQ(data.get_allocator().count.allocate, 0);
-    TRIAL_TEST_EQ(data.get_allocator().count.deallocate, 0);
+    TRIAL_TEST_EQ(data.get_allocator().count.allocated, 0);
+    TRIAL_TEST_EQ(data.get_allocator().count.deallocated, 0);
     data.push_back(11);
     TRIAL_TEST_EQ(data.capacity(), 2);
-    TRIAL_TEST_EQ(data.get_allocator().count.allocate, 2);
-    TRIAL_TEST_EQ(data.get_allocator().count.deallocate, 0);
+    TRIAL_TEST_EQ(data.get_allocator().count.allocated, 2);
+    TRIAL_TEST_EQ(data.get_allocator().count.deallocated, 0);
     data.push_back(22);
     TRIAL_TEST_EQ(data.capacity(), 2);
-    TRIAL_TEST_EQ(data.get_allocator().count.allocate, 2);
-    TRIAL_TEST_EQ(data.get_allocator().count.deallocate, 0);
+    TRIAL_TEST_EQ(data.get_allocator().count.allocated, 2);
+    TRIAL_TEST_EQ(data.get_allocator().count.deallocated, 0);
     data.push_back(33);
     TRIAL_TEST_EQ(data.capacity(), 3);
-    TRIAL_TEST_EQ(data.get_allocator().count.allocate, 2 + 3);
-    TRIAL_TEST_EQ(data.get_allocator().count.deallocate, 2);
+    TRIAL_TEST_EQ(data.get_allocator().count.allocated, 2 + 3);
+    TRIAL_TEST_EQ(data.get_allocator().count.deallocated, 2);
 }
 
 void ctor_capacity()
@@ -449,8 +449,8 @@ void ctor_capacity()
     test::allocator<int> alloc;
     circular::deque<int, decltype(alloc)> data(64, alloc);
     TRIAL_TEST_EQ(data.capacity(), 64);
-    TRIAL_TEST_EQ(data.get_allocator().count.allocate, 64);
-    TRIAL_TEST_EQ(data.get_allocator().count.deallocate, 0);
+    TRIAL_TEST_EQ(data.get_allocator().count.allocated, 64);
+    TRIAL_TEST_EQ(data.get_allocator().count.deallocated, 0);
 }
 
 void run()
