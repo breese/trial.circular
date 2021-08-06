@@ -48,12 +48,12 @@ This tutorial demonstrates a reasonably simple use of a circular span where
 values are continuously inserted, but only the most recent ones are remembered
 and used.
 
-Suppose we receive a sequence of numerical values latexmath:[x[n\]] one by one
-over time latexmath:[n], and we want to calculate the running average
-latexmath:[\bar{x}[n\]] of the `N` most recent values. This is easily done by
-maintaining a running sum latexmath:[M_1[n\]].
+Suppose we receive a sequence of numerical values stem:[x[n\]] one by one
+over time stem:[n], and we want to calculate the running average
+stem:[\bar{x}[n\]] of the `N` most recent values. This is easily done by
+maintaining a running sum stem:[M_1[n\]].
 
-[latexmath]
+[stem]
 ++++
 \begin{aligned}
 M_1[n] &= M_1[n-1] + x[n] - x[n-N] \\
@@ -175,10 +175,10 @@ iterators. The iterators automatically handle that the elements may wrap around
 the underlying storage.
 
 The Finite Impulse Response filter is one of the basic digital filters in the
-signal processing repertoire. A filtered value latexmath:[y[n\]] at time
-latexmath:[n] is calculated as a weighted sum of input values latexmath:[x[i\]].
+signal processing repertoire. A filtered value stem:[y[n\]] at time
+stem:[n] is calculated as a weighted sum of input values stem:[x[i\]].
 
-[latexmath]
+[stem]
 ++++
 y[n] = \sum_{i=0}^{N} w_i\, x[n - i]
 ++++
@@ -234,8 +234,8 @@ impulse::impulse(Weights... weights)
 
 Accruing input values is done by pushing them into the span.
 The order of the weights are customarily specified starting with the
-weight latexmath:[w_0] that is multiplied to the most recent input value
-latexmath:[x[n\]], and so on.
+weight stem:[w_0] that is multiplied to the most recent input value
+stem:[x[n\]], and so on.
 We therefore insert the input values at the front of the span, so that
 when we iterate from the beginning towards the end, we will visit the
 most recent input values first.
